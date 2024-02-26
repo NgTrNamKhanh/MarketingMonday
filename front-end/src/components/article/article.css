@@ -1,0 +1,135 @@
+.article{
+    width: 100%;
+    min-height: 170px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    -webkit-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    -moz-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+}
+.articleWrapper{
+    padding: 20px;
+
+}
+.articleTop{
+    display: flex;
+    align-items: center;
+}
+.articleProfilePicture{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.articleInput{
+    border: none;
+    resize: vertical; 
+    width: 85%;
+    min-height: 50px; 
+    max-height: 150px; 
+}
+.articleInput:focus{
+    outline: none;
+}
+.articleHr{
+    margin: 20px;
+}
+.articleBottom{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.articleOptions{
+    display: flex;
+    margin-left: 20px;
+}
+.articleOption{
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    cursor: pointer;
+}
+.articleIcon{
+    font-size: 18px;
+    margin-right: 3px;
+}
+.articleOptionText{
+    font-size: 14px;
+    font-weight: 500;
+}
+.articleButton{
+    border: none;
+    padding: 7px;
+    border-radius: 5px;
+    background-color: green;
+    font-weight: 500;
+    margin-right: 20px;
+    cursor: pointer;
+    color: white;
+}
+.articleCategory{
+    margin: 0 20px 10px;
+}
+.articleSelect{
+    width: 150px;
+    height: 30px;
+    
+}
+.selectedItems{
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.selectedItems .itemContainer {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    background-color: #f0f0f0;
+    border-radius: 2px;
+    margin-bottom: 5px;
+    height: auto;
+    /* min-height: 40px; */
+}
+
+.itemContainerImg {
+    margin-left: 10px;
+    max-width: 80px;
+    height: 80%; 
+    object-fit: contain; 
+    border-radius: 2px; 
+}
+
+.selectedItems .fileName {
+    font-size: 14px;
+    margin-bottom: 5px; 
+}
+
+.fileLink {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: #f0f0f0;
+    color: rgb(55, 55, 255);
+    font-weight: 500;
+    border-radius: 2px; 
+    text-decoration: none;
+}
+
+.fileLink:hover {
+    background-color: #e0e0e0; 
+}
+
+.photoName {
+    font-size: 14px;
+    margin-top: 5px; /* Add space between the image and the file name */
+    text-align: center; /* Center the file name */
+}
+.removeButton{
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-right: 10px; 
+}
+.removeButton:hover{
+    border: solid 1px black;
+    border-radius: 2px;
+}

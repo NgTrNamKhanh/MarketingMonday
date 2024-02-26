@@ -1,0 +1,112 @@
+.post{
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    -webkit-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    -moz-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    margin: 30px 0;
+}
+.postWrapper{
+    padding: 10px;
+}
+.postTop{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.postTopLeft{
+    display: flex;
+    align-items: center;
+
+}
+.postProfileImg{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.postUsername{
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 10px;
+}
+.postDate{
+    font-size: 12px;
+}
+.postCenter{
+    margin: 20px 0;
+
+}
+.postCenter {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.postCenter {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.postImg {
+    max-width: calc(50% - 5px); /* Adjust the width as needed */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+.postImgGroup {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.postImgTop {
+    width: 100%;
+    max-width: 100%;
+}
+
+.postImgBottom {
+    max-width: calc(50% - 5px); /* Adjust the width as needed for 2 images per row */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
+
+.postBottom{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.postBottomLeft{
+    display: flex;
+    align-items: center;
+}
+.postIcon{
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.postLikeCounter{
+    font-size: 15px;
+    margin-right: 5px;
+}
+.postBottomRight{
+    display: flex;
+    align-items: center;
+}
+.postCommentText{
+    cursor: pointer;
+    font-size: 15px;
+
+}
+.postIcon.liked {
+    color: blue; /* Change to the desired color */
+}
+
+.postIcon.disliked {
+    color: red; /* Change to the desired color */
+}

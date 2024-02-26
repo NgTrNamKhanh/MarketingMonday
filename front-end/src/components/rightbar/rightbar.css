@@ -1,0 +1,9 @@
+.rightbar{
+    flex: 3;
+    /* padding-top: 50px; */
+    margin-right: 20px;
+    position: sticky;
+    height: calc(100vh - 50px);
+    top: 100px;
+
+}
