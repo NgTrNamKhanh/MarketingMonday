@@ -1,19 +1,24 @@
 import { EmojiObjects, Event, Group, HelpOutline, Notifications, RssFeed, School, WorkOutline } from "@mui/icons-material"
 import "../sidebar.css"
+import { Link } from "react-router-dom"
 
 export default function StudentSidebar() {
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                <li className="sidebarListItem">
-                        <EmojiObjects className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Articles</span>
-                    </li>
-                    <li className="sidebarListItem">
-                        <Notifications className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Notifications</span>
-                    </li>
+                    <Link to="/" className="sidebarListItemLink">
+                        <li className="sidebarListItem">
+                            <EmojiObjects className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Articles</span>
+                        </li>
+                    </Link>
+                    <Link to="/notifications" className="sidebarListItemLink"> 
+                        <li className="sidebarListItem">
+                            <Notifications className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Notifications</span>
+                        </li>
+                    </Link>
                 </ul>
                 {/* <button className="sidebarButton">
                     Show More

@@ -12,7 +12,7 @@ export default function CoordinatorSidebar() {
                     </li>
                     <li className="sidebarListItem">
                         <Category className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Categories</span>
+                        <span className="sidebarListItemText">Submission</span>
                     </li>
                     <li className="sidebarListItem">
                         <Dashboard className="sidebarIcon"/>

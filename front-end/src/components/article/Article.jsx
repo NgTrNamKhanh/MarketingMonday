@@ -1,10 +1,22 @@
 import { AttachFile, PermMedia } from "@mui/icons-material";
 import React, { useState } from "react";
 import "./article.css";
+import TermsAndConditions from "../termsAndConditions/TermsAndConditions";
 
 export default function Article() {
     const [selectedPhotos, setSelectedPhotos] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [tncOpen, setTnCOpen] = useState(false);
+
+    const handleCloseTnCDialog = () => {
+        setTnCOpen(false);
+    };
+    const handleOpenTnCDialog = () => {
+        setTnCOpen(true);
+    };
+    const handleSubmit = () =>{
+        console.log("Hi")
+    };
 
     const handlePhotoUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -34,6 +46,7 @@ export default function Article() {
         updatedFiles.splice(index, 1);
         setSelectedFiles(updatedFiles);
     };
+
 
     return (
         <div className="article">
@@ -92,11 +105,16 @@ export default function Article() {
                                 multiple
                             />
                         </div>
+                        <TermsAndConditions
+                            open = {tncOpen}
+                            handleClose = {handleCloseTnCDialog}
+                            handleConfirm = {handleSubmit}
+                        />
                     </div>
 
                     
 
-                    <button className="articleButton">Submit</button>
+                    <button onClick={handleOpenTnCDialog} className="articleButton">Submit</button>
                 </div>
             </div>
         </div>

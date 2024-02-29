@@ -8,11 +8,12 @@ import Notifications from "../notifications/Notifications";
 import Profile from "../profile/Profile";
 import "./home.css"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
+import Login from "../authentication/login/Login";
+import Register from "../authentication/register/Register";
 
 export default function Home() {
     return (
-        <Router> {/* Wrap your Routes with a Router */}
+        <Router> 
             <div>
                 <Topbar/>
                 <div className="homeContainer">
@@ -25,6 +26,8 @@ export default function Home() {
                             <Route path="/" element={<Feed />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/notifications" element={<Notifications />} />
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
                         </Routes>
                     </div>
                     <Rightbar/>

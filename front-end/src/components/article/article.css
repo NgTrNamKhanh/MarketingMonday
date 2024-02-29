@@ -92,6 +92,7 @@
 }
 
 .itemContainerImg {
+    padding: 10px 0;
     margin-left: 10px;
     max-width: 80px;
     height: 80%; 
@@ -106,6 +107,7 @@
 
 .fileLink {
     display: inline-block;
+    margin: 10px;
     padding: 8px 12px;
     background-color: #f0f0f0;
     color: rgb(55, 55, 255);
@@ -115,6 +117,7 @@
 }
 
 .fileLink:hover {
+    border-radius: 3px;
     background-color: #e0e0e0; 
 }
 

@@ -4,6 +4,7 @@
     overflow-y: scroll;
     position: sticky;
     top: 50px;
+    color: #000;
 
 }
 ::-webkit-scrollbar{
@@ -29,8 +30,14 @@
     align-items: center;
     margin-bottom: 20px;
 }
+.sidebarListItemLink{
+    cursor: pointer;
+    color: inherit ; 
+    text-decoration: none ;
+}
 .sidebarIcon{
     margin-right: 15px;
+    padding: 0px;
 }
 .sidebarButton{
     width: 150px;
