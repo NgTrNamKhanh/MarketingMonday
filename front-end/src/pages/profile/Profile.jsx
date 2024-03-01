@@ -1,3 +1,4 @@
+import Feed from "../../components/feed/Feed"
 import "./profile.css"
 
 export default function Profile() {
@@ -11,12 +12,11 @@ export default function Profile() {
                     </div>
                 </div>
                 <div className="profileInfo">
-                    <h4 className="profileInfoName">NIgga</h4>
-                    <span className="profileInfoDesc">NIgga</span>
+                    <h4 className="profileInfoName">Nigga</h4>
+                    <span className="profileInfoDesc">Nigga</span>
                 </div>
                 <div className="profileRightBottom"></div>
             </div>
-        
         </div>
     )
 }

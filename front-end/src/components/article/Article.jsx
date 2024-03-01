@@ -1,5 +1,5 @@
 import { AttachFile, PermMedia } from "@mui/icons-material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./article.css";
 import TermsAndConditions from "../termsAndConditions/TermsAndConditions";
 
@@ -7,6 +7,20 @@ export default function Article() {
     const [selectedPhotos, setSelectedPhotos] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [tncOpen, setTnCOpen] = useState(false);
+    const [startDate, setStartDate] = useState(new Date()); 
+    const [endDate, setEndDate] = useState(new Date(2024, 2, 4)); 
+    const [remainingTime, setRemainingTime] = useState(0);
+
+    useEffect(() => {
+        // Calculate remaining time when startDate or endDate changes
+        const intervalId = setInterval(() => {
+            const currentTime = new Date();
+            const diff = endDate.getTime() - currentTime.getTime();
+            setRemainingTime(diff > 0 ? diff : 0);
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, [startDate, endDate]);
 
     const handleCloseTnCDialog = () => {
         setTnCOpen(false);
@@ -59,6 +73,11 @@ export default function Article() {
                     <textarea placeholder="Write your article?" className="articleInput"></textarea>
                 </div>
                 <hr className="articleHr" />
+                <div className="dateSection">
+                    <p>Start Date: {startDate.toLocaleDateString()}</p>
+                    <p>End Date: {endDate.toLocaleDateString()}</p>
+                    <p>Remaining Time: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
+                </div>
                 <div className="selectedItems">
                     {selectedPhotos.map((photo, index) => (
                         <div key={index} className="itemContainer">
@@ -78,7 +97,7 @@ export default function Article() {
                 <div className="articleBottom">
                     <div className="articleOptions">
                         <div className="articleOption">
-                            <label htmlFor="photoInput">
+                            <label htmlFor="photoInput" className="fileInput">
                                 <PermMedia htmlColor="tomato" className="articleIcon" />
                                 <span className="articleOptionText">Photo</span>
                             </label>
@@ -92,7 +111,7 @@ export default function Article() {
                             />
                         </div>
                         <div className="articleOption">
-                            <label htmlFor="fileInput">
+                            <label htmlFor="fileInput" className="fileInput">
                                 <AttachFile htmlColor="blue" className="articleIcon" />
                                 <span className="articleOptionText">File</span>
                             </label>

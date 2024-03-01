@@ -1,18 +1,31 @@
-import { EmojiObjects, Event, Group, HelpOutline, Notifications, RssFeed, School, WorkOutline } from "@mui/icons-material"
-import "../sidebar.css"
-import { Link } from "react-router-dom"
+import { EmojiObjects, Event, Group, HelpOutline, Notifications, RssFeed, School, WorkOutline } from "@mui/icons-material";
+import "../sidebar.css";
+import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export default function StudentSidebar() {
+    const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
+
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                    <Link to="/" className="sidebarListItemLink">
-                        <li className="sidebarListItem">
-                            <EmojiObjects className="sidebarIcon"/>
-                            <span className="sidebarListItemText">Articles</span>
-                        </li>
-                    </Link>
+                    <li className="sidebarListItem" onClick={() => setShowArticlesDropdown(!showArticlesDropdown)}>
+                        <EmojiObjects className="sidebarIcon"/>
+                        <span className="sidebarListItemText">Articles</span>
+                        {showArticlesDropdown ? <span className="dropdownIcon">▲</span> : <span className="dropdownIcon">▼</span>}
+                            
+                    </li>
+                    {showArticlesDropdown && (
+                        <ul className="sidebarDropdownContent">
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 1</li>
+                            </Link>
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 2</li>
+                            </Link>
+                        </ul>
+                    )}
                     <Link to="/notifications" className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <Notifications className="sidebarIcon"/>
@@ -20,62 +33,10 @@ export default function StudentSidebar() {
                         </li>
                     </Link>
                 </ul>
-                {/* <button className="sidebarButton">
-                    Show More
-                </button> */}
                 <hr className="sidebarHr"/>
                 <ul className="sidebarFriendList">
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-                    <li className="sidebarFriend">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" alt="" className="sidebarFriendImg" />
-                        <span className="sidebarFriendName">Jane Doe </span>
-                    </li>
-
                 </ul>
             </div>
         </div>
-    )
+    );
 }

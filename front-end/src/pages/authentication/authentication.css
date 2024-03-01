@@ -171,3 +171,9 @@
 .social-login__icon:hover {
 	transform: scale(1.5);	
 }
+.registerSection{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* color: white; */
+}

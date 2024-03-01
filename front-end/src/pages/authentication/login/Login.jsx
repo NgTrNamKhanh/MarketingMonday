@@ -1,5 +1,5 @@
 import React from "react";
-import "./login.css";
+import "../authentication.css";
 
 const LoginBox = () => {
     return (
@@ -28,7 +28,14 @@ const LoginBox = () => {
                             <a href="#" class="social-login__icon fab fa-twitter"></a>
                         </div>
                     </div>
+                    <div className="registerSection">
+                        <span>Don't have an account?</span><a href="/register">Register now</a>
+                    </div>
+                    <div className="registerSection">
+                        <span>Want to log in as guess?</span><a href="/">Click here</a>
+                    </div>
                 </div>
+                
                 <div class="screen__background">
                     <span class="screen__background__shape screen__background__shape4"></span>
                     <span class="screen__background__shape screen__background__shape3"></span>		

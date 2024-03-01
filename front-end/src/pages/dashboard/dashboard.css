@@ -1,0 +1,48 @@
+.dashboard {
+padding: 20px;
+background-color: #f0f0f0;
+border-radius: 5px;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.chart {
+margin-top: 20px;
+}
+
+.chart h3 {
+margin-bottom: 10px;
+}
+
+/* Adjust the legend font color */
+.chart .chartjs-render-monitor ul {
+color: #333;
+}
+
+/* Adjust the legend item bullet color */
+.chart .chartjs-render-monitor ul li span {
+background-color: #333;
+border-radius: 50%;
+width: 10px;
+height: 10px;
+margin-right: 10px;
+display: inline-block;
+}
+
+/* Adjust the legend item text color */
+.chart .chartjs-render-monitor ul li {
+color: #333;
+}
+
+/* Adjust the tooltip background color */
+.chart .chartjs-render-monitor .chartjs-tooltip {
+background-color: rgba(0, 0, 0, 0.8);
+border-radius: 5px;
+color: #fff;
+padding: 5px 10px;
+font-size: 12px;
+}
+
+/* Adjust the tooltip arrow */
+.chart .chartjs-render-monitor .chartjs-tooltip::before {
+border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}

@@ -29,9 +29,11 @@
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    position: relative;
+    cursor: pointer;
+
 }
 .sidebarListItemLink{
-    cursor: pointer;
     color: inherit ; 
     text-decoration: none ;
 }
@@ -66,3 +68,14 @@
     object-fit: cover;
     margin-right: 10px;
 }
+.sidebarDropdownContent{
+    margin: 10px;
+    list-style-type: none;
+}
+.dropdownIcon{
+    margin-left: auto;
+}
+
+
+
+

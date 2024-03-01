@@ -10,6 +10,8 @@ import "./home.css"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../authentication/login/Login";
 import Register from "../authentication/register/Register";
+import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
+import Dashboard from "../dashboard/Dashboard";
 
 export default function Home() {
     return (
@@ -19,8 +21,8 @@ export default function Home() {
                 <div className="homeContainer">
                     {/* <CoordinatorSidebar/> */}
                     {/* <AdminSidebar/> */}
-                    {/* <ManagerSidebar/> */}
-                    <StudentSidebar/>
+                    <ManagerSidebar/>
+                    {/* <StudentSidebar/> */}
                     <div className="mainContent">
                         <Routes>
                             <Route path="/" element={<Feed />} />
@@ -28,6 +30,7 @@ export default function Home() {
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
+                            <Route path="/dashboard" element={<Dashboard />} />
                         </Routes>
                     </div>
                     <Rightbar/>

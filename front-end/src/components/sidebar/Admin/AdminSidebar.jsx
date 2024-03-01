@@ -1,4 +1,4 @@
-import { EmojiObjects, EventNote, ManageAccounts } from "@mui/icons-material"
+import { EmojiObjects, EventNote, Groups, ManageAccounts } from "@mui/icons-material"
 import "../sidebar.css"
 
 export default function AdminSidebar() {
@@ -9,6 +9,10 @@ export default function AdminSidebar() {
                     <li className="sidebarListItem">
                         <ManageAccounts className="sidebarIcon"/>
                         <span className="sidebarListItemText">Accounts</span>
+                    </li>
+                    <li className="sidebarListItem">
+                        <Groups className="sidebarIcon"/>
+                        <span className="sidebarListItemText">Faculties</span>
                     </li>
                     <li className="sidebarListItem">
                         <EventNote className="sidebarIcon"/>

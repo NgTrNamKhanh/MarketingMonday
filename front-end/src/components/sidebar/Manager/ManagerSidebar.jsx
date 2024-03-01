@@ -1,18 +1,56 @@
-import { EmojiObjects, Notifications } from "@mui/icons-material"
+import { BarChart, Category, EmojiObjects, Notifications } from "@mui/icons-material"
 import "../sidebar.css"
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function ManagerSidebar() {
+    const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
+    const [showSubmissionsDropdown, setShowSubmissionsDropdown] = useState(false);
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                    <li className="sidebarListItem">
+                    <Link to="/dashboard" className="sidebarListItemLink"> 
+                        <li className="sidebarListItem" >
+                            <BarChart className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Dashboard</span>
+                            
+                        </li>
+                    </Link>
+                    <li className="sidebarListItem" onClick={() => setShowArticlesDropdown(!showArticlesDropdown)}>
                         <EmojiObjects className="sidebarIcon"/>
                         <span className="sidebarListItemText">Articles</span>
+                        {showArticlesDropdown ? <span className="dropdownIcon">▲</span> : <span className="dropdownIcon">▼</span>}
                     </li>
-                    <li className="sidebarListItem">
+                    {showArticlesDropdown && (
+                        <ul className="sidebarDropdownContent">
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 1</li>
+                            </Link>
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 2</li>
+                            </Link>
+                        </ul>
+                    )}
+                    <li className="sidebarListItem" onClick={() => setShowSubmissionsDropdown(!showSubmissionsDropdown)}>
+                        <Category className="sidebarIcon"/>
+                        <span className="sidebarListItemText">Submissions</span>
+                        {showSubmissionsDropdown ? <span className="dropdownIcon">▲</span> : <span className="dropdownIcon">▼</span>}
+                    </li>
+                    {showSubmissionsDropdown && (
+                        <ul className="sidebarDropdownContent">
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 1</li>
+                            </Link>
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 2</li>
+                            </Link>
+                        </ul>
+                    )}
+                    <li className="sidebarListItem" >
                         <Notifications className="sidebarIcon"/>
                         <span className="sidebarListItemText">Notifications</span>
+                        
                     </li>
                 </ul>
                 {/* <button className="sidebarButton">
