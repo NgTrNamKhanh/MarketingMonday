@@ -12,6 +12,7 @@ import Login from "../authentication/login/Login";
 import Register from "../authentication/register/Register";
 import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
 import Dashboard from "../dashboard/Dashboard";
+import Submissions from "../submissions/Submissions";
 
 export default function Home() {
     return (
@@ -31,6 +32,7 @@ export default function Home() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
                             <Route path="/dashboard" element={<Dashboard />} />
+                            <Route path="/submissions" element={<Submissions />} />
                         </Routes>
                     </div>
                     <Rightbar/>

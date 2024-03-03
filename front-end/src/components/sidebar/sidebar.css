@@ -36,6 +36,7 @@
 .sidebarListItemLink{
     color: inherit ; 
     text-decoration: none ;
+    padding: 5px;
 }
 .sidebarIcon{
     margin-right: 15px;

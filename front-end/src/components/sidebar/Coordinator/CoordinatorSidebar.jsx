@@ -1,15 +1,29 @@
 import { EmojiObjects, Category, Dashboard, Build } from "@mui/icons-material"
 import "../sidebar.css"
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function CoordinatorSidebar() {
+    const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                    <li className="sidebarListItem">
+                    <li className="sidebarListItem" onClick={() => setShowArticlesDropdown(!showArticlesDropdown)}>
                         <EmojiObjects className="sidebarIcon"/>
                         <span className="sidebarListItemText">Articles</span>
+                        {showArticlesDropdown ? <span className="dropdownIcon">▲</span> : <span className="dropdownIcon">▼</span>}
                     </li>
+                    {showArticlesDropdown && (
+                        <ul className="sidebarDropdownContent">
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 1</li>
+                            </Link>
+                            <Link to="/" className="sidebarListItemLink"> 
+                                <li className="sidebarListItem">Facility 2</li>
+                            </Link>
+                        </ul>
+                    )}
                     <li className="sidebarListItem">
                         <Category className="sidebarIcon"/>
                         <span className="sidebarListItemText">Submission</span>

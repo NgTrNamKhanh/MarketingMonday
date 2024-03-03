@@ -8,32 +8,49 @@ const posts = [
         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
         username: "user1",
         date: "February 20, 2024",
-        post: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        title: "Post Title 1",
+        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
         postimgs: [
             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            // Add more image URLs as needed
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
         ],
         likes: 10,
         dislikes: 2,
-        commentsCount: 5
+        commentsCount: 5,
+        files: [
+            // {
+            //     name: 'tut3-RADconcepts.doc',
+            //     lastModified: 1706591705000,
+            //     lastModifiedDate: new Date('Tue Jan 30 2024 12:15:05 GMT+0700 (Indochina Time)'),
+            //     size: 30208,
+            //     type: 'application/msword',
+            //     webkitRelativePath: ''
+            // }
+        ]
     },
     {
         id: 2,
         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
         username: "user2",
         date: "February 19, 2024",
-        post: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        title: "Post Title 2",
+        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
         postimgs: [
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            // Add more image URLs as needed
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
         ],
         likes: 20,
         dislikes: 1,
-        commentsCount: 8
-    },
+        commentsCount: 8,
+        files: [
+            // Add file objects here if needed
+        ]
+    }
     // Add more posts as needed
 ];
 
@@ -92,8 +109,6 @@ export default function Feed() {
                 {posts.map(post => (
                     <Post
                         post = {post}
-                        isLiked={post.isLiked}
-                        isDisliked={post.isDisliked}
                         // handleLike={() => handleLike(post.id)}
                         // handleDislike={() => handleDislike(post.id)}
                     />

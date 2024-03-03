@@ -34,37 +34,32 @@ export default function Post({ post}) {
         );
     } else if (post.postimgs.length === 2) {
         pictureLayout = (
-            <div className="postCenter">
-                <img src={post.postimgs[0]} className="postImg postImgTop" alt="Post image 1" />
+            <div className="postImgGroup">
+                <img src={post.postimgs[0]} className="postImg postImgBottom" alt="Post image 1" />
                 <img src={post.postimgs[1]} className="postImg postImgBottom" alt="Post image 2" />
             </div>
         );
-    } else if (post.postimgs.length === 3) {
+    } else{
         pictureLayout = (
             <div className="postCenter">
-                <img src={post.postimgs[0]} className="postImg postImgTop" alt="Post image 1" />
                 <div className="postImgGroup">
+                    <img src={post.postimgs[0]} className="postImg postImgBottom" alt="Post image 1" />
                     <img src={post.postimgs[1]} className="postImg postImgBottom" alt="Post image 2" />
-                    <img src={post.postimgs[2]} className="postImg postImgBottom" alt="Post image 3" />
+                </div>
+                <div className="postImgGroup">
+                    <img src={post.postimgs[2]} className="postImg postImgBottom" alt={`Post image 3`} />
+                    {post.postimgs.length > 3 && 
+                        <div className="extraImg">
+                            {post.postimgs.slice(3,7).map((img, index) => (
+                                <img key={index} src={img} className="postImg postImgBottom" alt={`Post image ${index + 3}`} />
+                            ))}
+                            <div className="overlay">+{post.postimgs.length - 3}</div>
+                        </div>
+                    }
                 </div>
             </div>
         );
-    } else {
-        pictureLayout = (
-            <div className="postCenter">
-                <div className="postImgGroup">
-                    <img src={post.postimgs[0]} className="postImg postImgTop" alt="Post image 1" />
-                    <img src={post.postimgs[1]} className="postImg postImgTop" alt="Post image 2" />
-                </div>
-                <div className="postImgGroup">
-                    {post.postimgs.slice(2, 5).map((img, index) => (
-                        <img key={index} src={img} className="postImg postImgBottom" alt={`Post image ${index + 3}`} />
-                    ))}
-                    {post.postimgs.length > 5 && <span className="postImg postImgBottom">+{post.postimgs.length - 5}</span>}
-                </div>
-            </div>
-        );
-    }
+    } 
 
     return (
         <div className="post">
@@ -78,6 +73,15 @@ export default function Post({ post}) {
                     <div className="postTopRight">
                         <MoreVert/>
                     </div>
+                </div>
+                <div className="postCenter">
+                    <h2 className='postTitle'>{post.title}</h2>
+                    <p className='postContent'>{post.content}</p>
+                    {post.files.map((file, index) => (
+                        <div key={index} className="itemContainer">
+                            <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
+                        </div>
+                    ))}
                 </div>
                 {pictureLayout}
                 <div className="postBottom">

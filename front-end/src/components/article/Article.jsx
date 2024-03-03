@@ -48,6 +48,7 @@ export default function Article() {
                 setSelectedFiles([...selectedFiles, file]);
             }
         });
+        console.log(files[0])
     };
     const handleRemovePhoto = (index) => {
         const updatedPhotos = [...selectedPhotos];

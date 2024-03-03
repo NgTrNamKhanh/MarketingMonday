@@ -125,7 +125,7 @@
 	font-weight: 700;
 	display: flex;
 	align-items: center;
-	width: 100%;
+	width: 90%;
 	color: #4C489D;
 	box-shadow: 0px 2px 2px #5C5696;
 	cursor: pointer;
@@ -145,35 +145,15 @@
 	color: #7875B5;
 }
 
-.social-login {	
-	position: absolute;
-	height: 140px;
-	width: 160px;
-	text-align: center;
-	bottom: 0px;
-	right: 0px;
-	color: #fff;
-}
-
-.social-icons {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-.social-login__icon {
-	padding: 20px 10px;
-	color: #fff;
-	text-decoration: none;	
-	text-shadow: 0px 0px 8px #7875B5;
-}
-
-.social-login__icon:hover {
-	transform: scale(1.5);	
-}
 .registerSection{
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin-bottom: 20px;
 	/* color: white; */
+}
+.authenticationLink{
+	cursor: pointer;
+	color: blue;
+	text-decoration: underline;
 }
