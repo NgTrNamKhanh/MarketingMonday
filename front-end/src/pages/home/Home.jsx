@@ -13,6 +13,8 @@ import Register from "../authentication/register/Register";
 import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
 import Dashboard from "../dashboard/Dashboard";
 import Submissions from "../submissions/Submissions";
+import Accounts from "../admin/accounts/Accounts";
+import Faculties from "../admin/faculties/Faculties";
 
 export default function Home() {
     return (
@@ -21,8 +23,8 @@ export default function Home() {
                 <Topbar/>
                 <div className="homeContainer">
                     {/* <CoordinatorSidebar/> */}
-                    {/* <AdminSidebar/> */}
-                    <ManagerSidebar/>
+                    <AdminSidebar/>
+                    {/* <ManagerSidebar/> */}
                     {/* <StudentSidebar/> */}
                     <div className="mainContent">
                         <Routes>
@@ -31,8 +33,10 @@ export default function Home() {
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/register" element={<Register />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/submissions" element={<Submissions />} />
+                            <Route path="/admin/dashboard" element={<Dashboard />} />
+                            <Route path="/admin/submissions" element={<Submissions />} />
+                            <Route path="/admin/accounts" element={<Accounts />} />
+                            <Route path="/admin/faculties" element={<Faculties />} />
                         </Routes>
                     </div>
                     <Rightbar/>
