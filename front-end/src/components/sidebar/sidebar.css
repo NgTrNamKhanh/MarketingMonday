@@ -17,7 +17,6 @@
     background-color: rgb(179,179,179);
 }
 .sidebarWrapper{
-
     padding: 20px;
 }
 .sidebarList{
@@ -36,7 +35,6 @@
 .sidebarListItemLink{
     color: inherit ; 
     text-decoration: none ;
-    padding: 5px;
 }
 .sidebarIcon{
     margin-right: 15px;

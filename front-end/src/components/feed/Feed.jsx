@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Post from "../post/Post"
 import Share from "../article/Article"
 import "./feed.css"
-const posts = [
+const postsData = [
     {
         id: 1,
         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
@@ -50,67 +50,76 @@ const posts = [
         files: [
             // Add file objects here if needed
         ]
+    },
+    {
+        id: 3,
+        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+        username: "user2",
+        date: "February 22, 2024",
+        title: "Post Title 3",
+        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        postimgs: [
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
+        ],
+        likes: 1,
+        dislikes: 10,
+        commentsCount: 100,
+        files: [
+            // Add file objects here if needed
+        ]
     }
     // Add more posts as needed
 ];
 
 export default function Feed() {
-    // const [posts, setPosts] = useState(mockData.map(post => ({
-    //     ...post,
-    //     liked: false,
-    //     disliked: false
-    // })));
-    // console.log(posts)
-    // const [posts, setPosts] = useState(mockData.map(post => ({
-    //     ...post,
-    //     isLiked: false,
-    //     isDisliked: false
-    // })));
-//     const handleLike = (postId) => {
-//         setPosts(prevPosts => prevPosts.map(post => {
-//             if (post.id === postId) {
-//                 if (post.isLiked) {
-//                     // Post is already liked, remove the like
-//                     return {...post, likes: post.likes - 1, isLiked: false};
-//                 } else {
-//                     if(post.isDisliked){
-//                         return {...post, likes: post.likes + 1, isLiked: true, dislikes: post.dislikes - 1, isDisliked: false};
-//                     }
-//                     // Post is not liked, like the post
-//                     return {...post, likes: post.likes + 1, isLiked: true};
-//                 }
-//             }
-//             return post;
-//         }));
-//     };
-    
+    const [selectedFilter, setSelectedFilter] = useState("recent");
+    const [posts, setPosts] = useState([]);
+    useEffect(() => {
+        // Initialize posts with initialPosts on component mount
+        setPosts(postsData);
+    }, []);
+    const handleFilterChange = (event) => {
+        setSelectedFilter(event.target.value);
+        // Call function to sort posts based on selected filter
+        sortPosts(event.target.value);
+    };
 
-//     const handleDislike = (postId) => {
-//     setPosts(prevPosts => prevPosts.map(post => {
-//         if (post.id === postId) {
-//             if (post.isDisliked) {
-//                 // Post is already disliked, remove the dislike
-//                 return {...post, dislikes: post.dislikes - 1, isDisliked: false};
-//             } else {
-//                 if(post.isLiked){
-//                     return {...post, dislikes: post.dislikes + 1, isDisliked: true, likes:post.likes - 1, isLiked: false};
-//                 }
-//                 // Post is not disliked, dislike the post
-//                 return {...post, dislikes: post.dislikes + 1, isDisliked: true};
-//             }
-//         }
-//         return post;
-//     }));
-// };
+    const sortPosts = (filter) => {
+        let sortedPosts = [...posts];
+        switch (filter) {
+            case "views":
+                sortedPosts.sort((a, b) => b.views - a.views);
+                break;
+            case "likes":
+                sortedPosts.sort((a, b) => b.likes - a.likes);
+                break;
+            case "comments":
+                sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
+                break;
+            default:
+                // Default to sort by most recent
+                sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                break;
+        }
+        setPosts(sortedPosts);
+    };
+    console.log(posts)
 
     return (
         <div className="feed">
             <div className="feedWrapper">
+                <div className="postFilter">
+                    <select value={selectedFilter} onChange={handleFilterChange}>
+                        <option value="recent">Most Recent</option>
+                        <option value="views">Most Viewed</option>
+                        <option value="likes">More Liked</option>
+                        <option value="comments">Most Commented</option>
+                    </select>
+                </div>
                 {posts.map(post => (
                     <Post
                         post = {post}
-                        // handleLike={() => handleLike(post.id)}
-                        // handleDislike={() => handleDislike(post.id)}
                     />
                 ))}
             </div>

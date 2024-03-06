@@ -9,12 +9,12 @@ import Profile from "../profile/Profile";
 import "./home.css"
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from "../authentication/login/Login";
-import Register from "../authentication/register/Register";
 import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
 import Dashboard from "../dashboard/Dashboard";
 import Submissions from "../submissions/Submissions";
 import Accounts from "../admin/accounts/Accounts";
 import Faculties from "../admin/faculties/Faculties";
+import Article from "../../components/article/Article";
 
 export default function Home() {
     return (
@@ -23,23 +23,23 @@ export default function Home() {
                 <Topbar/>
                 <div className="homeContainer">
                     {/* <CoordinatorSidebar/> */}
-                    <AdminSidebar/>
+                    {/* <AdminSidebar/> */}
                     {/* <ManagerSidebar/> */}
-                    {/* <StudentSidebar/> */}
+                    <StudentSidebar/>
                     <div className="mainContent">
                         <Routes>
                             <Route path="/" element={<Feed />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
                             <Route path="/admin/dashboard" element={<Dashboard />} />
+                            <Route path="/student/submission" element={<Article />} />
                             <Route path="/admin/submissions" element={<Submissions />} />
                             <Route path="/admin/accounts" element={<Accounts />} />
                             <Route path="/admin/faculties" element={<Faculties />} />
                         </Routes>
                     </div>
-                    <Rightbar/>
+                    {/* <Rightbar/> */}
                 </div>
             </div>
         </Router>

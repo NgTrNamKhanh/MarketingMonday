@@ -66,41 +66,39 @@ export default function Article() {
     return (
         <div className="article">
             <div className="articleWrapper">
-                <div className="articleTop">
-                    <img
-                        src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-                        className="articleProfilePicture"
-                    />
-                    <textarea placeholder="Write your article?" className="articleInput"></textarea>
-                </div>
+                <h1>Submission</h1>
                 <hr className="articleHr" />
                 <div className="dateSection">
-                    <p>Start Date: {startDate.toLocaleDateString()}</p>
-                    <p>End Date: {endDate.toLocaleDateString()}</p>
-                    <p>Remaining Time: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
+                    <p>Opened: {startDate.toLocaleDateString()}</p>
+                    <p>Due: {endDate.toLocaleDateString()}</p>
+                    <p>Time Remaining: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
                 </div>
-                <div className="selectedItems">
-                    {selectedPhotos.map((photo, index) => (
-                        <div key={index} className="itemContainer">
-                            <img src={URL.createObjectURL(photo)} alt={`Uploaded photo ${index}`} className="itemContainerImg"/>
-                            <a href={URL.createObjectURL(photo)} className="fileLink" target="_blank" rel="noopener noreferrer">{photo.name}</a>
-                            <button className="removeButton" onClick={() => handleRemovePhoto(index)}>X</button>
-                        </div>
-                    ))}
-                    {selectedFiles.map((file, index) => (
-                        <div key={index} className="itemContainer">
-                            <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
-                            <button className="removeButton" onClick={() => handleRemoveFile(index)}>X</button>
-                        </div>
-                    ))}
+                <h2 className="createSubmission">Create a submission</h2>
+                <div className="articleContent">
+                    <input type="text" className="articleTitle" placeholder="Title"/>
+                    <br />
+                    <textarea placeholder="Write your article?" className="articleInput"></textarea>
                 </div>
-
                 <div className="articleBottom">
+                    <div className="selectedItems">
+                        {selectedPhotos.map((photo, index) => (
+                            <div key={index} className="itemContainer">
+                                <img src={URL.createObjectURL(photo)} alt={`Uploaded photo ${index}`} className="itemContainerImg"/>
+                                <a href={URL.createObjectURL(photo)} className="fileLink" target="_blank" rel="noopener noreferrer">{photo.name}</a>
+                                <button className="removeButton" onClick={() => handleRemovePhoto(index)}>X</button>
+                            </div>
+                        ))}
+                        {selectedFiles.map((file, index) => (
+                            <div key={index} className="itemContainer">
+                                <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
+                                <button className="removeButton" onClick={() => handleRemoveFile(index)}>X</button>
+                            </div>
+                        ))}
+                    </div>
                     <div className="articleOptions">
                         <div className="articleOption">
                             <label htmlFor="photoInput" className="fileInput">
                                 <PermMedia htmlColor="tomato" className="articleIcon" />
-                                <span className="articleOptionText">Photo</span>
                             </label>
                             <input
                                 id="photoInput"
@@ -114,7 +112,6 @@ export default function Article() {
                         <div className="articleOption">
                             <label htmlFor="fileInput" className="fileInput">
                                 <AttachFile htmlColor="blue" className="articleIcon" />
-                                <span className="articleOptionText">File</span>
                             </label>
                             <input
                                 id="fileInput"
@@ -131,9 +128,8 @@ export default function Article() {
                             handleConfirm = {handleSubmit}
                         />
                     </div>
-
-                    
-
+                </div>
+                <div className="buttonContainer">
                     <button onClick={handleOpenTnCDialog} className="articleButton">Submit</button>
                 </div>
             </div>

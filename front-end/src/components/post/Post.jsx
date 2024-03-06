@@ -88,6 +88,7 @@ export default function Post({ post}) {
                     <div className="postBottomLeft">
                         <ThumbUp className={`postIcon ${isLiked ? 'liked' : ''}`} onClick={handleLike}/>
                         <span className="postLikeCounter">{like}</span>
+                        <p>{like}</p>
                         <ThumbDown className={`postIcon ${isDisliked ? 'disliked' : ''}`} onClick={handleDislike}/>
                         <span className="postLikeCounter">{dislike}</span>
                     </div>

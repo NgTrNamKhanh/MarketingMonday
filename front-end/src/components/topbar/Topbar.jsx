@@ -13,7 +13,7 @@ export default function Topbar() {
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
-                <a className="logo" href="/">Social</a>
+                <a className="logo" href="/">CMU</a>
             </div>
             <div className="topbarCenter">
                 <div className="searchBar">
@@ -22,28 +22,7 @@ export default function Topbar() {
                 </div>
             </div>
             <div className="topbarRight">
-                <div className="topbarLinks">
-                    <span className="topbarLink">
-                        HomePage
-                    </span>
-                    <span className="topbarLink">
-                        TimeLine
-                    </span>
-                </div>
                 <div className="topbarIcons">
-                    <div className="topbarIconItem">
-                        <Person  />
-                        <span className="topbarIconBadge">
-                            1
-                        </span>
-                        
-                    </div>
-                    <div className="topbarIconItem">
-                        <Chat/>
-                        <span className="topbarIconBadge">
-                            2
-                        </span>
-                    </div>
                     <Link to="/notifications" className="topbarIconItem">
                         <Notifications />
                         <span className="topbarIconBadge">
