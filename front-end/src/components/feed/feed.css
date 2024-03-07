@@ -1,5 +1,6 @@
 .feed{
-    margin: 0 200px;
+    margin: 0 200px 0 50px ;
+    /* margin-left: 100px; */
 }
 .feedWrapper{
     padding: 20px;

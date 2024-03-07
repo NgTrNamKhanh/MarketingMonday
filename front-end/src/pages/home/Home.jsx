@@ -39,7 +39,6 @@ export default function Home() {
                             <Route path="/admin/faculties" element={<Faculties />} />
                         </Routes>
                     </div>
-                    {/* <Rightbar/> */}
                 </div>
             </div>
         </Router>

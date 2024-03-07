@@ -174,3 +174,77 @@
     color: white;
     border-radius: 5px;
 }
+.commentsSection{
+    margin-top: 30px;
+    border: 1px solid #ccc;
+}
+/* styles.css */
+.comment {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 10px;
+}
+.commentContent{
+    grid-column: 2;
+    font-size: 15px;
+    padding: 10px;
+}
+.commentTop{
+    grid-column: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.commentTopLeft{
+    display: flex;
+    align-items: center;
+}
+.commentProfileImg{
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    grid-row: span 2; 
+}
+.commentUsername{
+    font-size: 15px;
+    font-weight: 500;
+    padding: 0 10px;
+}
+.commentDate{
+    font-size: 12px;
+}
+.commentContent{
+    grid-column: 2;
+}
+.viewReplies {
+    grid-column: 2;
+    padding:  0 10px;
+    font-size: 14px;
+    cursor: pointer;
+    color: blue;
+}
+.commentReply{
+    grid-column: 2;
+    padding: 10px;
+}
+.commentActions{
+    grid-column: 2;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+}
+.commentIcon{
+    width: 15px !important;
+    height: 15px !important;
+    padding: 0 5px;
+    cursor: pointer;
+}
+.commentIcon.liked {
+    color: blue; 
+}
+
+.commentIcon.disliked {
+    color: red; 
+}
