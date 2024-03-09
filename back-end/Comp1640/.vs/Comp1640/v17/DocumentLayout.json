@@ -1,0 +1,149 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\models\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\models\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\models\\projectdatabasecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\models\\projectdatabasecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\models\\applicationuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\models\\article.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\models\\article.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|c:\\users\\dell\\desktop\\project_comp1640\\comp1640\\comp1640\\models\\faculty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{31E9CA0B-03C6-47C0-9EA9-48B157F5AA57}|Comp1640\\Comp1640.csproj|solutionrelative:comp1640\\models\\faculty.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Program.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Program.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Program.cs",
+              "RelativeToolTip": "Comp1640\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAgAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:45:11.255Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Services\\IAuthService.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
+              "RelativeToolTip": "Comp1640\\Services\\IAuthService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAA2AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:44:11.895Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthService.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Services\\AuthService.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Services\\AuthService.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Services\\AuthService.cs",
+              "RelativeToolTip": "Comp1640\\Services\\AuthService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:43:53.903Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ProjectDatabaseContext.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "RelativeToolTip": "Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:42:11.279Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ApplicationUser.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\ApplicationUser.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Models\\ApplicationUser.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\ApplicationUser.cs",
+              "RelativeToolTip": "Comp1640\\Models\\ApplicationUser.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAsAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:36:35.915Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Account.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Account.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Models\\Account.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Account.cs",
+              "RelativeToolTip": "Comp1640\\Models\\Account.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:35:45.02Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Faculty.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Faculty.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Models\\Faculty.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Faculty.cs",
+              "RelativeToolTip": "Comp1640\\Models\\Faculty.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:33:39.126Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Article.cs",
+              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Article.cs",
+              "RelativeDocumentMoniker": "Comp1640\\Models\\Article.cs",
+              "ToolTip": "C:\\Users\\DELL\\Desktop\\Project_Comp1640\\Comp1640\\Comp1640\\Models\\Article.cs",
+              "RelativeToolTip": "Comp1640\\Models\\Article.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAvAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-09T08:32:10.843Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
