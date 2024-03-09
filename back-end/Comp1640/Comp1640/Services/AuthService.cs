@@ -22,7 +22,8 @@ namespace Comp1640.Services
 
             };
             var result = await _userManager.CreateAsync(identityUser, account.Password);
-            return result.Succeeded;
+            var role = await _userManager.AddToRoleAsync(identityUser, account.Role);
+            return result.Succeeded && role.Succeeded;
         }
 
         public async Task<bool> Login(string email, string passWord)

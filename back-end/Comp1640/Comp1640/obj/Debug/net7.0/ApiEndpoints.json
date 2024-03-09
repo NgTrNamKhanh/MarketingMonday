@@ -1,6 +1,53 @@
 [
   {
     "ContainingType": "Comp1640.Controllers.AdminController",
+    "Method": "PutAccountForAdmin",
+    "RelativePath": "api/Admin",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "username",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "account",
+        "Type": "Comp1640.Models.Account",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.AdminController",
+    "Method": "GetAllUsers",
+    "RelativePath": "api/Admin",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.AdminController",
+    "Method": "DeleteUser",
+    "RelativePath": "api/Admin/{email}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "email",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.AdminController",
     "Method": "CreateAccount",
     "RelativePath": "api/Admin/CreateAccount",
     "HttpMethod": "POST",
@@ -32,6 +79,42 @@
         "Name": "passWord",
         "Type": "System.String",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.RolesController",
+    "Method": "GetRole",
+    "RelativePath": "api/Roles",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Microsoft.AspNetCore.Identity.IdentityRole, Microsoft.Extensions.Identity.Stores, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.RolesController",
+    "Method": "PostRole",
+    "RelativePath": "api/Roles/CreateRole",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "role",
+        "Type": "Comp1640.Models.Role",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

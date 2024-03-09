@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\Comp1640.csproj": {}
+    "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Comp1640.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\Comp1640.csproj": {
+    "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Comp1640.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\Comp1640.csproj",
+        "projectUniqueName": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Comp1640.csproj",
         "projectName": "Comp1640",
-        "projectPath": "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\Comp1640.csproj",
+        "projectPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Comp1640.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\obj\\",
+        "outputPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",

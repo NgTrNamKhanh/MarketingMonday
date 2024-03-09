@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "emx2PbTXzqw7seQxNdd5MMkfeCKS1kuKnp1qUWuKp68QyDMrYU2ydE7CD7dq24gP12Mg10BrDeQI1H028Vb9ig==",
+  "dgSpecHash": "Dsr1l+EU+TRK7NP9OSZSKqFguOHJKUAwEQf+yWWlrmtW0wr1+RfciyJoHmVB0zdn+unq1/tnkmZ8Y9scNEZ+AQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\DELL\\Desktop\\Comp1640\\Comp1640\\Comp1640.csproj",
+  "projectFilePath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Comp1640.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",
