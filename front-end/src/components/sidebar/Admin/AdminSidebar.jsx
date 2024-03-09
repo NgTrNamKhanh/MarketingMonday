@@ -20,10 +20,12 @@ export default function AdminSidebar() {
                             <span className="sidebarListItemText">Accounts</span>
                         </li>
                     </Link>
-                    <li className="sidebarListItem">
-                        <EventNote className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Events</span>
-                    </li>
+                    <Link to="/admin/events" className="sidebarListItemLink"> 
+                        <li className="sidebarListItem">
+                            <EventNote className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Events</span>
+                        </li>
+                    </Link>
                     <li className="sidebarListItem">
                         <EmojiObjects className="sidebarIcon"/>
                         <span className="sidebarListItemText">Articles</span>

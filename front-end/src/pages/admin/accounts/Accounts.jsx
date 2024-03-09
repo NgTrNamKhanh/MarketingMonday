@@ -48,18 +48,8 @@ const Accounts = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
-    const [detailDialogOpen, setDetailDialogOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState(null);
 
-    const handleOpenDetailsDialog = (acc) => {
-        setSelectedAccount(acc);
-        setDetailDialogOpen(true);
-    };
-
-    const handleCloseDetailsDialog = () => {
-        setDetailDialogOpen(false);
-        setSelectedAccount(null);
-    };
 
     const handleOpenEditDialog = (acc) => {
         setSelectedAccount(acc);
@@ -80,11 +70,7 @@ const Accounts = () => {
     // Open the delete dialog
     const handleOpenDeleteDialog = (acc) => {
         setSelectedAccount(acc);
-    setDeleteDialogOpen(true);
-    };
-
-    const handleDefaultCloseDeleteDialog = () => {
-        setDeleteDialogOpen(false);
+        setDeleteDialogOpen(true);
     };
 
     // Close the delete dialog
@@ -145,7 +131,6 @@ const Accounts = () => {
             renderCell: ({ row }) => (
             <Box p="1vh" display="flex" justifyContent="center">
                 <Link
-                onClick={() => handleOpenDetailsDialog(row)}
                 style={{ marginRight: "2vh" }}
                 >
                 <Visibility />

@@ -1,0 +1,13 @@
+.dateRangeContainer {
+  display: flex;
+  flex-direction: column;
+  grid-column: 2;
+}
+
+.dateRangeText {
+  margin-bottom: 10px; /* Adjust the margin as needed */
+}
+
+.datePicker {
+  margin-top: 10px; /* Adjust the margin as needed */
+}

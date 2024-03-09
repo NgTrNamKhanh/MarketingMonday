@@ -14,6 +14,7 @@ import Dashboard from "../dashboard/Dashboard";
 import Submissions from "../submissions/Submissions";
 import Accounts from "../admin/accounts/Accounts";
 import Article from "../../components/article/Article";
+import Events from "../admin/events/Events";
 
 export default function Home() {
     return (
@@ -33,6 +34,7 @@ export default function Home() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/admin/dashboard" element={<Dashboard />} />
                             <Route path="/student/submission" element={<Article />} />
+                            <Route path="/admin/events" element={<Events />} />
                             <Route path="/admin/submissions" element={<Submissions />} />
                             <Route path="/admin/accounts" element={<Accounts />} />
                         </Routes>
