@@ -105,13 +105,7 @@
     font-size: 15px;
 
 }
-.postIcon.liked {
-    color: blue; /* Change to the desired color */
-}
 
-.postIcon.disliked {
-    color: red; /* Change to the desired color */
-}
 
 .postCenter{
     margin: 20px 0;
@@ -176,7 +170,6 @@
 }
 .commentsSection{
     margin-top: 30px;
-    border: 1px solid #ccc;
 }
 /* styles.css */
 .comment {
@@ -247,4 +240,38 @@
 
 .commentIcon.disliked {
     color: red; 
+}
+.disLikeIcon{
+    color: red;
+    transform: rotate(180deg);
+}
+.likeIcon{
+    color: blue;
+}
+.postHr{
+    margin: 20px 0;
+}
+.actionsSection{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.action{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.action.liked {
+    color: blue; 
+}
+
+.action.disliked {
+    color: red;
+}
+.commentAction{
+    cursor: pointer;
+}
+.actionText{
+    padding-left: 5px;
 }

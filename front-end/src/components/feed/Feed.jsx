@@ -33,42 +33,42 @@ const postsData = [
             // }
         ]
     },
-    // {
-    //     id: 2,
-    //     img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-    //     username: "user2",
-    //     date: "February 19, 2024",
-    //     title: "Post Title 2",
-    //     content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //     postimgs: [
-    //         "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-    //         "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-    //     ],
-    //     likes: 20,
-    //     dislikes: 1,
-    //     commentsCount: 8,
-    //     files: [
-    //         // Add file objects here if needed
-    //     ]
-    // },
-    // {
-    //     id: 3,
-    //     img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-    //     username: "user2",
-    //     date: "February 22, 2024",
-    //     title: "Post Title 3",
-    //     content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    //     postimgs: [
-    //         "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-    //         "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-    //     ],
-    //     likes: 1,
-    //     dislikes: 10,
-    //     commentsCount: 100,
-    //     files: [
-    //         // Add file objects here if needed
-    //     ]
-    // }
+    {
+        id: 2,
+        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+        username: "user2",
+        date: "February 19, 2024",
+        title: "Post Title 2",
+        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        postimgs: [
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
+        ],
+        likes: 20,
+        dislikes: 1,
+        commentsCount: 8,
+        files: [
+            // Add file objects here if needed
+        ]
+    },
+    {
+        id: 3,
+        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+        username: "user2",
+        date: "February 22, 2024",
+        title: "Post Title 3",
+        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        postimgs: [
+            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
+            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
+        ],
+        likes: 1,
+        dislikes: 10,
+        commentsCount: 100,
+        files: [
+            // Add file objects here if needed
+        ]
+    }
     // Add more posts as needed
 ];
 
@@ -76,7 +76,6 @@ export default function Feed() {
     const [selectedFilter, setSelectedFilter] = useState("recent");
     const [posts, setPosts] = useState([]);
     useEffect(() => {
-        // Initialize posts with initialPosts on component mount
         setPosts(postsData);
     }, []);
     const handleFilterChange = (event) => {

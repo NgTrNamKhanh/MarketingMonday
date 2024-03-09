@@ -1,4 +1,4 @@
-import { EmojiObjects, EventNote, Groups, ManageAccounts } from "@mui/icons-material"
+import { BarChart, EmojiObjects, EventNote, Groups, ManageAccounts } from "@mui/icons-material"
 import { Link } from "react-router-dom"
 import "../sidebar.css"
 
@@ -7,16 +7,17 @@ export default function AdminSidebar() {
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
+                    <Link to="/admin/dashboard" className="sidebarListItemLink"> 
+                        <li className="sidebarListItem" >
+                            <BarChart className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Dashboard</span>
+                            
+                        </li>
+                    </Link>
                     <Link to="/admin/accounts" className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <ManageAccounts className="sidebarIcon"/>
                             <span className="sidebarListItemText">Accounts</span>
-                        </li>
-                    </Link>
-                    <Link to="/admin/faculties" className="sidebarListItemLink"> 
-                        <li className="sidebarListItem">
-                            <Groups className="sidebarIcon"/>
-                            <span className="sidebarListItemText">Faculty</span>
                         </li>
                     </Link>
                     <li className="sidebarListItem">

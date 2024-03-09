@@ -13,7 +13,6 @@ import ManagerSidebar from "../../components/sidebar/Manager/ManagerSidebar";
 import Dashboard from "../dashboard/Dashboard";
 import Submissions from "../submissions/Submissions";
 import Accounts from "../admin/accounts/Accounts";
-import Faculties from "../admin/faculties/Faculties";
 import Article from "../../components/article/Article";
 
 export default function Home() {
@@ -23,9 +22,9 @@ export default function Home() {
                 <Topbar/>
                 <div className="homeContainer">
                     {/* <CoordinatorSidebar/> */}
-                    {/* <AdminSidebar/> */}
+                    <AdminSidebar/>
                     {/* <ManagerSidebar/> */}
-                    <StudentSidebar/>
+                    {/* <StudentSidebar/> */}
                     <div className="mainContent">
                         <Routes>
                             <Route path="/" element={<Feed />} />
@@ -36,7 +35,6 @@ export default function Home() {
                             <Route path="/student/submission" element={<Article />} />
                             <Route path="/admin/submissions" element={<Submissions />} />
                             <Route path="/admin/accounts" element={<Accounts />} />
-                            <Route path="/admin/faculties" element={<Faculties />} />
                         </Routes>
                     </div>
                 </div>

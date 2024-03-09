@@ -36,10 +36,11 @@ const AccountForm = ({
     // reFetch,
     handleDefaultCloseEditDialog,
 }) => {
-    initialValues.firstName = account.firstName || "";
-    initialValues.lastName = account.lastName || "";
-    initialValues.email = account.email || "";
-    initialValues.contactNumber = account.contact_number || "";
+    const isEdit = account? true: false;
+    initialValues.firstName = account ? account.firstName : "";
+    initialValues.lastName = account ? account.lastName : "";
+    initialValues.email = account ? account.email : "";
+    initialValues.contactNumber = account ? account.contact_number : "";
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const isNonMobile = useMediaQuery("(min-width:60vh)");
@@ -78,7 +79,7 @@ const AccountForm = ({
 
     return (
         <Dialog open={true} onClose={handleDefaultCloseEditDialog}>
-        <DialogTitle>Edit Account</DialogTitle>
+        <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>
         <DialogContent>
             <Formik
             onSubmit={handleSubmit}

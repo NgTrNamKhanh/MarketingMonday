@@ -1,5 +1,5 @@
 .dashboard {
-padding: 20px;
+padding: 50px;
 background-color: #f0f0f0;
 border-radius: 5px;
 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -7,6 +7,8 @@ box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 
 .chart {
 margin-top: 20px;
+height: auto;
+width: 700px;
 }
 
 .chart h3 {
@@ -45,4 +47,11 @@ font-size: 12px;
 /* Adjust the tooltip arrow */
 .chart .chartjs-render-monitor .chartjs-tooltip::before {
 border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+}
+
+.chartWrapper{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }

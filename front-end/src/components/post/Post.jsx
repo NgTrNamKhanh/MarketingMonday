@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ModeComment, MoreVert, ThumbDown, ThumbUp } from "@mui/icons-material";
+import React, { useEffect, useState } from 'react';
+import { ChatBubble, ChatBubbleOutline, ModeComment, MoreVert, RecommendRounded, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
 import "./post.css";
 const commentsData = [
     {
@@ -25,7 +25,7 @@ const commentsData = [
         commentDate: "February 20, 2024",
         content: "This sucks",
         hasReplies: true,
-        likes: 10,
+        likes: 11,
         dislikes: 2,
     },
     {
@@ -39,7 +39,7 @@ const commentsData = [
         content: "This sucks",
         hasReplies: false,
         likes: 10,
-        dislikes: 2,
+        dislikes: 11,
     },
     {
         id: 4,
@@ -52,13 +52,16 @@ const commentsData = [
         content: "This sucks",
         hasReplies: false,
         likes: 10,
-        dislikes: 2,
+        dislikes: 3,
     },
 
 ];
 
 export default function Post({ post}) {
     const [like, setLike] = useState(post.likes)
+    useEffect(() => {
+        setLike(post.likes); // Update like count when post prop changes
+    }, [post.likes]);
     const [isLiked, setIsLiked] = useState(false)
     const handleLike = () => {
         setLike(isLiked? like -1 : like+1)
@@ -68,6 +71,9 @@ export default function Post({ post}) {
         }
     }
     const [dislike, setDisLike] = useState(post.dislikes)
+    useEffect(() => {
+        setDisLike(post.dislikes); // Update like count when post prop changes
+    }, [post.likes]);
     const [isDisliked, setIsDisLiked] = useState(false)
     const handleDislike = () => {
         setDisLike(isDisliked? dislike -1 : dislike+1)
@@ -115,22 +121,24 @@ export default function Post({ post}) {
             </div>
         );
     } 
-    
-    const RenderComments = ({ comments }) => { 
+    const [showComment, setShowComment] = useState(false);
+
+    const CommentBlock = ({comment}) => {
+        console.log(comment.userImg)
         const [showReplies, setShowReplies] = useState(false);
-        const [commentLike, setCommentLike] = useState(post.likes)
+        const [commentLikes, setCommentLikes] = useState(comment.likes)
         const [isCommentLiked, setIsCommentLiked] = useState(false)
-        const handleCommentLike = (comment) => {
-            setCommentLike(isCommentLiked? comment.likes -1 : comment.likes+1)
+        const handleCommentLike = () => {
+            setCommentLikes(isCommentLiked? commentLikes -1 : commentLikes+1)
             setIsCommentLiked(!isCommentLiked)
             if(isCommentDisliked){
                 handleCommnetDislike()
             }
         }
-        const [commentDislike, setCommentDisLike] = useState(post.dislikes)
+        const [commentDislikes, setCommentDisLikes] = useState(comment.dislikes)
         const [isCommentDisliked, setIsCommnetDisLiked] = useState(false)
-        const handleCommnetDislike = (comment) => {
-            setCommentDisLike(isCommentDisliked? comment.dislikes -1 : comment.dislikes+1)
+        const handleCommnetDislike = () => {
+            setCommentDisLikes(isCommentDisliked? commentDislikes -1 : commentDislikes+1)
             setIsCommnetDisLiked(!isCommentDisliked)
             if(isCommentLiked){
                 handleCommentLike()
@@ -139,40 +147,46 @@ export default function Post({ post}) {
         const toggleReplies = () => {
             setShowReplies(!showReplies);
         };
-        if (comments === undefined || !Array.isArray(comments)) { 
-            return (<p style={{ color: 'red' }}>There is no comment</p>);
+        return (
+        <div key={comment.id} className="comment" >
+            <img src={comment.userImg} className="commentProfileImg" alt="profile" />
+            <div className="commentTop">
+                <div className="commentTopLeft">
+                    <span className="commentUsername">{comment.username}</span>
+                    <span className="commentDate">{comment.commentDate}</span>
+                </div>
+            </div>
+            <p className="commentContent">{comment.content}</p>
+            <div className="commentActions">
+                <ThumbUp className={`commentIcon ${isCommentLiked ? 'liked' : ''}`} onClick={() => handleCommentLike()} />
+                <span>{commentLikes}</span>
+                <ThumbDown className={`commentIcon ${isCommentDisliked ? 'disliked' : ''}`} onClick={() => handleCommnetDislike()} />
+
+                <span>{commentDislikes}</span>
+            </div>
+            {comment.hasReplies && (
+                <span onClick={toggleReplies} style={{ cursor: 'pointer' }} className="viewReplies ">
+                    {showReplies ? 'Hide Replies' : 'View Replies'}
+                </span>
+            )}
+            <div className="commentReply">
+            {showReplies && comment.hasReplies && (
+                <RenderComments comments={commentsData.filter((reply) => reply.articalId === post.id && reply.parentComment === comment.id)} />
+            )}
+            </div>
+        </div>
+        )
+    }
+    const RenderComments = ({ comments }) => { 
+        
+        if (comments === undefined || !Array.isArray(comments) || comments.length==0) { 
+            return (<p >There is no comment</p>);
         } else {
             return comments.map((comment) => (
-                <div key={comment.id} className="comment" style={{ backgroundColor: 'lightgray' }}>
-                    <img src={comment.userImg} className="commentProfileImg" alt="profile" />
-                    <div className="commentTop">
-                        <div className="commentTopLeft">
-                            <span className="commentUsername">{comment.username}</span>
-                            <span className="commentDate">{comment.commentDate}</span>
-                        </div>
-                    </div>
-                    <p className="commentContent">{comment.content}</p>
-                    <div className="commentActions">
-                        <ThumbUp className={`commentIcon ${isCommentLiked ? 'liked' : ''}`} onClick={() => handleCommentLike(comment)} />
-                        <span>{comment.likes}</span>
-                        <ThumbDown className={`commentIcon ${isCommentDisliked ? 'disliked' : ''}`} onClick={() => handleCommnetDislike(comment)} />
-                        <span>{comment.dislikes}</span>
-                    </div>
-                    {comment.hasReplies && (
-                        <span onClick={toggleReplies} style={{ cursor: 'pointer' }} className="viewReplies ">
-                            {showReplies ? 'Hide Replies' : 'View Replies'}
-                        </span>
-                    )}
-                    <div className="commentReply">
-                    {showReplies && comment.hasReplies && (
-                        <RenderComments comments={commentsData.filter((reply) => reply.articalId === post.id && reply.parentComment === comment.id)} />
-                    )}
-                    </div>
-                </div>
+                <CommentBlock comment={comment}/>
             ));
         }
     };
-   
     
     return (
         <div className="post">
@@ -199,20 +213,36 @@ export default function Post({ post}) {
                 {pictureLayout}
                 <div className="postBottom">
                     <div className="postBottomLeft">
-                        <ThumbUp className={`postIcon ${isLiked ? 'liked' : ''}`} onClick={handleLike}/>
+                        <RecommendRounded className={`likeIcon postIcon`} />
                         <span className="postLikeCounter">{like}</span>
-                        <ThumbDown className={`postIcon ${isDisliked ? 'disliked' : ''}`} onClick={handleDislike}/>
+                        <RecommendRounded className={`disLikeIcon postIcon`} />
                         <span className="postLikeCounter">{dislike}</span>
                     </div>
-                    <div className="postBottomRight">
-                        <ModeComment className='postIcon'/>
-                        <span className="postCommentText">{post.commentsCount}</span>
+                    <div className="postBottomRight" onClick={()=>{setShowComment(!showComment)}}>
+                        <span className="postCommentText">{post.commentsCount} comments</span>
                     </div>
                 </div>
-                <div className="commentsSection">
+                <hr className="postHr"/>
+                <div className="actionsSection">
+                    <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
+                        {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
+                        <span className='actionText'>Like</span>
+                    </div>
+                    <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
+                    {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
+                        <span className='actionText'>Dislike</span>
+                    </div>
+                    <div className="action" onClick={()=>{setShowComment(!showComment)}}>
+                        <ChatBubbleOutline/>
+                        <span className='actionText'>Comment</span>
+                    </div>
+                </div>
+                {showComment &&(
+                    <div className="commentsSection">
                     <h3>Comments</h3>
                     <RenderComments comments={commentsData.filter((comment) => comment.articalId === post.id && comment.parentComment === null)} />
                 </div>
+                )}
             </div>
         </div>
     );

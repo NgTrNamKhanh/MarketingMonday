@@ -1,4 +1,4 @@
-import React from 'react';
+import "./dashboard.css"
 import { Bar, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
@@ -97,28 +97,31 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
-            <h2>Statistics</h2>
-            <div className="chart">
-                <h3>Number of Contributions by Faculty for Each Academic Year</h3>
-                <Bar
-                data={contributionsData}
-                options={options}
-                />
-            </div>
-            <div className="chart">
-                <h3>Number of Contributors by Faculty for Each Academic Year</h3>
-                <Bar
-                    data={contributorsData}
+            <h1>Statistics</h1>
+            <div className="chartWrapper">
+                <div className="chart">
+                    <h3>Number of Contributions by Faculty for Each Academic Year</h3>
+                    <Bar
+                    data={contributionsData}
                     options={options}
-                />
+                    />
+                </div>
+                <div className="chart">
+                    <h3>Number of Contributors by Faculty for Each Academic Year</h3>
+                    <Bar
+                        data={contributorsData}
+                        options={options}
+                    />
+                </div>
+                <div className="chart">
+                    <h3>Percentage of Contributions by Each Faculty</h3>
+                    <Pie
+                        data={percentageData}
+                        options={options}
+                    />
+                </div>
             </div>
-            <div className="chart">
-                <h3>Percentage of Contributions by Each Faculty</h3>
-                <Pie
-                    data={percentageData}
-                    options={options}
-                />
-            </div>
+            
         </div>
     );
 };

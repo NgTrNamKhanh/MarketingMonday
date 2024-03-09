@@ -166,6 +166,8 @@ const Accounts = () => {
         ];
     return (
         <div className="account">
+            <h1 className="title">Accounts</h1>
+            <button className="addButton" onClick={() => handleOpenEditDialog()}>Add Account</button>
             {/* <Box m="2vh">
                 <h1 className="title">
                     Accounts
@@ -207,7 +209,7 @@ const Accounts = () => {
                     },
                     }}
                 > */}
-                <div className="accountWrapper">
+                <div className="accountTable">
                     <DataGrid
                     rows={data}
                     columns={columns}
@@ -215,6 +217,35 @@ const Accounts = () => {
                     checkboxSelection
                     disableRowSelectionOnClick
                     components={{ Toolbar: GridToolbar }}
+                    sx={{
+                        "& .MuiDataGrid-root": {
+                            border: "none",
+                        },
+                        "& .MuiDataGrid-cell": {
+                            borderBottom: "none",
+                        },
+                        "& .name-column--cell": {
+                            color: 'white',
+                        },
+                        "& .MuiDataGrid-columnHeaders": {
+                            backgroundColor: '#5D54A4',
+                            borderBottom: "none",
+                        },
+                        "& .MuiDataGrid-virtualScroller": {
+                            backgroundColor: 'white',
+                        },
+                        "& .MuiDataGrid-footerContainer": {
+                            borderTop: "none",
+                            backgroundColor: '#5D54A4',
+                        },
+                        "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
+                            color: `black !important`,
+                        },
+                        "& .css-hia42h-MuiCircularProgress-root": {
+                            color: `black !important`,
+                        },
+                    }}
+
                     />
                 {/* </Box> */}
                 {/* <CustomDialog
