@@ -8,5 +8,6 @@ namespace Comp1640.Models
         public ProjectDatabaseContext(DbContextOptions<ProjectDatabaseContext> options) : base(options) { }
 
         public DbSet<Article> Articles { get; set; }
+        public DbSet<Faculty> Faculties { get; set; }
     }
 }

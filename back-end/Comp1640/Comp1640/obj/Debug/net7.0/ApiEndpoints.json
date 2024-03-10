@@ -84,16 +84,44 @@
     "ReturnTypes": []
   },
   {
+<<<<<<< Updated upstream
     "ContainingType": "Comp1640.Controllers.RolesController",
     "Method": "GetRole",
     "RelativePath": "api/Roles",
+=======
+    "ContainingType": "Comp1640.Controllers.ArticleController",
+    "Method": "GetArticles",
+    "RelativePath": "api/Article",
+>>>>>>> Stashed changes
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+<<<<<<< Updated upstream
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.IEnumerable\u00601[[Microsoft.AspNetCore.Identity.IdentityRole, Microsoft.Extensions.Identity.Stores, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+=======
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.ArticleController",
+    "Method": "AddArticle",
+    "RelativePath": "api/Article",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "articleAdd",
+        "Type": "Comp1640.DTO.ArticleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Comp1640.Models.Article",
+>>>>>>> Stashed changes
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -104,16 +132,75 @@
     ]
   },
   {
+<<<<<<< Updated upstream
     "ContainingType": "Comp1640.Controllers.RolesController",
     "Method": "PostRole",
     "RelativePath": "api/Roles/CreateRole",
     "HttpMethod": "POST",
+=======
+    "ContainingType": "Comp1640.Controllers.ArticleController",
+    "Method": "GetArticleByID",
+    "RelativePath": "api/Article/{articleId}",
+    "HttpMethod": "GET",
+>>>>>>> Stashed changes
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
+<<<<<<< Updated upstream
         "Name": "role",
         "Type": "Comp1640.Models.Role",
+=======
+        "Name": "articleId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.ArticleController",
+    "Method": "UpdateArticle",
+    "RelativePath": "api/Article/{articleId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "articleId",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "articleUpdate",
+        "Type": "Comp1640.DTO.ArticleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "Comp1640.Models.Article",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "Comp1640.Controllers.ArticleController",
+    "Method": "DeleteArticle",
+    "RelativePath": "api/Article/{articleId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "articleId",
+        "Type": "System.Guid",
+>>>>>>> Stashed changes
         "IsRequired": true
       }
     ],

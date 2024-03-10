@@ -1,37 +1,41 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\",
+  "WorkspaceRootPath": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\controllers\\rolescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\mapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:mapper\\automapperprofile.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\controllers\\rolescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:controllers\\rolescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:models\\account.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:models\\role.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\projectdatabasecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\models\\projectdatabasecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:models\\projectdatabasecontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:services\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\users\\dell\\desktop\\github folder\\marketingmonday\\back-end\\comp1640\\comp1640\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|c:\\comp1640\\marketingmonday\\back-end\\comp1640\\comp1640\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{171A7235-F690-4640-BD93-93AF3D3FF2DD}|Comp1640.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -42,109 +46,137 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "RolesController.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\RolesController.cs",
-              "RelativeDocumentMoniker": "Controllers\\RolesController.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\RolesController.cs",
-              "RelativeToolTip": "Controllers\\RolesController.cs",
-              "ViewState": "AQIAAAgAAAAAAAAAAAAYwCUAAAAAAAAA",
+              "Title": "AutoMapperProfile.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Mapper\\AutoMapperProfile.cs",
+              "RelativeDocumentMoniker": "Mapper\\AutoMapperProfile.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Mapper\\AutoMapperProfile.cs",
+              "RelativeToolTip": "Mapper\\AutoMapperProfile.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T19:26:44.928Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Role.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Role.cs",
-              "RelativeDocumentMoniker": "Models\\Role.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Role.cs",
-              "RelativeToolTip": "Models\\Role.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAaAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T19:26:10.013Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ProjectDatabaseContext.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
-              "RelativeDocumentMoniker": "Models\\ProjectDatabaseContext.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
-              "RelativeToolTip": "Models\\ProjectDatabaseContext.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA0AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T09:31:41.886Z",
+              "WhenOpened": "2024-03-10T09:19:19.713Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFAAAAARAAAA",
+              "Title": "RolesController.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\RolesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\RolesController.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\RolesController.cs",
+              "RelativeToolTip": "Controllers\\RolesController.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAYwCUAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T09:10:13.806Z",
+              "WhenOpened": "2024-03-10T09:19:03.461Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Role.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Role.cs",
+              "RelativeDocumentMoniker": "Models\\Role.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Role.cs",
+              "RelativeToolTip": "Models\\Role.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T09:19:03.498Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "IAuthService.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
-              "RelativeDocumentMoniker": "Services\\IAuthService.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
-              "RelativeToolTip": "Services\\IAuthService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "ProjectDatabaseContext.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "RelativeDocumentMoniker": "Models\\ProjectDatabaseContext.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\ProjectDatabaseContext.cs",
+              "RelativeToolTip": "Models\\ProjectDatabaseContext.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T09:07:25.603Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T09:07:23.393Z"
+              "WhenOpened": "2024-03-10T09:19:03.502Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "Account.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Account.cs",
-              "RelativeDocumentMoniker": "Models\\Account.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Account.cs",
-              "RelativeToolTip": "Models\\Account.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFAAAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T09:06:46.55Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-10T09:19:03.505Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "IAuthService.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
+              "RelativeDocumentMoniker": "Services\\IAuthService.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\IAuthService.cs",
+              "RelativeToolTip": "Services\\IAuthService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T09:19:03.508Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T09:19:03.51Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "Account.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Account.cs",
+              "RelativeDocumentMoniker": "Models\\Account.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Models\\Account.cs",
+              "RelativeToolTip": "Models\\Account.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-10T09:19:03.515Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "AuthService.cs",
-              "DocumentMoniker": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\AuthService.cs",
+              "DocumentMoniker": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "Services\\AuthService.cs",
-              "ToolTip": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\AuthService.cs",
+              "ToolTip": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640\\Comp1640\\Services\\AuthService.cs",
               "RelativeToolTip": "Services\\AuthService.cs",
               "ViewState": "AQIAAAgAAAAAAAAAAAAAwBkAAAA1AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-09T08:51:02.297Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-10T09:19:03.518Z"
             }
           ]
         }

@@ -1,3 +1,5 @@
+using AutoMapper;
+using Comp1640.Controllers;
 using Comp1640.Models;
 using Comp1640.Services;
 using Microsoft.AspNetCore.Identity;
@@ -16,7 +18,10 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
     .AddEntityFrameworkStores<ProjectDatabaseContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
+
 builder.Services.AddTransient<IAuthService, AuthService>();
+builder.Services.AddScoped<IAritcleService, AritcleService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
