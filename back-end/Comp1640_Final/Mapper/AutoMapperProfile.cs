@@ -10,6 +10,8 @@ namespace Comp1640_Final.Mapper
         {
             CreateMap<ArticleDTO, Article>();
             CreateMap<Article, ArticleDTO>();
+            CreateMap<Event, EventDTO>();
+            CreateMap<EventDTO, Event>();
         }
     }
 }

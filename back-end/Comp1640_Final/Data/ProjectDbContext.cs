@@ -10,5 +10,8 @@ namespace Comp1640_Final.Data
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<Faculty> Faculties { get; set; }
+        public DbSet<Event> Events { get; set; }
+
+        
     }
 }
