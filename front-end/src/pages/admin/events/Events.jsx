@@ -89,12 +89,6 @@ const Events = () => {
             renderCell: ({ row }) => (
             <Box p="1vh" display="flex" justifyContent="center">
                 <Link
-                
-                style={{ marginRight: "2vh" }}
-                >
-                <Visibility />
-                </Link>
-                <Link
                 onClick={() => handleOpenEditDialog(row)}
                 style={{ marginRight: "2vh" }}
                 >

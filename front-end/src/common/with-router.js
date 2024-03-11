@@ -17,11 +17,11 @@ export const ProtectedRoute = ({ element, requiredRole }) => {
 
     useEffect(() => {
         // Check if the user's role matches the required role
-        if (user != null && (Array.isArray(user.roles) && user.roles.includes(requiredRole))) {
+        if (user != null && (user.roles === requiredRole)) {
             // Allow rendering the protected component
         } else {
             // Redirect to another route if the role doesn't match
-            navigate('/unauthorized');
+            navigate('/login');
         }
     }, [navigate, user, requiredRole]);
 

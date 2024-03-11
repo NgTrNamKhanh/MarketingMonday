@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { DateRange } from 'react-date-range';
+import { DateRangePicker  } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import './event.css'; 
 import { format } from "date-fns";
 import {
@@ -46,20 +48,28 @@ const EventForm = ({
     const isNonMobile = useMediaQuery("(min-width:60vh)");
     initialValues.eventName = event ? event.eventName : "";
     const [faculty, setFaculty] = useState('');
-    useEffect(() => {
-        setFaculty(event.faculty); 
-    }, [event.faculty]);
+    
+    
     console.log(faculty)
     const [openDate, setOpenDate] = useState(false);
     const [dateRange, setDateRange] = useState([
         {
-        startDate: new Date(event.startDate),
-        endDate: new Date(event.endDate),
+        startDate: new Date(),
+        endDate: new Date(),
         key: 'selection',
         },
     ]);
 
-
+    useEffect(() => {
+        if(event){
+            setDateRange([{
+                startDate: new Date(event.startDate),
+                endDate: new Date(event.endDate),
+                key: 'selection',
+            }])
+            setFaculty(event.faculty); 
+        }
+    }, [event]);
 
     const handleFacultyChange = (e) => {
         setFaculty(e.target.value);
@@ -122,7 +132,7 @@ const EventForm = ({
                         onChange={handleFacultyChange}
                         value={faculty}
                         name="faculty"
-                        sx={{ minWidth: 80, marginLeft: "5vh", width: "30vh" }}
+                        sx={{ minWidth: 80 , gridColumn: 'span 2 '}}
                         >
                         <MenuItem value="" disabled>
                             <em>Select a faculty</em>
@@ -134,6 +144,9 @@ const EventForm = ({
                         ))}
                     </TextField>
                     <div className="dateRangeContainer">
+                        <div className="dateRangeTitle">
+                            <label htmlFor="">Date Range:</label>
+                        </div>
                         <span
                             onClick={() => setOpenDate(!openDate)}
                             className="dateRangeText"
@@ -142,13 +155,13 @@ const EventForm = ({
                                 "MM/dd/yyyy"
                             )}`}</span>
                         {openDate && (
-                            <DateRange
+                            <DateRangePicker
                             editableDateInputs={true}
                             onChange={(item) => setDateRange([item.selection])}
                             moveRangeOnFirstSelection={false}
                             ranges={dateRange}
                             className="datePicker"
-                            minDate={new Date()}
+                            // minDate={new Date()}
                             />
                         )}
                     </div>
