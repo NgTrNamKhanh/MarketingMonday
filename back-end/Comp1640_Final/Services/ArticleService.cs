@@ -1,5 +1,6 @@
 ﻿using Comp1640_Final.Data;
 using Comp1640_Final.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Services
 {
@@ -7,7 +8,8 @@ namespace Comp1640_Final.Services
     {
         ICollection<Article> GetArticles();
         Article GetArticleByID(Guid id);
-        Article GetArticleByTitle(string title);
+        Task<IEnumerable<Article>> GetArticlesByTitle(string title);
+        Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
         bool ArticleExists(Guid articleId);
         bool DeleteArticle(Article article);
         bool Save();
@@ -31,9 +33,13 @@ namespace Comp1640_Final.Services
             return _context.Articles.Where(p => p.ArticleId == id).FirstOrDefault();
         }
 
-        public Article GetArticleByTitle(string title)
+        public async Task<IEnumerable<Article>> GetArticlesByTitle(string title)
         {
-            return _context.Articles.Where(p => p.Title == title).FirstOrDefault();
+            return await _context.Articles.Where(p => p.Title.Contains(title)).ToListAsync();
+        }
+        public async Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID)
+        {
+            return await _context.Articles.Where(p => p.FacultyId == facultyID).ToListAsync();
         }
         public bool ArticleExists(Guid articleId)
         {

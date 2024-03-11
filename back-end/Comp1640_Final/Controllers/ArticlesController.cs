@@ -34,7 +34,7 @@ namespace Comp1640_Final.Controllers
 
             return Ok(articles);
         }
-        [HttpGet("{articleId}")]
+        [HttpGet("id/{articleId}")]
         public IActionResult GetArticleByID(Guid articleId)
         {
             if (!_articleService.ArticleExists(articleId))
@@ -47,6 +47,33 @@ namespace Comp1640_Final.Controllers
 
             return Ok(article);
         }
+
+        [HttpGet("title/{articleTitle}")]
+        public async Task<IActionResult> GetArticleByTitle(string articleTitle)
+        {
+            var articles = await _articleService.GetArticlesByTitle(articleTitle);
+
+            if (articles == null || !articles.Any())
+                return NotFound();
+
+            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+
+            return Ok(articleDTOs);
+        }
+
+        [HttpGet("faculty/{facultyId}")]
+        public async Task<IActionResult> GetArticleByFacultyId(int facultyId)
+        {
+            var articles = await _articleService.GetArticlesByFacultyId(facultyId);
+
+            if (articles == null || !articles.Any())
+                return NotFound();
+
+            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+
+            return Ok(articleDTOs);
+        }
+
         [HttpPost]
         public async Task<ActionResult<Article>> AddArticle(ArticleDTO articleAdd)
         {
