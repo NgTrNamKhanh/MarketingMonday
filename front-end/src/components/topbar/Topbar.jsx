@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Chat, ChevronRight, Feedback, HelpCenter, Logout, Notifications, Person, Search, Settings } from "@mui/icons-material";
 import "./topbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../../services/auth.service";
 
-export default function Topbar() {
+export default function Topbar({setCurrentUser}) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
+    const navigator = useNavigate();
     const handleDropdownToggle = () => {
         setDropdownOpen(!dropdownOpen);
     };
-
+    const handleLogOut = () => {
+        console.log("logged out")
+        authService.logout();
+        setCurrentUser(null)
+        navigator("/login");
+        localStorage.clear();
+    }
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
@@ -62,12 +69,15 @@ export default function Topbar() {
                                             <span>Feedback</span> 
                                     </div>
                                 </Link>
-                                <Link to="/login" className="dropdownContentItemLink">
-                                    <div className="dropdownContentItem">
+                                {/* <Link className="dropdownContentItemLink" > */}
+                                <a className="dropdownContentItemLink">   
+                                    <div className="dropdownContentItem" onClick={handleLogOut}>
                                         <Logout className="linkIcon" />
                                         <span>Log Out</span>
                                     </div>
-                                </Link>
+                                </a>
+                                    
+                                {/* </Link> */}
                             </div>
                         )}
                 </div>

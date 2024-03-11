@@ -84,6 +84,11 @@
 	height: 50px;
 }
 .loginButtonText{
-	color: white;
+	color: black;
 	font-size: 16px;
+}
+.error{
+	color: red;
+	font-size: 14px;
+	margin: 10px;
 }

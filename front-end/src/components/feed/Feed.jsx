@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Post from "../post/Post"
-import Share from "../article/Article"
 import "./feed.css"
 const postsData = [
     {

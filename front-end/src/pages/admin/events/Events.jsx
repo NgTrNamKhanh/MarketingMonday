@@ -94,9 +94,9 @@ const Events = () => {
                 >
                 <EditOutlined />
                 </Link>
-                <Link>
+                {/* <Link>
                 <Delete onClick={() => handleOpenDeleteDialog(row)} />
-                </Link>
+                </Link> */}
             </Box>
             ),
             headerClassName: "header-text",

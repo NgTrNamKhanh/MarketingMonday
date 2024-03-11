@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { Delete, EditOutlined, Visibility } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
 import AccountForm from "../../../components/forms/account/AccountForm";
+import DeleteConfirm from "../../../components/deleteConfirm/DeleteConfirm";
 
 const data = [
     {
@@ -80,6 +81,10 @@ const Accounts = () => {
         setSelectedAccount(null);
         setShowToast(true);
     };
+    const handleDelete = () =>{
+        console.log("deleted ")
+        handleCloseDeleteDialog()
+    }
     const columns = [
         {
             field: "firstName",
@@ -233,18 +238,11 @@ const Accounts = () => {
 
                     />
                 {/* </Box> */}
-                {/* <CustomDialog
+                <DeleteConfirm
                     open={deleteDialogOpen}
-                    handleClose={handleDefaultCloseDeleteDialog}
+                    handleClose={handleCloseDeleteDialog}
                     handleConfirm={handleDelete}
-                    title="Delete Organization"
-                    description="Are you sure you want to delete this organization?"
                 />
-                <OrgDetails
-                    openDialog={detailDialogOpen}
-                    handleCloseDialog={handleCloseDetailsDialog}
-                    selectedOrgDetails={selectedOrgDetails}
-                /> */}
                 {editDialogOpen && (
                     <AccountForm
                         handleCloseDialog={handleCloseEditDialog}

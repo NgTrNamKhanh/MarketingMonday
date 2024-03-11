@@ -47,11 +47,6 @@ export default function ManagerSidebar() {
                             </Link>
                         </ul>
                     )}
-                    <li className="sidebarListItem" >
-                        <Notifications className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Notifications</span>
-                        
-                    </li>
                 </ul>
                 {/* <button className="sidebarButton">
                     Show More

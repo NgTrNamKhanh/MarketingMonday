@@ -11,19 +11,19 @@ export const withRouter = (Component) => {
     }
     return ComponentWithRouterProp;
 };
-export const ProtectedRoute = ({ element, requiredRole }) => {
+export const ProtectedRoute = ({ element, requiredRoles }) => {
     const user = authService.getCurrentUser();
     const navigate = useNavigate();
 
     useEffect(() => {
         // Check if the user's role matches the required role
-        if (user != null && (user.roles === requiredRole)) {
+        if (user != null && (requiredRoles.includes(user.role))) {
             // Allow rendering the protected component
         } else {
             // Redirect to another route if the role doesn't match
             navigate('/login');
         }
-    }, [navigate, user, requiredRole]);
+    }, [navigate, user, requiredRoles]);
 
     return element;
 };

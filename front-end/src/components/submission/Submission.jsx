@@ -1,8 +1,37 @@
 import { MoreVert } from '@mui/icons-material';
 import './submission.css';
 import { useEffect, useRef, useState } from 'react';
-import Confirm from '../confirm/Confirm';
-
+import TermsAndConditions from '../termsAndConditions/TermsAndConditions';
+const termsAndConditionsText = (
+    <div>
+        <p>
+            <strong>By submitting an article:</strong> You, as the teacher, agree to the following terms and conditions:
+        </p>
+        <ul>
+            <li>
+            <strong>Verification:</strong> You acknowledge that you are responsible for verifying the authenticity and originality of the submitted article.
+            </li>
+            <li>
+            <strong>Public Disclosure:</strong> You agree that upon successful verification, the submitted article may be made public for educational purposes.
+            </li>
+            <li>
+            <strong>Confidentiality:</strong> You agree to handle all submissions with confidentiality and shall not disclose any personally identifiable information of the student without their consent, except as required by law or educational policy.
+            </li>
+            <li>
+            <strong>Ownership:</strong> You acknowledge that the student retains ownership and copyright of their work, and you shall not claim ownership or reproduce the work for commercial purposes without the student's explicit consent.
+            </li>
+            <li>
+            <strong>Agreement:</strong> By submitting the article, you confirm that you have read, understood, and agree to abide by these terms and conditions.
+            </li>
+        </ul>
+    </div>
+);
+const headerText = (
+    <>
+        <p>Thank you for submitting this articles, your work is a great asset to the school!</p>
+        <p>Before this article can be submitted for the Coodinator to see, there are a few Terms and Conditions:</p>
+    </>
+);
 export default function  Submission ({ submission, onComment, onVerify }) {
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [tncOpen, setTnCOpen] = useState(false);
@@ -177,10 +206,12 @@ export default function  Submission ({ submission, onComment, onVerify }) {
                     </form>
                 </div>
             </div>
-            <Confirm
+            <TermsAndConditions
                 open = {tncOpen}
                 handleClose = {handleCloseTnCDialog}
                 handleConfirm = {handleSubmit}
+                termsAndConditionsText = {termsAndConditionsText}
+                headerText = {headerText}
             />
         </div>
     );
