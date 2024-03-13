@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     [ApiController]
     public class AdminController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace Comp1640_Final.Controllers
             _userManager = userManager;
         }
 
-        [HttpPost("CreateAccount")]
+        [HttpPost("createAccount")]
         public async Task<IActionResult> CreateAccount(Account account)
         {
             if (await _authService.CreateAccountUser(account))
@@ -30,7 +30,7 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Something went wrong");
         }
 
-        [HttpPost("Login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string passWord)
         {
             if (!ModelState.IsValid)
@@ -59,7 +59,7 @@ namespace Comp1640_Final.Controllers
         //    return BadRequest("Failed");
         //}
 
-        [HttpPut]
+        [HttpPut("account")]
         public async Task<IActionResult> PutAccountForAdmin(string username, Account account)
         {
             //name = account.Email;
@@ -78,7 +78,7 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Failed");
         }
 
-        [HttpGet]
+        [HttpGet("account")]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userManager.Users.ToListAsync();

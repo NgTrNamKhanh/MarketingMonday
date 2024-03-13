@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/events")]
     [ApiController]
     public class EventsController : ControllerBase
     {
