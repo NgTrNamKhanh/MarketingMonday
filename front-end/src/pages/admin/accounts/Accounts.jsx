@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./accounts.css";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
@@ -6,52 +6,65 @@ import { Delete, EditOutlined, Visibility } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
 import AccountForm from "../../../components/forms/account/AccountForm";
 import DeleteConfirm from "../../../components/deleteConfirm/DeleteConfirm";
-
-const data = [
-    {
-        id: 1,
-        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        firstName: "user1",
-        lastName: "lmao",
-        email: "user1@gmail.com",
-        contact_number: "123456789",
-        faculty: "Marketing",
-        role: 'user',
+import useFetch from "../../../hooks/useFetch";
+import apis from "../../../services/apis.service";
+import axios from "axios";
+import authService from "../../../services/auth.service";
+// const data = [
+//     {
+//         id: 1,
+//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+//         firstName: "user1",
+//         lastName: "lmao",
+//         email: "user1@gmail.com",
+//         contact_number: "123456789",
+//         faculty: "Marketing",
+//         role: 'user',
         
-    },
-    {
-        id: 2,
-        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        firstName: "user2",
-        lastName: 'lmao',
-        email: "user2@gmail.com",
-        contact_number: "123456789",
-        faculty: "Marketing",
-        role: 'user',
+//     },
+//     {
+//         id: 2,
+//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+//         firstName: "user2",
+//         lastName: 'lmao',
+//         email: "user2@gmail.com",
+//         contact_number: "123456789",
+//         faculty: "Marketing",
+//         role: 'user',
         
-    },
-    {
-        id: 3,
-        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        firstName: "user3",
-        lastName: 'lmao',
-        email: "user3@gmail.com",
-        contact_number: "123456789",
-        faculty: "Marketing",
-        role: 'user',
+//     },
+//     {
+//         id: 3,
+//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
+//         firstName: "user3",
+//         lastName: 'lmao',
+//         email: "user3@gmail.com",
+//         contact_number: "123456789",
+//         faculty: "Marketing",
+//         role: 'user',
         
-    },
-];
+//     },
+// ];
 
 const Accounts = () => {
-
+    const {data, loading, error, reFetch} = useFetch(apis.admin+"account") 
+    console.log(data)
+    const [filteredData, setFilteredData] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState(null);
 
-
+    const user = authService.getCurrentUser();
+    useEffect(() => {
+        setFilteredData(data.filter((userData) => userData.id !== user.id));
+    }, [data, user.id]);
+    const filterRefetch = async () => {
+        const refetchData = await reFetch();
+        setFilteredData(refetchData);
+        // setFilteredData(data);
+    };
     const handleOpenEditDialog = (acc) => {
         setSelectedAccount(acc);
         setEditDialogOpen(true);
@@ -81,9 +94,34 @@ const Accounts = () => {
         setSelectedAccount(null);
         setShowToast(true);
     };
-    const handleDelete = () =>{
-        console.log("deleted ")
-        handleCloseDeleteDialog()
+    const handleDelete = async () =>{
+        if (selectedAccount) {
+            const email = selectedAccount.email;
+            const url = `${apis.admin}${email}`;
+            console.log(email)
+            try {
+                // Send a DELETE request to the server
+                const res = await axios.delete(url, {
+                    // headers: authHeader(),
+                    withCredentials: true,
+                });
+        
+                // Check if the delete was successful
+                if (res.status === 200) {
+                    const updatedData = await filterRefetch();
+                    localStorage.setItem("users", JSON.stringify(updatedData));
+                    handleCloseDeleteDialog();
+                    setToastMessage("User deleted successfully");
+                    setShowToast(true);
+                } else {
+                    
+                }
+            } catch (err) {
+                console.error(err);
+                setToastMessage("A problem occur");
+                setShowToast(true);
+            }
+        }
     }
     const columns = [
         {
@@ -153,7 +191,14 @@ const Accounts = () => {
             ),
             headerClassName: "header-text",
         },
-        ];
+    ];
+    useEffect(() => {
+        if (showToast) {
+            setTimeout(() => {
+            setShowToast(false);
+            }, 7000);
+        }
+    }, [showToast]);
     return (
         <div className="account">
             <h1 className="title">Accounts</h1>
@@ -201,7 +246,7 @@ const Accounts = () => {
                 > */}
                 <div className="accountTable">
                     <DataGrid
-                    rows={data}
+                    rows={filteredData}
                     columns={columns}
                     // loading={loading}
                     checkboxSelection
@@ -248,7 +293,7 @@ const Accounts = () => {
                         handleCloseDialog={handleCloseEditDialog}
                         handleDefaultCloseEditDialog={handleDefaultCloseEditDialog}
                         account={selectedAccount}
-                        // reFetch={reFetch}
+                        reFetch={reFetch}
                     />
                 )}
                 </div>

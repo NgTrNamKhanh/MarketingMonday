@@ -77,10 +77,10 @@ export default function Home() {
                                     requiredRoles={['admin']}
                                 />} 
                             />
-                            <Route path="/admin/submissions" element=
+                            <Route path="/manager/submissions" element=
                                 {<ProtectedRoute
                                     element={<Submissions />}
-                                    requiredRoles={['admin']}
+                                    requiredRoles={['admin', 'manager']}
                                 />} 
                             />
                             <Route path="/admin/accounts" element=

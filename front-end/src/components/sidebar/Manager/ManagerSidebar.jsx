@@ -39,10 +39,10 @@ export default function ManagerSidebar() {
                     </li>
                     {showSubmissionsDropdown && (
                         <ul className="sidebarDropdownContent">
-                            <Link to="/admin/submissions" className="sidebarListItemLink"> 
+                            <Link to="/manager/submissions" className="sidebarListItemLink"> 
                                 <li className="sidebarListItem">Facility 1</li>
                             </Link>
-                            <Link to="/admin/submissions" className="sidebarListItemLink"> 
+                            <Link to="/manager/submissions" className="sidebarListItemLink"> 
                                 <li className="sidebarListItem">Facility 2</li>
                             </Link>
                         </ul>

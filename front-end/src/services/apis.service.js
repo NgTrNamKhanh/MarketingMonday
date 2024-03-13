@@ -1,9 +1,11 @@
 const apis = {
-    account: "http://localhost:8449/api/account/",
-    user: "http://localhost:8449/api/user/",
-    manager: "http://localhost:8449/api/manager/",
-    admin: "http://localhost:8449/api/admin/",
-    coordinator: "http://localhost:8449/api/coordinator/",
+    account: "https://localhost:7218/api/account/",
+    user: "https://localhost:7218/api/user/",
+    manager: "https://localhost:7218/api/manager/",
+    admin: "https://localhost:7218/api/admin/",
+    coordinator: "https://localhost:7218/api/coordinator/",
+    faculty: "https://localhost:7218/api/Faculties/",
+    role: "https://localhost:7218/api/Roles/",
 };
 
 export default apis;

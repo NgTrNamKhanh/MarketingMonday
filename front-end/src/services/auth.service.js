@@ -49,7 +49,7 @@ class AuthService {
             username: user.username,
             role: user.role,
         };
-        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("CMU-user", JSON.stringify(userData));
 
         // Resolve with user data
         return Promise.resolve(userData);
@@ -58,7 +58,7 @@ class AuthService {
 
 
     logout() {
-        localStorage.removeItem("user");
+        localStorage.removeItem("CMU-user");
         // return axios.post(apis.account + "logout");
     }
 
@@ -71,7 +71,7 @@ class AuthService {
     }
 
     getCurrentUser() {
-        const user = JSON.parse(localStorage.getItem("user"));
+        const user = JSON.parse(localStorage.getItem("CMU-user"));
 
         // if (user && user.jwt_token) {
         // const decodedToken = jwtDecode(user.jwt_token);
