@@ -1,6 +1,6 @@
 ﻿using Comp1640_Final.Models;
 
-namespace Comp1640_Final.Services
+namespace Comp1640_Final.IServices
 {
     public interface IAuthService
     {

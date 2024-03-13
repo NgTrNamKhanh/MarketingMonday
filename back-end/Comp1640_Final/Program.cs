@@ -1,4 +1,5 @@
 using Comp1640_Final.Data;
+using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Identity;
@@ -38,10 +39,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 //seed database
-//using (var scope = app.Services.CreateScope())
-//{
-//    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
+}
 DbSeeder.Seed(app);
 
 builder.Services.AddCors();

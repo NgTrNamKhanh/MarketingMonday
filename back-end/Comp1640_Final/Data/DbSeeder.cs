@@ -58,38 +58,6 @@ namespace Comp1640_Final.Data
             {
                 var context = serviceScope.ServiceProvider.GetService<ProjectDbContext>();
                 context.Database.EnsureCreated();
-                //if (!context.Articles.Any())
-                //{
-                //    context.Articles.AddRange(new List<Article>() {
-                //        new Article()
-                //        {
-                //            ArticleId = Guid.NewGuid(),
-                //            Title = "Quoc Viet dep trai",
-                //            Description = "Dep trai nhat the gioi",
-                //            Date = DateTime.Now,
-                //            FacultyId = 1
-                //        },
-
-                //        new Article()
-                //        {
-                //            ArticleId = Guid.NewGuid(),
-                //            Title = "mot hai ba bon",
-                //            Description = "bon ba hai mot",
-                //            Date = DateTime.Now,
-                //            FacultyId = 2
-                //        },
-                //        new Article()
-                //        {
-                //            ArticleId = Guid.NewGuid(),
-                //            Title = "tho khiem ngu",
-                //            Description = "tho khiem dumbass",
-                //            Date = DateTime.Now,
-                //            FacultyId = 3
-                //        }
-                //    });
-                //    context.SaveChanges();
-                //}
-
                 if (!context.Faculties.Any())
                 {
                     context.Faculties.AddRange(new List<Faculty>()
@@ -97,7 +65,7 @@ namespace Comp1640_Final.Data
                         new Faculty()
                         {
                             Name = "It",
-                            
+
                         },
                         new Faculty()
                         {
@@ -114,6 +82,44 @@ namespace Comp1640_Final.Data
 
                 }
 
+                //if (!context.Articles.Any())
+                //{
+                //    context.Articles.AddRange(new List<Article>() {
+                //        new Article()
+                //        {
+                //            ArticleId = Guid.NewGuid(),
+                //            Title = "Quoc Viet dep trai",
+                //            Description = "Dep trai nhat the gioi",
+                //            UploadDate = DateTime.Now,
+                //            FacultyId = 1,
+                //            PublishStatusId = (int)EPublishStatus.Approval,
+                //            studentId = "8228e5c9-9386-43f8-bfbf-224206679b39"
+                //        },
+
+                //        new Article()
+                //        {
+                //            ArticleId = Guid.NewGuid(),
+                //            Title = "mot hai ba bon",
+                //            Description = "bon ba hai mot",
+                //            UploadDate = DateTime.Now,
+                //            FacultyId = 2,
+                //            PublishStatusId = (int)EPublishStatus.NotApproval,
+                //            studentId = "8228e5c9-9386-43f8-bfbf-224206679b39"
+
+                //        },
+                //        new Article()
+                //        {
+                //            ArticleId = Guid.NewGuid(),
+                //            Title = "tho khiem ngu",
+                //            Description = "tho khiem dumbass",
+                //            UploadDate = DateTime.Now,
+                //            FacultyId = 3,
+                //            PublishStatusId = (int)EPublishStatus.Browsing,
+                //            studentId = "8228e5c9-9386-43f8-bfbf-224206679b39"
+                //        }
+                //    });
+                //    context.SaveChanges();
+                //}
             }
         }
     }

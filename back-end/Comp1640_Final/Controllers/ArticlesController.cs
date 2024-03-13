@@ -3,7 +3,6 @@ using Comp1640_Final.Data;
 using Comp1640_Final.DTO;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Comp1640_Final.Controllers
@@ -85,10 +84,11 @@ namespace Comp1640_Final.Controllers
 
             var articleMap = _mapper.Map<Article>(articleAdd);
             articleMap.ArticleId = Guid.NewGuid();
+            articleMap.PublishStatusId = (int)EPublishStatus.Pending;
             _context.Articles.Add(articleMap);
             await _context.SaveChangesAsync();
 
-            return Ok("Successfully created");
+            return Ok("Successfully added");
         }
         [HttpPut("{articleId}")]
         public async Task<ActionResult<Article>> UpdateArticle(Guid articleId, ArticleDTO articleUpdate)
@@ -111,6 +111,28 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully updated");
         }
 
+        [HttpPut("updateStatus/{articleId}")]
+        public async Task<ActionResult<Article>> UpdateStatusArticle(Guid articleId, int publicStatus)
+        {
+            if (publicStatus < 0 ||  publicStatus > 3)
+                return BadRequest(ModelState);
+
+            if (!_articleService.ArticleExists(articleId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var article = _articleService.GetArticleByID(articleId);
+
+            article.ArticleId = articleId;
+            article.PublishStatusId = publicStatus;
+            _context.Articles.Update(article);
+            await _context.SaveChangesAsync();
+
+            return Ok("Successfully change article status");
+        }
+
         [HttpDelete("{articleId}")]
         public IActionResult DeleteArticle(Guid articleId)
         {
@@ -126,7 +148,7 @@ namespace Comp1640_Final.Controllers
 
             if (!_articleService.DeleteArticle(articleToDelete))
             {
-                ModelState.AddModelError("", "Something went wrong deleting category");
+                ModelState.AddModelError("", "Something went wrong deleting article");
             }
 
             return NoContent();
