@@ -37,6 +37,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+//seed database
+//using (var scope = app.Services.CreateScope())
+//{
+//    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
+//}
+DbSeeder.Seed(app);
 
 app.UseHttpsRedirection();
 
