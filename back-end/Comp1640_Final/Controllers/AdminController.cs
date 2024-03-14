@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace Comp1640_Final.Controllers
 {
@@ -87,9 +88,24 @@ namespace Comp1640_Final.Controllers
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
 
-            //var users = await _userManager.Users.ToListAsync();
-            var users =  _mapper.Map<List<AccountDTO>>(await _userManager.Users.ToListAsync()) ;
-            return Ok(users);
+            var users = await _userManager.Users.ToListAsync();
+            var accountDto = new List<object>();
+               // _mapper.Map<List<AccountDTO>>(await _userManager.Users.ToListAsync()) ;
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                accountDto.Add(new
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Role = roles,
+                    FacultyId = user.FacultyId
+                });
+            }
+            return Ok(accountDto);
         }
 
         [HttpDelete("{email}")]
