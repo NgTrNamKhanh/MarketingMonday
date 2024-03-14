@@ -93,7 +93,7 @@ namespace Comp1640_Final.Migrations
                 table: "Articles",
                 column: "EventId",
                 principalTable: "Events",
-                principalColumn: "EventId");
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />

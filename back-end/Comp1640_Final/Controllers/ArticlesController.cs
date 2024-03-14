@@ -159,7 +159,7 @@ namespace Comp1640_Final.Controllers
                 return BadRequest(ModelState);
 
             var articleMap = _mapper.Map<Article>(articleAdd);
-            articleMap.ArticleId = Guid.NewGuid();
+            articleMap.Id = Guid.NewGuid();
             articleMap.PublishStatusId = (int)EPublishStatus.Pending;
 
             if (articleAdd.ImageFiles.Length > 0)
@@ -218,7 +218,7 @@ namespace Comp1640_Final.Controllers
                 return BadRequest(ModelState);
 
             var articleMap = _mapper.Map<Article>(articleUpdate);
-            articleMap.ArticleId = articleId;
+            articleMap.Id = articleId;
 
             if (articleUpdate.ImageFiles.Length > 0)
             {
@@ -278,7 +278,7 @@ namespace Comp1640_Final.Controllers
 
             var article = _articleService.GetArticleByID(articleId);
 
-            article.ArticleId = articleId;
+            article.Id = articleId;
             article.PublishStatusId = publicStatus;
             _context.Articles.Update(article);
             await _context.SaveChangesAsync();

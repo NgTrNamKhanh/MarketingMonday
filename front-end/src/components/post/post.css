@@ -7,7 +7,7 @@
     margin: 30px 0;
 }
 .postWrapper{
-    padding: 10px;
+    padding: 50px;
 }
 .postTop{
     display: flex;
@@ -48,7 +48,7 @@
 }
 
 .postImg {
-    max-width: calc(50% - 5px); /* Adjust the width as needed */
+    max-width: calc(50% - 5px);
     margin-bottom: 5px;
     border-radius: 5px;
     object-fit: cover;

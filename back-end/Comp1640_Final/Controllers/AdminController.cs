@@ -68,16 +68,25 @@ namespace Comp1640_Final.Controllers
         [HttpPut("account")]
         public async Task<IActionResult> PutAccountForAdmin(string userId, Account account)
         {
-            //name = account.Email;
             var user = await _userManager.FindByIdAsync(userId);
-            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
+            //name = account.Email;
+            if (!string.IsNullOrWhiteSpace(account.Password))
+            {
+                // If password is provided and not empty, reset it
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
+                if (!result.Succeeded)
+                {
+                    return BadRequest("Failed to reset password");
+                }
+            }
             user.Email = account.Email;
+            user.PhoneNumber = account.PhoneNumber;
             user.UserName = account.Email;
             user.FirstName = account.FirstName;
             user.LastName = account.LastName;
             var changeEmail = await _userManager.UpdateAsync(user);
-            if (result.Succeeded && changeEmail.Succeeded)
+            if (changeEmail.Succeeded)
             {
                 return Ok("Successful");
             }

@@ -16,41 +16,33 @@ import {
     colors,
     useMediaQuery,
     MenuItem,
+    FormControl,
+    InputLabel,
+    Select,
 } from "@mui/material";
 import { Form, Formik } from "formik";
 import * as yup from "yup";
+import apis from '../../../services/apis.service';
+import axios from 'axios';
 const initialValues = {
     eventName: "",
 };
 const userSchema = yup.object().shape({
-    // eventName: yup.string().required("required"),
+    eventName: yup.string().required("required"),
 });
-const facultyOptions = [
-    {
-        id: 1,
-        name: 'Marketing',
-    },
-    {
-        id: 2,
-        name: 'IT',
-    }
-]
 const EventForm = ({
     handleCloseDialog,
     event,
-    // reFetch,
+    reFetch,
     handleDefaultCloseEditDialog,
+    facultyOptions,
 }) => {
-    console.log(event)
     const isEdit = event? true: false;
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const isNonMobile = useMediaQuery("(min-width:60vh)");
     initialValues.eventName = event ? event.eventName : "";
-    const [faculty, setFaculty] = useState('');
-    
-    
-    console.log(faculty)
+    const [faculty, setFaculty] = useState(event ? event.facultyId : "");
     const [openDate, setOpenDate] = useState(false);
     const [dateRange, setDateRange] = useState([
         {
@@ -67,7 +59,6 @@ const EventForm = ({
                 endDate: new Date(event.endDate),
                 key: 'selection',
             }])
-            setFaculty(event.faculty); 
         }
     }, [event]);
 
@@ -75,18 +66,59 @@ const EventForm = ({
         setFaculty(e.target.value);
     };
 
-    const handleSubmit = (e) => {
-        setIsSubmitting(true)
-        e.preventDefault();
-        console.log("Event Name:", e.eventName);
-        console.log("Faculty:", faculty);
-        console.log("Date Range:", dateRange);
-        setIsSubmitting(false);
-    };
+    const handleSubmit = async (values) => {
+        const eventSubmit = {
+            eventName: values.eventName,
+            startDate: dateRange[0].startDate,
+            endDate: dateRange[0].endDate,
+            facultyId: faculty
+        };
 
+        try {
+            
+            setIsSubmitting(true);
+            
+            if(!isEdit){
+                const url = apis.event;
+                const res = await axios.post(url, eventSubmit, {
+                    // headers: authHeader(),
+                    withCredentials: true,
+                });
+                if (res.status === 200) {
+                    const updatedData = await reFetch();
+                    localStorage.setItem("events", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    setMessage("Event added successfully.");
+                    handleCloseDialog();
+                } else {
+                    setIsSubmitting(false);
+                    setMessage(`An error occurred: ${res.data}`);
+                }
+            }else{
+                const url = `${apis.event}${event.id}`
+                const res = await axios.put(url, eventSubmit, {
+                    // headers: authHeader(),
+                    withCredentials: true,
+                });
+                if (res.status === 200) {
+                    const updatedData = await reFetch();
+                    localStorage.setItem("events", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    setMessage("Event edited successfully.");
+                    handleCloseDialog();
+                } else {
+                    setIsSubmitting(false);
+                    setMessage(`An error occurred: ${res.data}`);
+                }
+            }
+        } catch (error) {
+            setIsSubmitting(false);
+            setMessage(error.response.data);
+        }
+    };
     return (
         <Dialog open={true} onClose={handleDefaultCloseEditDialog}>
-        <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>
+        <DialogTitle>{isEdit ? 'Edit Event' : 'Add Event'}</DialogTitle>
         <DialogContent>
             <Formik
             onSubmit={handleSubmit}
@@ -118,31 +150,34 @@ const EventForm = ({
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.eventName}
-                    name="firstName"
+                    name="eventName"
                     error={!!touched.eventName && !!errors.eventName}
                     helperText={touched.eventName && errors.eventName}
                     sx={{ gridColumn: "span 2" }}
                     />
-                    <TextField
-                        fullWidth
-                        variant="filled"
-                        select
-                        label="Faculty"
-                        onBlur={handleBlur}
-                        onChange={handleFacultyChange}
-                        value={faculty}
-                        name="faculty"
-                        sx={{ minWidth: 80 , gridColumn: 'span 2 '}}
+                    <FormControl sx={{  gridColumn: "span 2"  }}>
+                    <InputLabel>Faculty</InputLabel>
+                        <Select
+                            value={faculty}
+                            onChange={(e) => handleFacultyChange(e)}
+                            autoWidth
+                            label="faculty"
+                            required
                         >
-                        <MenuItem value="" disabled>
-                            <em>Select a faculty</em>
-                        </MenuItem>
-                        {facultyOptions.map((faculty) => (
-                            <MenuItem key={faculty} value={faculty.name}>
-                            {faculty.name}
+                            <MenuItem
+                                value=""
+                                disabled
+                                // aria-required={!!formErrors.faculty}
+                            >
+                                <em>Select an faculty</em>
                             </MenuItem>
-                        ))}
-                    </TextField>
+                            {facultyOptions.map((fa) => (
+                                <MenuItem key={fa.facultyId} value={fa.facultyId}>
+                                {fa.name}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     <div className="dateRangeContainer">
                         <div className="dateRangeTitle">
                             <label htmlFor="">Date Range:</label>
@@ -180,7 +215,7 @@ const EventForm = ({
                     Cancel
                     </Button>
                     <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? <span>Loading...</span> : "Edit"}
+                    {isSubmitting ? <span>Loading...</span> : (isEdit ? 'Edit' : 'Add')}
                     </Button>
                 </DialogActions>
                 </Form>

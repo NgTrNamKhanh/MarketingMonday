@@ -26,7 +26,7 @@ const initialValues = {
     password: "",
     confirm_password: "",
     email: "",
-    contactNumber: "",
+    phoneNumber: "",
     role: "",
     faculty: "",
 };
@@ -40,17 +40,17 @@ const AccountForm = ({
     account,
     reFetch,
     handleDefaultCloseEditDialog,
+    facultyOptions,
+    roleOptions
 }) => {
     const isEdit = account? true: false;
     initialValues.firstName = account ? account.firstName : "";
     initialValues.lastName = account ? account.lastName : "";
     initialValues.email = account ? account.email : "";
-    initialValues.contactNumber = account ? account.contact_number : "";
-    const [faculty, setFaculty] = useState(account ? account.faculty : "");
-    const [facultyOptions, setFacultyOptions] = useState([]);
-    const [role, setRole] = useState(account ? account.role : "");
-    const [roleOptions, setRoleOptions] = useState([]);
-    const [loading, setLoading] = useState(true);
+    initialValues.phoneNumber = account ? account.phoneNumber : "";
+    const [faculty, setFaculty] = useState(account ? account.facultyId : "");
+    const [role, setRole] = useState(account ? account.role[0] : "");
+    // const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const isNonMobile = useMediaQuery("(min-width:60vh)");
@@ -66,94 +66,61 @@ const AccountForm = ({
                 .string()
                 .required("This field must not be empty")
                 .oneOf([yup.ref("password"), null], "Confirm password does not match"),
-        contactNumber: yup.string().required("required").matches(phoneRegExp, "Phone number is not valid"),
+        phoneNumber: yup.string().required("required").matches(phoneRegExp, "Phone number is not valid"),
         email: yup.string().required("required").email("Please enter an email"),
     });
 
-
-    const fetchRolesAndFaculties = async () => {
-        setLoading(true);
-        try {
-            const rolesResponse = await axios.get(apis.role, {
-                // headers: authHeader(),
-                withCredentials: true,
-            });
-            const facultiesResponse = await axios.get(
-                apis.faculty
-            );
-            console.log(facultiesResponse)
-            console.log(rolesResponse)
-
-        
-            setFacultyOptions(facultiesResponse.data);
-            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
-            );
-            setRoleOptions(rolesResponse.data);
-            localStorage.setItem("roles", JSON.stringify(rolesResponse.data));
-            setLoading(false);
-            } catch (error) {
-            console.error("Error fetching roles and faculties:", error);
-            setMessage("Error fetching roles and faculties");
-            setLoading(false);
-            }
-        } ;
-        console.log(facultyOptions)
-    useEffect(() => {
-        const initializeData = async () => {
-            const faLocal = localStorage.getItem("faculties");
-            const roleLocal = localStorage.getItem("roles");
-            try {
-                if (
-                    faLocal &&
-                    JSON.parse(faLocal).length !== 0 &&
-                    roleLocal &&
-                    JSON.parse(roleLocal).length !== 0
-                ) {
-                    const facultiesFromStorage = JSON.parse(faLocal);
-                const rolesFromStorage = JSON.parse(roleLocal);
-                    setFacultyOptions(facultiesFromStorage);
-                    setRoleOptions(rolesFromStorage);
-                    setLoading(false);
-                } else {
-                    await fetchRolesAndFaculties();
-                }
-            } catch (error) {
-                console.error("Error initializing data:", error);
-                setMessage("Error initializing data");
-            }
-        
-        }
-        initializeData();
-    }, []);
     const handleSubmit = async (values) => {
-        const account = {
+        console.log(role)
+        const accountSubmit = {
             firstName: values.firstName,
             lastName: values.lastName,
             email: values.email,
-            contactNumber: values.contactNumber,
+            phoneNumber: values.phoneNumber,
             password: values.password,
             role: role,
             facultyId: faculty
         };
-        console.log(account);
-
+        console.log(accountSubmit);
         try {
-        setIsSubmitting(true);
-        const url = apis.admin+"createAccount";
-        const res = await axios.post(url, account, {
-            // headers: authHeader(),
-            withCredentials: true,
-        });
-        if (res.status === 200) {
-            const updatedData = await reFetch();
-            localStorage.setItem("accounts", JSON.stringify(updatedData));
-            setIsSubmitting(false);
-            setMessage("Account update successfully.");
-            handleCloseDialog();
-        } else {
-            setIsSubmitting(false);
-            setMessage(`An error occurred: ${res.data}`);
-        }
+            
+            setIsSubmitting(true);
+            
+            if(!isEdit){
+                const url = apis.admin+"createAccount";
+                const res = await axios.post(url, accountSubmit, {
+                    // headers: authHeader(),
+                    withCredentials: true,
+                });
+                if (res.status === 200) {
+                    const updatedData = await reFetch();
+                    localStorage.setItem("accounts", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    setMessage("Account added successfully.");
+                    handleCloseDialog();
+                } else {
+                    setIsSubmitting(false);
+                    setMessage(`An error occurred: ${res.data}`);
+                }
+            }else{
+                const url = apis.admin+"account"
+                const res = await axios.put(url, accountSubmit, {
+                    params: { userId: account.id },
+                    // headers: authHeader(),
+                    withCredentials: true,
+                });
+                if (res.status === 200) {
+                    const updatedData = await reFetch();
+                    localStorage.setItem("accounts", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    setMessage("Account edited successfully.");
+                    handleCloseDialog();
+                } else {
+                    setIsSubmitting(false);
+                    setMessage(`An error occurred: ${res.data}`);
+                }
+            }
+        
         } catch (error) {
         setIsSubmitting(false);
         setMessage(error.response.data);
@@ -260,10 +227,10 @@ const AccountForm = ({
                     label="Mobile"
                     onBlur={handleBlur}
                     onChange={handleChange}
-                    value={values.contactNumber}
-                    name="contactNumber"
-                    error={!!touched.contactNumber && !!errors.contactNumber}
-                    helperText={touched.contactNumber && errors.contactNumber}
+                    value={values.phoneNumber}
+                    name="phoneNumber"
+                    error={!!touched.phoneNumber && !!errors.phoneNumber}
+                    helperText={touched.phoneNumber && errors.phoneNumber}
                     sx={{ gridColumn: "span 2" }}
                     />
                     

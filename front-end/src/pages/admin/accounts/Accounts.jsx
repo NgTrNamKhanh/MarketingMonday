@@ -141,30 +141,40 @@ const Accounts = () => {
         {
             field: "email",
             headerName: "Email",
-            flex: 1,
+            flex: 3,
             headerClassName: "header-text",
             cellClassName: "data-cell",
         },
         {
-            field: "contact_number",
-            headerName: "Contact Number",
+            field: "phoneNumber",
+            headerName: "Phone Number",
             flex: 2,
             headerClassName: "header-text",
             cellClassName: "data-cell",
         },
         {
-            field: "faculty",
+            field: "facultyId",
             headerName: "Faculty",
             flex: 2,
             headerClassName: "header-text",
             cellClassName: "data-cell",
+            valueGetter: (params) => {
+                const facultyId = params.row.facultyId;
+                const faculty = facultyOptions.find((faculty) => faculty.facultyId === facultyId);
+                return faculty ? faculty.name : "";
+            },
         },
         {
-            field: "role",  
+            field: "roleId",
             headerName: "Role",
             flex: 2,
             headerClassName: "header-text",
             cellClassName: "data-cell",
+            valueGetter: (params) => {
+                const roleName = params.row.role[0];
+                const role = roleOptions.find((role) => role.name === roleName);
+                return role ? role.name : "";
+            },
         },
         {
             field: "actions",
@@ -199,6 +209,56 @@ const Accounts = () => {
             }, 7000);
         }
     }, [showToast]);
+    const [facultyOptions, setFacultyOptions] = useState([]);
+    const [roleOptions, setRoleOptions] = useState([]);
+    const fetchRolesAndFaculties = async () => {
+        // setLoading(true);
+        try {
+            const rolesResponse = await axios.get(apis.role, {
+                // headers: authHeader(),
+                withCredentials: true,
+            });
+            const facultiesResponse = await axios.get(
+                apis.faculty
+            );
+            console.log(facultiesResponse)
+            console.log(rolesResponse)
+            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
+            );
+            localStorage.setItem("roles", JSON.stringify(rolesResponse.data));
+            // setLoading(false);
+        } catch (error) {
+            console.error("Error fetching roles and faculties:", error);
+            // setMessage("Error fetching roles and faculties");
+            // setLoading(false);
+        }
+    } ;
+    useEffect(() => {
+        const initializeData = async () => {
+            const faLocal = localStorage.getItem("faculties");
+            const roleLocal = localStorage.getItem("roles");
+            try {
+                if (
+                    faLocal &&
+                    JSON.parse(faLocal).length !== 0 &&
+                    roleLocal &&
+                    JSON.parse(roleLocal).length !== 0
+                ) {
+                    const facultiesFromStorage = JSON.parse(faLocal);
+                const rolesFromStorage = JSON.parse(roleLocal);
+                    setFacultyOptions(facultiesFromStorage);
+                    setRoleOptions(rolesFromStorage);
+                } else {
+                    await fetchRolesAndFaculties();
+                }
+            } catch (error) {
+                console.error("Error initializing data:", error);
+                // setMessage("Error initializing data");
+            }
+        
+        }
+        initializeData();
+    }, []);
     return (
         <div className="account">
             <h1 className="title">Accounts</h1>
@@ -294,6 +354,8 @@ const Accounts = () => {
                         handleDefaultCloseEditDialog={handleDefaultCloseEditDialog}
                         account={selectedAccount}
                         reFetch={reFetch}
+                        facultyOptions ={facultyOptions}
+                        roleOptions={roleOptions}
                     />
                 )}
                 </div>

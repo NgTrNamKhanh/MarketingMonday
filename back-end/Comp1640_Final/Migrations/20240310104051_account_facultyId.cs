@@ -27,7 +27,7 @@ namespace Comp1640_Final.Migrations
                 table: "AspNetUsers",
                 column: "FacultyId",
                 principalTable: "Faculties",
-                principalColumn: "FacultyId",
+                principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }
 

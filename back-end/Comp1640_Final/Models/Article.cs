@@ -7,7 +7,7 @@ namespace Comp1640_Final.Models
     public class Article
     {
         [Key]
-        public Guid ArticleId { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string? CoordinatorComment { get; set; }

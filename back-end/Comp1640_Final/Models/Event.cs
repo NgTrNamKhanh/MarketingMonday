@@ -6,7 +6,7 @@ namespace Comp1640_Final.Models
     public class Event
     {
         [Key]
-        public int EventId { get; set; }
+        public int Id { get; set; }
 
         public string EventName { get; set; }
 

@@ -40,11 +40,11 @@ namespace Comp1640_Final.Services
         }
         public ICollection<Article> GetArticles()
         {
-            return _context.Articles.OrderBy(p => p.ArticleId).ToList();
+            return _context.Articles.OrderBy(p => p.Id).ToList();
         }
         public Article GetArticleByID(Guid id)
         {
-            return _context.Articles.Where(p => p.ArticleId == id).FirstOrDefault();
+            return _context.Articles.Where(p => p.Id == id).FirstOrDefault();
         }
 
         public async Task<IEnumerable<Article>> GetArticlesByTitle(string title)
@@ -93,7 +93,7 @@ namespace Comp1640_Final.Services
         }
         public bool ArticleExists(Guid articleId)
         {
-            return _context.Articles.Any(p => p.ArticleId == articleId);
+            return _context.Articles.Any(p => p.Id == articleId);
         }
         public bool Save()
         {

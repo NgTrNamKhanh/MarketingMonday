@@ -2,33 +2,38 @@ import EventForm from '../../../components/forms/event/Event';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import './events.css'
 import { Delete, EditOutlined, Visibility } from '@mui/icons-material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, useTheme } from "@mui/material";
 import { Link } from 'react-router-dom';
-const data = [
-    {
-        id: 1,
-        eventName: 'Marketing Essential',
-        startDate: "February 20, 2024",
-        endDate: 'February 29, 2024',
-        faculty: "Marketing"
-    },
-    {
-        id: 2,
-        eventName: 'Loser Fest',
-        startDate: "February 20, 2024",
-        endDate: 'February 29, 2024',
-        faculty: "IT"
-    },
-    {
-        id: 3,
-        eventName: 'Ass>Boob',
-        startDate: "May 20, 2024",
-        endDate: 'May 29, 2024',
-        faculty: "Marketing"
-    },
-];
+import useFetch from '../../../hooks/useFetch';
+import apis from '../../../services/apis.service';
+import axios from 'axios';
+// const data = [
+//     {
+//         id: 1,
+//         eventName: 'Marketing Essential',
+//         startDate: "February 20, 2024",
+//         endDate: 'February 29, 2024',
+//         faculty: "Marketing"
+//     },
+//     {
+//         id: 2,
+//         eventName: 'Loser Fest',
+//         startDate: "February 20, 2024",
+//         endDate: 'February 29, 2024',
+//         faculty: "IT"
+//     },
+//     {
+//         id: 3,
+//         eventName: 'Ass>Boob',
+//         startDate: "May 20, 2024",
+//         endDate: 'May 29, 2024',
+//         faculty: "Marketing"
+//     },
+// ];
 const Events = () => {
+    const {data, loading, error, reFetch} = useFetch(apis.event) 
+    console.log(data)
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -62,7 +67,7 @@ const Events = () => {
     const columns = [
         {
             field: "eventName",
-            headerName: "eventName",
+            headerName: "Event Name",
             flex: 1,
             headerClassName: "header-text",
             cellClassName: "data-cell",
@@ -82,9 +87,21 @@ const Events = () => {
             cellClassName: "data-cell",
         },
         {
+            field: "facultyId",
+            headerName: "Faculty",
+            flex: 1,
+            headerClassName: "header-text",
+            cellClassName: "data-cell",
+            valueGetter: (params) => {
+                const facultyId = params.row.facultyId;
+                const faculty = facultyOptions.find((faculty) => faculty.facultyId === facultyId);
+                return faculty ? faculty.name : "";
+            },
+        },
+        {
             field: "actions",
             headerName: "Actions",
-            flex: 2,
+            flex: 1,
             cellClassName: "data-cell",
             renderCell: ({ row }) => (
             <Box p="1vh" display="flex" justifyContent="center">
@@ -101,7 +118,45 @@ const Events = () => {
             ),
             headerClassName: "header-text",
         },
-        ];
+    ];
+    const [facultyOptions, setFacultyOptions] = useState([]);
+    const fetchFaculties = async () => {
+        // setLoading(true);
+        try {
+
+            const facultiesResponse = await axios.get(
+                apis.faculty
+            );
+            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
+            );
+            // setLoading(false);
+        } catch (error) {
+            console.error("Error fetching faculties:", error);
+            // setMessage("Error fetching roles and faculties");
+            // setLoading(false);
+        }
+    } ;
+    useEffect(() => {
+        const initializeData = async () => {
+            const faLocal = localStorage.getItem("faculties");
+            try {
+                if (
+                    faLocal &&
+                    JSON.parse(faLocal).length !== 0
+                ) {
+                    const facultiesFromStorage = JSON.parse(faLocal);
+                    setFacultyOptions(facultiesFromStorage);
+                } else {
+                    await fetchFaculties();
+                }
+            } catch (error) {
+                console.error("Error initializing data:", error);
+                // setMessage("Error initializing data");
+            }
+        
+        }
+        initializeData();
+    }, []);
     return (
         <div className="events">
             <div className="eventsWrapper">
@@ -160,7 +215,8 @@ const Events = () => {
                         handleCloseDialog={handleCloseEditDialog}
                         handleDefaultCloseEditDialog={handleDefaultCloseEditDialog}
                         event={selectedEvent}
-                        // reFetch={reFetch}
+                        reFetch={reFetch}
+                        facultyOptions={facultyOptions}
                     />
                 )}
                 </div>
