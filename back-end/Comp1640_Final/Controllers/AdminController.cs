@@ -72,12 +72,16 @@ namespace Comp1640_Final.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
+            var oldRoles = await _userManager.GetRolesAsync(user);
             user.Email = account.Email;
             user.UserName = account.Email;
             user.FirstName = account.FirstName;
             user.LastName = account.LastName;
+            await _userManager.RemoveFromRolesAsync(user, oldRoles);
+            // Thêm vai trò mới
+            var changeRole = await _userManager.AddToRoleAsync(user, account.Role);
             var changeEmail = await _userManager.UpdateAsync(user);
-            if (result.Succeeded && changeEmail.Succeeded)
+            if (result.Succeeded && changeEmail.Succeeded && changeRole.Succeeded)
             {
                 return Ok("Successful");
             }
