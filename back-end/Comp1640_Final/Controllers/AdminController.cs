@@ -69,24 +69,19 @@ namespace Comp1640_Final.Controllers
         public async Task<IActionResult> PutAccountForAdmin(string userId, Account account)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            //name = account.Email;
-            if (!string.IsNullOrWhiteSpace(account.Password))
-            {
-                // If password is provided and not empty, reset it
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
-                if (!result.Succeeded)
-                {
-                    return BadRequest("Failed to reset password");
-                }
-            }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
+            var oldRoles = await _userManager.GetRolesAsync(user);
             user.Email = account.Email;
             user.PhoneNumber = account.PhoneNumber;
             user.UserName = account.Email;
             user.FirstName = account.FirstName;
             user.LastName = account.LastName;
+            await _userManager.RemoveFromRolesAsync(user, oldRoles);
+            // Thêm vai trò mới
+            var changeRole = await _userManager.AddToRoleAsync(user, account.Role);
             var changeEmail = await _userManager.UpdateAsync(user);
-            if (changeEmail.Succeeded)
+            if (result.Succeeded && changeEmail.Succeeded)
             {
                 return Ok("Successful");
             }
