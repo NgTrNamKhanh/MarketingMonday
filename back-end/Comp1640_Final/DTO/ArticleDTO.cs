@@ -6,7 +6,10 @@
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public int FacultyId { get; set; }
-        public int PublicStatus { get; set; }
-        public string studentId { get; set; }
+        public string StudentId { get; set; }
+        public string ImagePath { get; set; }
+        public string DocPath { get; set; }
+
+        //public string MarketingCoordinatorId { get; set; }
     }
 }
