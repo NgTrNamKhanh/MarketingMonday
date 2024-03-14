@@ -21,9 +21,11 @@ namespace Comp1640_Final.Services
                 Email = account.Email,
                 UserName = account.Email,
                 FacultyId = account.FacultyId,
+                PhoneNumber = account.PhoneNumber,
             };
             var result = await _userManager.CreateAsync(identityUser, account.Password);
             var role = await _userManager.AddToRoleAsync(identityUser, account.Role);
+            
             return result.Succeeded && role.Succeeded;
         }
 

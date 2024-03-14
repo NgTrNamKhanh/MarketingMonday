@@ -5,6 +5,8 @@ namespace Comp1640_Final.DTO
 {
     public class EventDTO
     {
+        public int? EventId { get; set; }
+
         public string EventName { get; set; }
 
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:dd/MM/yyyy HH:mm}")]

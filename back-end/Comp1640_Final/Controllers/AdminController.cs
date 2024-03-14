@@ -1,4 +1,6 @@
-﻿using Comp1640_Final.IServices;
+﻿using AutoMapper;
+using Comp1640_Final.DTO;
+using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -13,11 +15,14 @@ namespace Comp1640_Final.Controllers
     {
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
-        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager)
+
+        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _authService = authService;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         [HttpPost("createAccount")]
@@ -40,7 +45,7 @@ namespace Comp1640_Final.Controllers
 
             if (await _authService.Login(email, passWord))
             {
-                return Ok("Done");
+                return Ok(email +"\n" + passWord);
             }
             return BadRequest();
         }
@@ -60,10 +65,10 @@ namespace Comp1640_Final.Controllers
         //}
 
         [HttpPut("account")]
-        public async Task<IActionResult> PutAccountForAdmin(string username, Account account)
+        public async Task<IActionResult> PutAccountForAdmin(string userId, Account account)
         {
             //name = account.Email;
-            var user = await _userManager.FindByEmailAsync(username);
+            var user = await _userManager.FindByIdAsync(userId);
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
             user.Email = account.Email;
@@ -79,9 +84,11 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("account")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+
+            //var users = await _userManager.Users.ToListAsync();
+            var users =  _mapper.Map<List<AccountDTO>>(await _userManager.Users.ToListAsync()) ;
             return Ok(users);
         }
 

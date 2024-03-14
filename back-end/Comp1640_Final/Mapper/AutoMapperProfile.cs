@@ -12,6 +12,7 @@ namespace Comp1640_Final.Mapper
             CreateMap<Article, ArticleDTO>();
             CreateMap<Event, EventDTO>();
             CreateMap<EventDTO, Event>();
+            CreateMap<ApplicationUser, AccountDTO>();
         }
     }
 }

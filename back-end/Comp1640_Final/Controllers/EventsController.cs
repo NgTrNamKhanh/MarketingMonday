@@ -30,6 +30,7 @@ namespace Comp1640_Final.Controllers
         [HttpPost]
         public async Task<ActionResult<Event>> PostEvent(EventDTO eventDto)
         {
+            eventDto.EventId = null;
             var _event = _mapper.Map<Event>(eventDto);
             _context.Events.Add(_event);
             await _context.SaveChangesAsync();
