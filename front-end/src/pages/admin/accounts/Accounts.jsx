@@ -47,7 +47,7 @@ import authService from "../../../services/auth.service";
 // ];
 
 const Accounts = () => {
-    const {data, loading, error, reFetch} = useFetch(apis.admin+"account") 
+    const {data, loading, error, reFetch} = useFetch(apis.admin+"accounts") 
     console.log(data)
     const [filteredData, setFilteredData] = useState([]);
     const [showToast, setShowToast] = useState(false);
@@ -160,7 +160,7 @@ const Accounts = () => {
             cellClassName: "data-cell",
             valueGetter: (params) => {
                 const facultyId = params.row.facultyId;
-                const faculty = facultyOptions.find((faculty) => faculty.facultyId === facultyId);
+                const faculty = facultyOptions.find((faculty) => faculty.id === facultyId);
                 return faculty ? faculty.name : "";
             },
         },

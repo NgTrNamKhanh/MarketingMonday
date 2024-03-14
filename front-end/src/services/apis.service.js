@@ -7,6 +7,7 @@ const apis = {
     faculty: "https://localhost:7218/api/Faculties/",
     role: "https://localhost:7218/api/Roles/",
     event: "https://localhost:7218/api/events/",
+    normal: "https://localhost:7218/api/",
 };
 
 export default apis;

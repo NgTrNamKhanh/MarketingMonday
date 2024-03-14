@@ -36,20 +36,20 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Something went wrong");
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string passWord)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login(string email, string passWord)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
 
-            if (await _authService.Login(email, passWord))
-            {
-                return Ok(email +"\n" + passWord);
-            }
-            return BadRequest();
-        }
+        //    if (await _authService.Login(email, passWord))
+        //    {
+        //        return Ok(email +"\n" + passWord);
+        //    }
+        //    return BadRequest();
+        //}
 
         //[HttpPut]
         //public async Task<IActionResult> PutAccount(string email, string password)
@@ -96,7 +96,7 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Failed");
         }
 
-        [HttpGet("account")]
+        [HttpGet("accounts")]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
 

@@ -172,7 +172,7 @@ const EventForm = ({
                                 <em>Select an faculty</em>
                             </MenuItem>
                             {facultyOptions.map((fa) => (
-                                <MenuItem key={fa.facultyId} value={fa.facultyId}>
+                                <MenuItem key={fa.id} value={fa.id}>
                                 {fa.name}
                                 </MenuItem>
                             ))}

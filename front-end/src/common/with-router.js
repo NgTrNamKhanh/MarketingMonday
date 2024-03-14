@@ -17,7 +17,7 @@ export const ProtectedRoute = ({ element, requiredRoles }) => {
 
     useEffect(() => {
         // Check if the user's role matches the required role
-        if (user != null && (requiredRoles.includes(user.role))) {
+        if (user != null && (Array.isArray(user.roles) && requiredRoles.some(role => user.roles.includes(role)))) {
             // Allow rendering the protected component
         } else {
             // Redirect to another route if the role doesn't match

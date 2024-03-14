@@ -1,11 +1,51 @@
 import { BarChart, Category, EmojiObjects, Notifications } from "@mui/icons-material"
 import "../sidebar.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+import apis from "../../../services/apis.service";
 
 export default function ManagerSidebar() {
-    const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
     const [showSubmissionsDropdown, setShowSubmissionsDropdown] = useState(false);
+    const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
+    const [facultyOptions, setFacultyOptions] = useState([]);
+    const fetchFaculties = async () => {
+        // setLoading(true);
+        try {
+
+            const facultiesResponse = await axios.get(
+                apis.faculty
+            );
+            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
+            );
+            // setLoading(false);
+        } catch (error) {
+            console.error("Error fetching faculties:", error);
+            // setMessage("Error fetching roles and faculties");
+            // setLoading(false);
+        }
+    } ;
+    useEffect(() => {
+        const initializeData = async () => {
+            const faLocal = localStorage.getItem("faculties");
+            try {
+                if (
+                    faLocal &&
+                    JSON.parse(faLocal).length !== 0
+                ) {
+                    const facultiesFromStorage = JSON.parse(faLocal);
+                    setFacultyOptions(facultiesFromStorage);
+                } else {
+                    await fetchFaculties();
+                }
+            } catch (error) {
+                console.error("Error initializing data:", error);
+                // setMessage("Error initializing data");
+            }
+        
+        }
+        initializeData();
+    }, []);
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
@@ -24,12 +64,11 @@ export default function ManagerSidebar() {
                     </li>
                     {showArticlesDropdown && (
                         <ul className="sidebarDropdownContent">
-                            <Link to="/" className="sidebarListItemLink"> 
-                                <li className="sidebarListItem">Facility 1</li>
-                            </Link>
-                            <Link to="/" className="sidebarListItemLink"> 
-                                <li className="sidebarListItem">Facility 2</li>
-                            </Link>
+                            {facultyOptions.map((faculty, index) => (
+                                <Link key={index} to="/" className="sidebarListItemLink">
+                                    <li className="sidebarListItem">{faculty.name}</li>
+                                </Link>
+                            ))}
                         </ul>
                     )}
                     <li className="sidebarListItem" onClick={() => setShowSubmissionsDropdown(!showSubmissionsDropdown)}>
@@ -39,12 +78,11 @@ export default function ManagerSidebar() {
                     </li>
                     {showSubmissionsDropdown && (
                         <ul className="sidebarDropdownContent">
-                            <Link to="/manager/submissions" className="sidebarListItemLink"> 
-                                <li className="sidebarListItem">Facility 1</li>
-                            </Link>
-                            <Link to="/manager/submissions" className="sidebarListItemLink"> 
-                                <li className="sidebarListItem">Facility 2</li>
-                            </Link>
+                            {facultyOptions.map((faculty, index) => (
+                                <Link key={index} to="/manager/submissions" className="sidebarListItemLink">
+                                    <li className="sidebarListItem">{faculty.name}</li>
+                                </Link>
+                            ))}
                         </ul>
                     )}
                 </ul>

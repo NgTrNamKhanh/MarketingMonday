@@ -29,7 +29,6 @@ export default function Home() {
         }
     }, []);
 
-
     return (
         <Router> 
             <div>
@@ -37,13 +36,13 @@ export default function Home() {
                 <div className="homeContainer">
                     {currentUser && (
                             <>
-                                {currentUser.role === 'admin' ? (
+                                {currentUser.roles.includes('Admin') ? (
                                     <AdminSidebar/>
-                                ) : currentUser.role === "manager" ? (
+                                ) : currentUser.roles.includes("Manager") ? (
                                     <ManagerSidebar/>
-                                ) : currentUser.roles === "student" ? (
+                                ) : currentUser.roles.includes("Student") ? (
                                     <StudentSidebar  />
-                                ) : currentUser.role === "coordinator" ? (
+                                ) : currentUser.roles.includes("Coordinator") ? (
                                     <CoordinatorSidebar />
                                 ) : null}
                             </>
@@ -53,7 +52,7 @@ export default function Home() {
                             <Route path="/" element=
                                 {<ProtectedRoute
                                     element={<Feed />}
-                                    requiredRoles={['admin', 'manager', 'coordinator','student','guess']}
+                                    requiredRoles={['Admin', 'Manager', 'Coordinator','Student','Guess']}
                                 />}  
                             />
                             <Route path="/profile" element={<Profile />} />
@@ -62,31 +61,31 @@ export default function Home() {
                             <Route path="/admin/dashboard" element=
                                 {<ProtectedRoute
                                     element={<Dashboard />}
-                                    requiredRoles={['admin', 'manager']}
+                                    requiredRoles={['Admin', 'Manager']}
                                 />}  
                             />
                             <Route path="/student/submission" element=
                                 {<ProtectedRoute
                                     element={<Article />}
-                                    requiredRoles={['student']}
+                                    requiredRoles={['Student']}
                                 />}  
                             />
                             <Route path="/admin/events" element=
                                 {<ProtectedRoute
                                     element={<Events />}
-                                    requiredRoles={['admin']}
+                                    requiredRoles={['Admin']}
                                 />} 
                             />
                             <Route path="/manager/submissions" element=
                                 {<ProtectedRoute
                                     element={<Submissions />}
-                                    requiredRoles={['admin', 'manager']}
+                                    requiredRoles={['Admin', 'Manager']}
                                 />} 
                             />
                             <Route path="/admin/accounts" element=
                                 {<ProtectedRoute
                                     element={<Accounts />}
-                                    requiredRoles={['admin']}
+                                    requiredRoles={['Admin']}
                                 />}  
                                 />
                         </Routes>

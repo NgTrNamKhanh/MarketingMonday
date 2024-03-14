@@ -94,7 +94,7 @@ const Events = () => {
             cellClassName: "data-cell",
             valueGetter: (params) => {
                 const facultyId = params.row.facultyId;
-                const faculty = facultyOptions.find((faculty) => faculty.facultyId === facultyId);
+                const faculty = facultyOptions.find((faculty) => faculty.id === facultyId);
                 return faculty ? faculty.name : "";
             },
         },
