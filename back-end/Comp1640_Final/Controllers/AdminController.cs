@@ -46,7 +46,6 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Something went wrong");
         }
 
-<<<<<<< Updated upstream
         //[HttpPost("login")]
         //public async Task<IActionResult> Login(string email, string passWord)
         //{
@@ -61,7 +60,6 @@ namespace Comp1640_Final.Controllers
         //    }
         //    return BadRequest();
         //}
-=======
         [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string passWord)
         {
@@ -78,7 +76,6 @@ namespace Comp1640_Final.Controllers
             }
             return BadRequest();
         }
->>>>>>> Stashed changes
 
         //[HttpPut]
         //public async Task<IActionResult> PutAccount(string email, string password)
@@ -126,13 +123,10 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Failed");
         }
 
-<<<<<<< Updated upstream
         [HttpGet("accounts")]
-=======
-        [HttpGet("account")]
+
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 
->>>>>>> Stashed changes
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
 
