@@ -112,6 +112,7 @@ namespace Comp1640_Final.Controllers
             user.UserName = account.Email;
             user.FirstName = account.FirstName;
             user.LastName = account.LastName;
+            user.FacultyId = account.FacultyId;
             await _userManager.RemoveFromRolesAsync(user, oldRoles);
             // Thêm vai trò mới
             var changeRole = await _userManager.AddToRoleAsync(user, account.Role);
