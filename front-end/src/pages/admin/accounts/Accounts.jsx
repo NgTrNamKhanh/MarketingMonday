@@ -8,8 +8,8 @@ import AccountForm from "../../../components/forms/account/AccountForm";
 import DeleteConfirm from "../../../components/deleteConfirm/DeleteConfirm";
 import useFetch from "../../../hooks/useFetch";
 import apis from "../../../services/apis.service";
-import axios from "axios";
 import authService from "../../../services/auth.service";
+import authHeader from "../../../services/auth.header";
 // const data = [
 //     {
 //         id: 1,
@@ -47,8 +47,7 @@ import authService from "../../../services/auth.service";
 // ];
 
 const Accounts = () => {
-    const {data, loading, error, reFetch} = useFetch(apis.admin+"accounts") 
-    console.log(data)
+    const {data, loading ,error, reFetch} = useFetch(apis.admin+"accounts") 
     const [filteredData, setFilteredData] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
@@ -57,9 +56,7 @@ const Accounts = () => {
     const [selectedAccount, setSelectedAccount] = useState(null);
 
     const user = authService.getCurrentUser();
-    useEffect(() => {
-        setFilteredData(data.filter((userData) => userData.id !== user.id));
-    }, [data, user.id]);
+    
     const filterRefetch = async () => {
         const refetchData = await reFetch();
         setFilteredData(refetchData);
@@ -99,10 +96,10 @@ const Accounts = () => {
             const email = selectedAccount.email;
             const url = `${apis.admin}${email}`;
             console.log(email)
+            
             try {
                 // Send a DELETE request to the server
-                const res = await axios.delete(url, {
-                    // headers: authHeader(),
+                const res = await authHeader().delete(url, {
                     withCredentials: true,
                 });
         
@@ -212,25 +209,21 @@ const Accounts = () => {
     const [facultyOptions, setFacultyOptions] = useState([]);
     const [roleOptions, setRoleOptions] = useState([]);
     const fetchRolesAndFaculties = async () => {
-        // setLoading(true);
         try {
-            const rolesResponse = await axios.get(apis.role, {
-                // headers: authHeader(),
+            const rolesResponse = await authHeader().get(apis.role, {
                 withCredentials: true,
             });
-            const facultiesResponse = await axios.get(
+            const facultiesResponse = await authHeader().get(
                 apis.faculty
             );
-            console.log(facultiesResponse)
-            console.log(rolesResponse)
-            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
-            );
+            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data));
             localStorage.setItem("roles", JSON.stringify(rolesResponse.data));
-            // setLoading(false);
+            setFacultyOptions(facultiesResponse.data);
+            setRoleOptions(rolesResponse.data);
+
         } catch (error) {
             console.error("Error fetching roles and faculties:", error);
             // setMessage("Error fetching roles and faculties");
-            // setLoading(false);
         }
     } ;
     useEffect(() => {
@@ -245,7 +238,7 @@ const Accounts = () => {
                     JSON.parse(roleLocal).length !== 0
                 ) {
                     const facultiesFromStorage = JSON.parse(faLocal);
-                const rolesFromStorage = JSON.parse(roleLocal);
+                    const rolesFromStorage = JSON.parse(roleLocal);
                     setFacultyOptions(facultiesFromStorage);
                     setRoleOptions(rolesFromStorage);
                 } else {
@@ -259,6 +252,9 @@ const Accounts = () => {
         }
         initializeData();
     }, []);
+    useEffect(() => {
+        setFilteredData(data.filter((userData) => userData.id !== user.id));
+    }, [data, user.id, facultyOptions, roleOptions]);
     return (
         <div className="account">
             <h1 className="title">Accounts</h1>

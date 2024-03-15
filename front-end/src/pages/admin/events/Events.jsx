@@ -7,7 +7,7 @@ import { Box, useTheme } from "@mui/material";
 import { Link } from 'react-router-dom';
 import useFetch from '../../../hooks/useFetch';
 import apis from '../../../services/apis.service';
-import axios from 'axios';
+import authHeader from '../../../services/auth.header';
 // const data = [
 //     {
 //         id: 1,
@@ -124,7 +124,7 @@ const Events = () => {
         // setLoading(true);
         try {
 
-            const facultiesResponse = await axios.get(
+            const facultiesResponse = await authHeader().get(
                 apis.faculty
             );
             localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)

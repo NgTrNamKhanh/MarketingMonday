@@ -1,6 +1,7 @@
 import axios from "axios";
 // import { jwtDecode } from "jwt-decode";
 import apis from "./apis.service";
+import { jwtDecode } from "jwt-decode";
 // const mockData = [
 //     {
 //         username: "khanh@gmail.com",
@@ -73,16 +74,16 @@ class AuthService {
     getCurrentUser() {
         const user = JSON.parse(localStorage.getItem("CMU-user"));
 
-        // if (user && user.jwt_token) {
-        // const decodedToken = jwtDecode(user.jwt_token);
-        // const currentTime = Date.now() / 1000;
+        if (user && user.jwt_token) {
+        const decodedToken = jwtDecode(user.jwt_token);
+        const currentTime = Date.now() / 1000;
 
-        // if (decodedToken.exp < currentTime) {
-        //     // Token has expired, clear local storage
-        //     localStorage.removeItem("user");
-        //     return null;
-        // }
-        // }
+        if (decodedToken.exp < currentTime) {
+            // Token has expired, clear local storage
+            localStorage.removeItem("CMU-user");
+            return null;
+        }
+        }
         return user;
     }
 }

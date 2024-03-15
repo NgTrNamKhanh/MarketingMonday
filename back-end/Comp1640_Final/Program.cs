@@ -1,3 +1,4 @@
+using Comp1640_Final.Controllers;
 using Comp1640_Final.Data;
 using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
@@ -17,6 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+//builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 //builder.Services.AddDefaultIdentity<ApplicationUser>();
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)

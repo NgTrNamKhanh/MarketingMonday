@@ -9,19 +9,17 @@ export default function StudentSidebar() {
     const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
     const [facultyOptions, setFacultyOptions] = useState([]);
     const fetchFaculties = async () => {
-        // setLoading(true);
         try {
 
             const facultiesResponse = await axios.get(
                 apis.faculty
             );
-            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data)
+            localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data),
+            setFacultyOptions(facultiesResponse.data)
             );
-            // setLoading(false);
         } catch (error) {
             console.error("Error fetching faculties:", error);
             // setMessage("Error fetching roles and faculties");
-            // setLoading(false);
         }
     } ;
     useEffect(() => {

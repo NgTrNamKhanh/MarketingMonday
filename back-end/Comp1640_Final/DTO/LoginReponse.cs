@@ -2,7 +2,7 @@
 
 namespace Comp1640_Final.DTO
 {
-    public class LoginDTO
+    public class LoginReponse
     {
         public String? Id { get; set; }
 
@@ -13,6 +13,8 @@ namespace Comp1640_Final.DTO
         public string Email { get; set; }
         public string[] Roles { get; set; }
         public int FacultyId { get; set; }
+
+        public string Jwt_token { get; set; }
        
     }
 }

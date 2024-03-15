@@ -24,15 +24,15 @@ namespace Comp1640_Final.Controllers
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
+        
 
 
-        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper, IConfiguration configuration)
+        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             _authService = authService;
             _userManager = userManager;
             _mapper = mapper;
-            _configuration = configuration;
+            
         }
 
         [HttpPost("createAccount")]
@@ -44,37 +44,6 @@ namespace Comp1640_Final.Controllers
                 return Ok("Create Successful");
             }
             return BadRequest("Something went wrong");
-        }
-
-        //[HttpPost("login")]
-        //public async Task<IActionResult> Login(string email, string passWord)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-
-        //    if (await _authService.Login(email, passWord))
-        //    {
-        //        return Ok(email +"\n" + passWord);
-        //    }
-        //    return BadRequest();
-        //}
-        [HttpPost("login")]
-        public async Task<IActionResult> Login(string email, string passWord)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var identityUser = await _userManager.FindByEmailAsync(email);
-            var roles = await _userManager.GetRolesAsync(identityUser);
-            var token = CreateToken(identityUser, roles[0]);
-            if (await _authService.Login(email, passWord))
-            {
-                return Ok(token);
-            }
-            return BadRequest();
         }
 
         //[HttpPut]
@@ -172,28 +141,6 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-        private string CreateToken(ApplicationUser user, string role)
-        {
-            List<Claim> claims = new List<Claim>{
-                new Claim(ClaimTypes.Name, user.Email),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
-            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(user.UserName));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-            var token = new JwtSecurityToken(
-                claims: claims,
-            expires: DateTime.Now.AddDays(1),
-                issuer: _configuration.GetSection("Jwt:Issuer").Value,
-                audience: _configuration.GetSection("Jwt:Audience").Value,
-                signingCredentials: creds
-                );
-
-            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return jwt;
-
-        }
+        
     }
 }

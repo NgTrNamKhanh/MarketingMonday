@@ -13,6 +13,8 @@ namespace Comp1640_Final.Data
             await roleMgr.CreateAsync(new IdentityRole("Admin"));
             await roleMgr.CreateAsync(new IdentityRole("Manager"));
             await roleMgr.CreateAsync(new IdentityRole("Guest"));
+            await roleMgr.CreateAsync(new IdentityRole("Student"));
+            await roleMgr.CreateAsync(new IdentityRole("Coordinator"));
 
             // create admin user
 
@@ -38,6 +40,38 @@ namespace Comp1640_Final.Data
 
             };
 
+            var coordinator = new ApplicationUser
+            {
+                FirstName = "Nam",
+                LastName = "Khanh",
+                UserName = "coordinator@gmail.com",
+                Email = "coordinator@gmail.com",
+                FacultyId = 2,
+                EmailConfirmed = true
+
+            };
+
+            var student = new ApplicationUser
+            {
+                FirstName = "Long",
+                LastName = "Hoang",
+                UserName = "student@gmail.com",
+                Email = "student@gmail.com",
+                FacultyId = 3,
+                EmailConfirmed = true
+
+            };
+            var guest = new ApplicationUser
+            {
+                FirstName = "Tuyen",
+                LastName = "Do",
+                UserName = "guest@gmail.com",
+                Email = "guest@gmail.com",
+                FacultyId = 2,
+                EmailConfirmed = true
+
+            };
+
             var userInDb = await userMgr.FindByEmailAsync(admin.Email);
             if (userInDb is null)
             {
@@ -46,7 +80,18 @@ namespace Comp1640_Final.Data
 
                 await userMgr.CreateAsync(manager, "Manager@123");
                 await userMgr.AddToRoleAsync(manager, "Manager");
+
+                await userMgr.CreateAsync( coordinator, "Coordinator@123");
+                await userMgr.AddToRoleAsync(coordinator, "Coordinator");
+
+                await userMgr.CreateAsync( student, "Student@123");
+                await userMgr.AddToRoleAsync(student, "Student");
+
+                await userMgr.CreateAsync( guest, "Guest@123");
+                await userMgr.AddToRoleAsync(guest, "Guest");
+
             }
+
 
 
 

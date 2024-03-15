@@ -23,7 +23,7 @@ import {
 import { Form, Formik } from "formik";
 import * as yup from "yup";
 import apis from '../../../services/apis.service';
-import axios from 'axios';
+import authHeader from '../../../services/auth.header';
 const initialValues = {
     eventName: "",
 };
@@ -80,7 +80,7 @@ const EventForm = ({
             
             if(!isEdit){
                 const url = apis.event;
-                const res = await axios.post(url, eventSubmit, {
+                const res = await authHeader().post(url, eventSubmit, {
                     // headers: authHeader(),
                     withCredentials: true,
                 });
@@ -96,7 +96,7 @@ const EventForm = ({
                 }
             }else{
                 const url = `${apis.event}${event.id}`
-                const res = await axios.put(url, eventSubmit, {
+                const res = await authHeader().put(url, eventSubmit, {
                     // headers: authHeader(),
                     withCredentials: true,
                 });

@@ -1,5 +1,5 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
+import authHeader from "../services/auth.header";
 // import authHeader from "../services/auth-header";
 
 const useFetch = (url) => {
@@ -10,19 +10,37 @@ const useFetch = (url) => {
     useEffect(() => {
     const fetchData = async () => {
         if (!url) {
-        // Skip fetching if url is null
-        setData([]);
-        setLoading(false);
-        return;
+            // Skip fetching if url is null
+            setData([]);
+            setLoading(false);
+            return;
         }
-
         setLoading(true);
         try {
-        const res = await axios.get(url, {
-            // headers: authHeader(),
-            withCredentials: true,
-        });
-        setData(res.data);
+            const res = await authHeader().get(url)
+            setData(res.data)
+            // const instance = axios.create({
+            //     baseURL: url
+            // });
+            //     instance.interceptors.request.use(
+            //     (config) => {
+            //             const token = JSON.parse(localStorage.getItem('CMU-user')).jwt_token;
+            //             if (token) {
+            //                 config.headers.Authorization = `Bearer ${token}`;
+            //             }
+            //             return config;
+            //     },
+            //     (error) => {
+            //         return Promise.reject(error);
+            //     }
+            // );
+            // const response = await instance.get('');
+            // setData(response.data);
+            // const res = await axios.get(url, {
+            //     headers: authHeader(),
+            //     withCredentials: true,
+            // });
+            // setData(res.data);
         } catch (err) {
         setError(err.response?.data?.message || err.toString());
         }
@@ -42,10 +60,7 @@ const useFetch = (url) => {
 
     setLoading(true);
     try {
-        const res = await axios.get(url, {
-        // headers: authHeader(),
-        withCredentials: true,
-        });
+        const res = await authHeader().get(url)
         const newData = res.data;
         setData(newData);
         setLoading(false);

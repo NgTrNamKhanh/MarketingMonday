@@ -14,11 +14,11 @@ import {
     colors,
     useMediaQuery,
 } from "@mui/material";
-import axios from "axios";
 import { Form, Formik } from "formik";
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import apis from "../../../services/apis.service";
+import authHeader from "../../../services/auth.header";
 // import authHeader from "../../services/auth-header";
 const initialValues = {
     firstName: "",
@@ -88,7 +88,7 @@ const AccountForm = ({
             
             if(!isEdit){
                 const url = apis.admin+"createAccount";
-                const res = await axios.post(url, accountSubmit, {
+                const res = await authHeader().post(url, accountSubmit, {
                     // headers: authHeader(),
                     withCredentials: true,
                 });
@@ -104,7 +104,7 @@ const AccountForm = ({
                 }
             }else{
                 const url = apis.admin+"account"
-                const res = await axios.put(url, accountSubmit, {
+                const res = await authHeader().put(url, accountSubmit, {
                     params: { userId: account.id },
                     // headers: authHeader(),
                     withCredentials: true,
