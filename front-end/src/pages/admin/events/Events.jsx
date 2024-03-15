@@ -168,7 +168,7 @@ const Events = () => {
                     <DataGrid
                     rows={data}
                     columns={columns}
-                    // loading={loading}
+                    loading={loading}
                     checkboxSelection
                     disableRowSelectionOnClick
                     components={{ Toolbar: GridToolbar }}

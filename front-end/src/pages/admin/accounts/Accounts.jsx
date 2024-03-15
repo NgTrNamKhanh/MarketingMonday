@@ -308,7 +308,7 @@ const Accounts = () => {
                     <DataGrid
                     rows={filteredData}
                     columns={columns}
-                    // loading={loading}
+                    loading={loading}
                     checkboxSelection
                     disableRowSelectionOnClick
                     components={{ Toolbar: GridToolbar }}

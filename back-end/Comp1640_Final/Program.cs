@@ -38,12 +38,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+DbSeeder.Seed(app);
+
 //seed database
 using (var scope = app.Services.CreateScope())
 {
     await DbSeeder.SeedDefaultData(scope.ServiceProvider);
 }
-DbSeeder.Seed(app);
 
 builder.Services.AddCors();
 
