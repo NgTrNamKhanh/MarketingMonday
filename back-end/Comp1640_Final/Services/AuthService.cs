@@ -1,6 +1,11 @@
 ﻿using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Comp1640_Final.Services
 {
@@ -38,5 +43,8 @@ namespace Comp1640_Final.Services
             }
             return await _userManager.CheckPasswordAsync(identityUser, passWord);
         }
+
+        
+
     }
 }

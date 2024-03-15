@@ -2,11 +2,18 @@
 using Comp1640_Final.DTO;
 using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Comp1640_Final.Controllers
 {
@@ -17,16 +24,19 @@ namespace Comp1640_Final.Controllers
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
 
 
-        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper)
+        public AdminController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper, IConfiguration configuration)
         {
             _authService = authService;
             _userManager = userManager;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         [HttpPost("createAccount")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> CreateAccount(Account account)
         {
             if (await _authService.CreateAccountUser(account))
@@ -36,6 +46,7 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Something went wrong");
         }
 
+<<<<<<< Updated upstream
         //[HttpPost("login")]
         //public async Task<IActionResult> Login(string email, string passWord)
         //{
@@ -50,6 +61,24 @@ namespace Comp1640_Final.Controllers
         //    }
         //    return BadRequest();
         //}
+=======
+        [HttpPost("login")]
+        public async Task<IActionResult> Login(string email, string passWord)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var identityUser = await _userManager.FindByEmailAsync(email);
+            var roles = await _userManager.GetRolesAsync(identityUser);
+            var token = CreateToken(identityUser, roles[0]);
+            if (await _authService.Login(email, passWord))
+            {
+                return Ok(token);
+            }
+            return BadRequest();
+        }
+>>>>>>> Stashed changes
 
         //[HttpPut]
         //public async Task<IActionResult> PutAccount(string email, string password)
@@ -66,6 +95,7 @@ namespace Comp1640_Final.Controllers
         //}
 
         [HttpPut("account")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutAccountForAdmin(string userId, Account account)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -96,7 +126,13 @@ namespace Comp1640_Final.Controllers
             return BadRequest("Failed");
         }
 
+<<<<<<< Updated upstream
         [HttpGet("accounts")]
+=======
+        [HttpGet("account")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
+>>>>>>> Stashed changes
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
 
@@ -121,6 +157,7 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpDelete("{email}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
@@ -140,6 +177,28 @@ namespace Comp1640_Final.Controllers
             }
         }
 
+        private string CreateToken(ApplicationUser user, string role)
+        {
+            List<Claim> claims = new List<Claim>{
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, role)
+            };
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value));
+            //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(user.UserName));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+            var token = new JwtSecurityToken(
+                claims: claims,
+            expires: DateTime.Now.AddDays(1),
+                issuer: _configuration.GetSection("Jwt:Issuer").Value,
+                audience: _configuration.GetSection("Jwt:Audience").Value,
+                signingCredentials: creds
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+
+        }
     }
 }
