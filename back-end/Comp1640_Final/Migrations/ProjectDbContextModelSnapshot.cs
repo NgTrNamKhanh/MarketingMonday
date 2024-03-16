@@ -152,7 +152,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Articles", (string)null);
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Event", b =>
@@ -180,7 +180,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Faculty", b =>
@@ -197,7 +197,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Faculties");
+                    b.ToTable("Faculties", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

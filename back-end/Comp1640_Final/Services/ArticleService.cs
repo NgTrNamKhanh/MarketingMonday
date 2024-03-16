@@ -18,10 +18,10 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<Article>> GetStudentOnHoldCommentedArticle(int facultyID);
         Task<IEnumerable<Article>> GetStudentNotApprovaldArticle(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
-        bool IsValidImageFile(IFormFile imageFile);
-        Task<string> SaveImageAsync(IFormFile imageFile);
+        bool IsValidImageFile(List<IFormFile> imageFile);
+        Task<IEnumerable<string>> SaveImagesAsync(List<IFormFile> imageFile, string subFolderName);
         bool IsValidDocFile(IFormFile imageFile);
-        Task<string> SaveDocAsync(IFormFile docFile);
+        Task<string> SaveDocAsync(IFormFile docFile, string subFolderName);
         bool ArticleExists(Guid articleId);
         bool DeleteArticle(Article article);
         bool Save();
@@ -107,47 +107,57 @@ namespace Comp1640_Final.Services
 
             return Save();
         }
-        public bool IsValidImageFile(IFormFile imageFile)
+        public bool IsValidImageFile(List<IFormFile> imageFiles)
         {
-            if (imageFile == null || imageFile.Length == 0)
+            if (imageFiles == null || imageFiles.Count == 0)
             {
                 return false;
             }
 
-            // Get the file extension
-            var fileExtension = Path.GetExtension(imageFile.FileName);
-
-            // Define the allowed file extensions
             var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" }; // Add more file extensions as needed
 
-            // Check if the file extension is in the allowed extensions list
-            if (!allowedExtensions.Contains(fileExtension.ToLower()))
+            foreach (var imageFile in imageFiles)
             {
-                return false;
-            }
+                // Get the file extension
+                var fileExtension = Path.GetExtension(imageFile.FileName);
 
-            // Perform additional checks if needed, such as content type validation.
+                // Check if the file extension is in the allowed extensions list
+                if (!allowedExtensions.Contains(fileExtension?.ToLower()))
+                {
+                    return false;
+                }
+
+                // Perform additional checks if needed, such as content type validation.
+            }
 
             return true;
         }
-        public async Task<string> SaveImageAsync(IFormFile imageFile)
+        public async Task<IEnumerable<string>> SaveImagesAsync(List<IFormFile> imageFiles, string subfolderName)
         {
-            var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+            var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images", subfolderName);
 
             if (!Directory.Exists(imagesDirectory))
                 Directory.CreateDirectory(imagesDirectory);
 
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-            var filePath = Path.Combine(imagesDirectory, fileName);
+            var imagePaths = new List<string>();
 
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+            foreach (var imageFile in imageFiles)
             {
-                await imageFile.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
+                var filePath = Path.Combine(imagesDirectory, fileName);
+
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(fileStream);
+                    await fileStream.FlushAsync();
+                }
+
+                imagePaths.Add("\\Images\\" + subfolderName + "\\" + fileName);
             }
 
-            return "\\Images\\" + fileName;
+            return imagePaths;
         }
+
         public bool IsValidDocFile(IFormFile docFile)
         {
             if (docFile == null || docFile.Length == 0)
@@ -171,9 +181,9 @@ namespace Comp1640_Final.Services
 
             return true;
         }
-        public async Task<string> SaveDocAsync(IFormFile docFile)
+        public async Task<string> SaveDocAsync(IFormFile docFile, string subfolderName)
         {
-            var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs");
+            var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs", subfolderName);
 
             if (!Directory.Exists(docsDirectory))
                 Directory.CreateDirectory(docsDirectory);
@@ -187,7 +197,7 @@ namespace Comp1640_Final.Services
                 await fileStream.FlushAsync();
             }
 
-            return "\\Docs\\" + fileName;
+            return "\\Docs\\" + subfolderName + "\\" + fileName;
         }
 
     }

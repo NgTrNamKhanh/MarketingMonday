@@ -149,6 +149,124 @@ namespace Comp1640_Final.Controllers
             return Ok(articleDTOs);
         }
 
+        //[HttpGet("DownloadImages")]
+        //public IActionResult DownloadImages()
+        //{
+        //    var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+
+        //    if (!Directory.Exists(imagesDirectory))
+        //    {
+        //        // Handle the case where the "Images" folder doesn't exist
+        //        return NotFound("The 'Images' folder does not exist.");
+        //    }
+
+        //    var imagePaths = Directory.GetFiles(imagesDirectory, "*.*", SearchOption.AllDirectories)
+        //                               .Where(file => file.ToLower().EndsWith(".jpg") || file.ToLower().EndsWith(".jpeg") || file.ToLower().EndsWith(".png"))
+        //                               .ToList();
+
+        //    if (imagePaths.Count == 0)
+        //    {
+        //        // Handle the case where the "Images" folder is empty
+        //        return NotFound("The 'Images' folder does not contain any images.");
+        //    }
+
+        //    var tempFolderPath = Path.Combine(Path.GetTempPath(), "Images");
+        //    if (!Directory.Exists(tempFolderPath))
+        //        Directory.CreateDirectory(tempFolderPath);
+
+        //    foreach (var imagePath in imagePaths)
+        //    {
+        //        var relativePath = Path.GetRelativePath(imagesDirectory, imagePath);
+        //        var destinationPath = Path.Combine(tempFolderPath, relativePath);
+
+        //        var destinationDirectory = Path.GetDirectoryName(destinationPath);
+        //        if (!Directory.Exists(destinationDirectory))
+        //            Directory.CreateDirectory(destinationDirectory);
+
+        //        System.IO.File.Copy(imagePath, destinationPath, true);
+        //    }
+
+        //    var zipPath = Path.Combine(Path.GetTempPath(), "Images.zip");
+        //    ZipFile.CreateFromDirectory(tempFolderPath, zipPath, CompressionLevel.Fastest, true);
+
+        //    var zipBytes = System.IO.File.ReadAllBytes(zipPath);
+        //    return File(zipBytes, "application/zip", "Images.zip");
+        //}
+
+        [HttpGet("GetImages/{articleId}")]
+        public async Task<IActionResult> GetImagesByArticleId(Guid articleId)
+        {
+            var article = _articleService.GetArticleByID(articleId);
+
+            if (article == null)
+            {
+                return NotFound("Article not found");
+            }
+
+            if (string.IsNullOrEmpty(article.ImagePath))
+            {
+                return NotFound("No images found for the article");
+            }
+
+            var imagePaths = article.ImagePath.Split(';');
+
+            var imageBytesList = new List<byte[]>();
+
+            foreach (var imagePath in imagePaths)
+            {
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('\\'));
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                    imageBytesList.Add(imageBytes);
+                }
+                else
+                {
+                    // Optionally log or handle the case where the image file is not found
+                }
+            }
+
+            if (imageBytesList.Count == 0)
+            {
+                return NotFound("No images found for the article");
+            }
+
+            return Ok(imageBytesList);
+        }
+
+        [HttpGet("DownloadDocument/{articleId}")]
+        public async Task<IActionResult> DownloadDocument(Guid articleId)
+        {
+            var article = _articleService.GetArticleByID(articleId);
+
+            if (article == null)
+            {
+                return NotFound("Article not found");
+            }
+
+            // Get the file path of the document associated with the article
+            var documentPath = article.DocPath;
+
+            if (string.IsNullOrEmpty(documentPath))
+            {
+                return NotFound("Document not found for the article");
+            }
+
+            // Combine the file path with the web root path to get the absolute file path
+            var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, documentPath.TrimStart('\\'));
+
+            // Check if the file exists
+            if (!System.IO.File.Exists(absolutePath))
+            {
+                return NotFound("Document file not found");
+            }
+
+            // Return the file for download
+            var fileStream = System.IO.File.OpenRead(absolutePath);
+            return File(fileStream, "application/octet-stream", Path.GetFileName(absolutePath));
+        }
+
         [HttpPost]
         public async Task<ActionResult<Article>> AddArticle([FromForm]ListArticleDTO articleAdd)
         {
@@ -162,7 +280,7 @@ namespace Comp1640_Final.Controllers
             articleMap.Id = Guid.NewGuid();
             articleMap.PublishStatusId = (int)EPublishStatus.Pending;
 
-            if (articleAdd.ImageFiles.Length > 0)
+            if (articleAdd.ImageFiles.Count > 0)
             {
                 try
                 {
@@ -170,24 +288,32 @@ namespace Comp1640_Final.Controllers
                     {
                         return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                     }
-                    var imagePath = await _articleService.SaveImageAsync(articleAdd.ImageFiles);
-                    articleMap.ImagePath = imagePath;
+
+                    var imagePaths = await _articleService.SaveImagesAsync(articleAdd.ImageFiles, articleMap.Id.ToString());
+                    if (imagePaths.Any())
+                    {
+                        articleMap.ImagePath = string.Join(";", imagePaths);
+                    }
+                    else
+                    {
+                        return BadRequest("Failed to save image files.");
+                    }
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.ToString());
                 }
             }
-            else
-            {
-                return BadRequest("Upload Image Failed");
-            }
+            //else
+            //{
+            //    return BadRequest("No image files were uploaded.");
+            //}
 
             if (articleAdd.DocFiles.Length > 0)
             {
                 try
                 {
-                    var docPath = await _articleService.SaveDocAsync(articleAdd.DocFiles);
+                    var docPath = await _articleService.SaveDocAsync(articleAdd.DocFiles, articleMap.Id.ToString());
                     articleMap.DocPath = docPath;
                 }
                 catch (Exception ex)
@@ -195,10 +321,10 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
-            else
-            {
-                return BadRequest("Upload Doc Failed");
-            }
+            //else
+            //{
+            //    return BadRequest("Upload Doc Failed");
+            //}
 
             _context.Articles.Add(articleMap);
             await _context.SaveChangesAsync();
@@ -220,7 +346,7 @@ namespace Comp1640_Final.Controllers
             var articleMap = _mapper.Map<Article>(articleUpdate);
             articleMap.Id = articleId;
 
-            if (articleUpdate.ImageFiles.Length > 0)
+            if (articleUpdate.ImageFiles.Count > 0)
             {
                 try
                 {
@@ -228,24 +354,32 @@ namespace Comp1640_Final.Controllers
                     {
                         return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                     }
-                    var imagePath = await _articleService.SaveImageAsync(articleUpdate.ImageFiles);
-                    articleMap.ImagePath = imagePath;
+
+                    var imagePaths = await _articleService.SaveImagesAsync(articleUpdate.ImageFiles, articleMap.Id.ToString());
+                    if (imagePaths.Any())
+                    {
+                        articleMap.ImagePath = string.Join(";", imagePaths);
+                    }
+                    else
+                    {
+                        return BadRequest("Failed to save image files.");
+                    }
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.ToString());
                 }
             }
-            else
-            {
-                return BadRequest("Upload Image Failed");
-            }
+            //else
+            //{
+            //    return BadRequest("No image files were uploaded.");
+            //}
 
             if (articleUpdate.DocFiles.Length > 0)
             {
                 try
                 {
-                    var docPath = await _articleService.SaveDocAsync(articleUpdate.DocFiles);
+                    var docPath = await _articleService.SaveDocAsync(articleUpdate.DocFiles, articleMap.Id.ToString());
                     articleMap.DocPath = docPath;
                 }
                 catch (Exception ex)
@@ -253,10 +387,11 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
-            else
-            {
-                return BadRequest("Upload Doc Failed");
-            }
+            //else
+            //{
+            //    return BadRequest("Upload Doc Failed");
+            //}
+
             _context.Articles.Update(articleMap);
             await _context.SaveChangesAsync();
 

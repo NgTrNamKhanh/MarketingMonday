@@ -53,6 +53,7 @@ const submissions = [
     }
     // Add more submissions as needed
 ];
+
 export default function Submissions () {
     useEffect(() => {
         // Fetch submissions data from API or any data source
