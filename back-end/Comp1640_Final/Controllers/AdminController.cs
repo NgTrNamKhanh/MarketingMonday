@@ -19,6 +19,8 @@ namespace Comp1640_Final.Controllers
 {
     [Route("api/admin")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
+
     public class AdminController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -36,7 +38,6 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpPost("createAccount")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> CreateAccount(Account account)
         {
             if (await _authService.CreateAccountUser(account))
@@ -61,7 +62,6 @@ namespace Comp1640_Final.Controllers
         //}
 
         [HttpPut("account")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> PutAccountForAdmin(string userId, Account account)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -95,7 +95,6 @@ namespace Comp1640_Final.Controllers
 
         [HttpGet("accounts")]
 
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
 
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
@@ -121,7 +120,6 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpDelete("{email}")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
