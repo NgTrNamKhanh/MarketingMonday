@@ -1,5 +1,6 @@
 ﻿using Comp1640_Final.Data;
 using Comp1640_Final.Models;
+using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,17 +11,18 @@ namespace Comp1640_Final.Controllers
     [ApiController]
     public class FacultiesController : ControllerBase
     {
-        public readonly ProjectDbContext _context;
+        public readonly IFacultyService _service;
 
-        public FacultiesController(ProjectDbContext context)
+        public FacultiesController(IFacultyService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Faculty>>> GetFalcuties()
+        public IActionResult GetFalcuties()
         {
-            return await _context.Faculties.ToListAsync();
+            var faculties = _service.GetFaculties();
+            return Ok(faculties);
         }
     }
 }
