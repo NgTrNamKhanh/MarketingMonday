@@ -74,7 +74,7 @@ export default function AdminSidebar() {
                     {showArticlesDropdown && (
                         <ul className="sidebarDropdownContent">
                             {facultyOptions.map((faculty, index) => (
-                                <Link key={index} to="/" className="sidebarListItemLink">
+                                <Link key={index} to={`/feed/${faculty.id}`} className="sidebarListItemLink">
                                     <li className="sidebarListItem">{faculty.name}</li>
                                 </Link>
                             ))}

@@ -4,10 +4,19 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import apis from "../../../services/apis.service";
+import authService from "../../../services/auth.service";
 
 export default function CoordinatorSidebar() {
     const [showArticlesDropdown, setShowArticlesDropdown] = useState(false);
     const [facultyOptions, setFacultyOptions] = useState([]);
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
     const fetchFaculties = async () => {
         try {
             const facultiesResponse = await axios.get(
@@ -54,16 +63,20 @@ export default function CoordinatorSidebar() {
                     {showArticlesDropdown && (
                         <ul className="sidebarDropdownContent">
                             {facultyOptions.map((faculty, index) => (
-                                <Link key={index} to="/" className="sidebarListItemLink">
+                                <Link key={index} to={`/feed/${faculty.id}`} className="sidebarListItemLink">
                                     <li className="sidebarListItem">{faculty.name}</li>
                                 </Link>
                             ))}
                         </ul>
                     )}
-                    <li className="sidebarListItem">
-                        <Category className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Submissions</span>
-                    </li>
+                    {currentUser && (
+                        <Link to={`/manager/submissions/${currentUser.facultyId}`}  className="sidebarListItemLink"> 
+                        <li className="sidebarListItem">
+                            <Category className="sidebarIcon"/>
+                            <span className="sidebarListItemText">Submissions</span>
+                        </li>
+                    </Link>
+                    )}
                     <li className="sidebarListItem">
                         <Build className="sidebarIcon"/>
                         <span className="sidebarListItemText">Tools</span>

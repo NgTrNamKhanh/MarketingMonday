@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Submission from '../../components/submission/Submission';
 import "./submissions.css"
+import { useParams } from 'react-router-dom';
+import authHeader from '../../services/auth.header';
+import apis from '../../services/apis.service';
 
 const submissions = [
     {
@@ -55,10 +58,26 @@ const submissions = [
 ];
 
 export default function Submissions () {
-    useEffect(() => {
-        // Fetch submissions data from API or any data source
-        // Update submissions state with fetched data
-    }, []);
+    const { facultyId } = useParams();
+    const [submissions, setSubmissions] = useState([]);
+    const  [filteredSubmissions, setFilteredSubmissions] = useState([]);
+    const [selectedFilter, setSelectedFilter] = useState("all");
+
+    useEffect(()=>{
+        const fetchPosts = async () => {
+            if (facultyId) {
+                try {
+                    const response = await authHeader().get(apis.article + "faculty/" + facultyId);
+                    setSubmissions(response.data)
+                    setFilteredSubmissions(response.data)
+
+                }catch (error) {
+                    console.error("Error fetching submission data:", error);
+                }
+            }
+        }
+        fetchPosts();
+    },[facultyId])
 
     const handleComment = (submissionId) => {
         // Implement comment functionality
@@ -67,12 +86,50 @@ export default function Submissions () {
     const handleVerify = (submissionId) => {
         // Implement verify functionality
     };
+    const handleFilterChange = (event) => {
+        setSelectedFilter(event.target.value);
+        // Call function to sort posts based on selected filter
+        filterSubmissions(event.target.value);
+    };
+    const filterSubmissions = (filter) => {
+        let filteredSubmissions = [...submissions];
+        switch (filter) {
+            case "all":
+                filteredSubmissions = submissions;
+                break;
+            case "approved":
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1);
+                break;
+            case "not commented":
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.coordinatorComment === null && submission.publishStatusId === 3);
+                break;
+            case "commented":
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.coordinatorComment !== null && submission.publishStatusId === 3);
+                break;
+            case "reject":
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 2);
+                break;
+            default:
+                filteredSubmissions = submissions;
+                break;
+        }
+        setFilteredSubmissions(filteredSubmissions);
+    };
 
     return (
         <div className="submissions">
             <div className="submissionsWrapper">
+                <div className="postFilter">
+                    <select value={selectedFilter} onChange={handleFilterChange}>
+                        <option value="all">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="not commented">Not Commented</option>
+                        <option value="commented">Commented</option>
+                        <option value="reject">Reject</option>
+                    </select>
+                </div>
                 <h1>Submissions</h1>
-                {submissions.map((submission) => (
+                {filteredSubmissions.map((submission) => (
                     <Submission
                         key={submission.id}
                         submission={submission}

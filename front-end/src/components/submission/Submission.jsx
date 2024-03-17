@@ -33,10 +33,11 @@ const headerText = (
     </>
 );
 export default function  Submission ({ submission, onComment, onVerify }) {
+    console.log(submission)
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [tncOpen, setTnCOpen] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);
-    const [comment, setComment] = useState("Hi, this is very good");
+    const [comment, setComment] = useState(submission.coordinatorComment);
 
     const optionsRef = useRef(null);
     useEffect(() => {
@@ -84,36 +85,36 @@ export default function  Submission ({ submission, onComment, onVerify }) {
     };
     
     let pictureLayout;
-    if (submission.submissionimgs.length === 1) {
+    if (submission.imageBytes.length === 1) {
         pictureLayout = (
             <div className="submissionCenter">
-                {submission.submissionimgs.map((img, index) => (
+                {submission.imageBytes.map((img, index) => (
                     <img key={index} src={img} className="submissionImg" alt={`submission image ${index}`} />
                 ))}
             </div>
         );
-    } else if (submission.submissionimgs.length === 2) {
+    } else if (submission.imageBytes.length === 2) {
         pictureLayout = (
             <div className="submissionImgGroup">
-                <img src={submission.submissionimgs[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
-                <img src={submission.submissionimgs[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
+                <img src={submission.imageBytes[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
+                <img src={submission.imageBytes[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
             </div>
         );
     } else{
         pictureLayout = (
             <div className="submissionCenter">
                 <div className="submissionImgGroup">
-                    <img src={submission.submissionimgs[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
-                    <img src={submission.submissionimgs[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
+                    <img src={submission.imageBytes[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
+                    <img src={submission.imageBytes[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
                 </div>
                 <div className="submissionImgGroup">
-                    <img src={submission.submissionimgs[2]} className="submissionImg submissionImgBottom" alt={`submission image 3`} />
-                    {submission.submissionimgs.length > 3 && 
+                    <img src={submission.imageBytes[2]} className="submissionImg submissionImgBottom" alt={`submission image 3`} />
+                    {submission.imageBytes.length > 3 && 
                         <div className="extraImg">
-                            {submission.submissionimgs.slice(3,7).map((img, index) => (
+                            {submission.imageBytes.slice(3,7).map((img, index) => (
                                 <img key={index} src={img} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`} />
                             ))}
-                            <div className="overlay">+{submission.submissionimgs.length - 3}</div>
+                            <div className="overlay">+{submission.imageBytes.length - 3}</div>
                         </div>
                     }
                 </div>
@@ -123,39 +124,27 @@ export default function  Submission ({ submission, onComment, onVerify }) {
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        const submissionDateObj = new Date(submission.date);
+        if (submission.coordinatorComment) {
+            setStatus('commented');
+        } else if (submission.publishStatusId === 1) {
+            setStatus('approved');
+        } else if (submission.publishStatusId === 3 && submission.coordinatorComment === null) {
+            setStatus('not commented');
+        } else if (submission.publishStatusId === 2) {
+            setStatus('reject');
+        }
+    }, [submission.coordinatorComment, submission.publishStatusId]);
 
-        const currentDate = new Date();
-
-        const timeDiff = currentDate.getTime() - submissionDateObj.getTime();
-        const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        const hoursDiff = Math.floor((timeDiff % (1000 * 3600 * 24)) / (1000 * 3600));
-        const minutesDiff = Math.floor((timeDiff % (1000 * 3600)) / (1000 * 60));
-        console.log(daysDiff)
-        if(comment){
-            setStatus('commented')
-        }
-        else if (daysDiff < 13) {
-            setStatus(`${14 - daysDiff} days remain`);
-        }else if(hoursDiff<23){
-            setStatus(`${hoursDiff} hours remain`)
-        } else if(minutesDiff<59){
-            setStatus(`${minutesDiff} minutes remain`)
-        }
-        else {
-            setStatus('expired');
-        }
-    }, [submission.date]);
 
     return (
         <div className="submission">
             <div className="submissionWrapper">
                 <div className="submissionTop">
                     <div className="submissionTopLeft">
-                        <img src={submission.img} className="submissionProfileImg" alt="profile" />
-                        <span className="submissionUsername">{submission.username}</span>
+                        <img src={submission.studentName} className="submissionProfileImg" alt="profile" />
+                        <span className="submissionUsername">{submission.studentName}</span>
                         <span className="submissionDate">
-                            {submission.date} 
+                            {new Date(submission.date).toLocaleDateString()} {new Date(submission.date).toLocaleTimeString()}
                             ({status})
                             </span>
                     </div>
@@ -184,12 +173,12 @@ export default function  Submission ({ submission, onComment, onVerify }) {
                 </div>
                 <div className="submissionCenter">
                     <h2 className='submissionTitle'>{submission.title}</h2>
-                    <p className='submissionContent'>{submission.content}</p>
-                    {submission.files.map((file, index) => (
+                    <p className='submissionContent'>{submission.description}</p>
+                    {/* {submission.files.map((file, index) => (
                         <div key={index} className="itemContainer">
                             <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
                 {pictureLayout}
                 <div className="commentSection" id='comment'>

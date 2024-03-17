@@ -49,7 +49,7 @@ export default function Home() {
                         )}
                     <div className="mainContent">
                         <Routes>
-                            <Route path="/" element=
+                            <Route path="/feed/:facultyId" element=
                                 {<ProtectedRoute
                                     element={<Feed />}
                                     requiredRoles={['Admin', 'Manager', 'Coordinator','Student','Guess']}
@@ -76,10 +76,10 @@ export default function Home() {
                                     requiredRoles={['Admin']}
                                 />} 
                             />
-                            <Route path="/manager/submissions" element=
+                            <Route path="/manager/submissions/:facultyId" element=
                                 {<ProtectedRoute
                                     element={<Submissions />}
-                                    requiredRoles={['Admin', 'Manager']}
+                                    requiredRoles={['Admin', 'Manager', 'Coordinator']}
                                 />} 
                             />
                             <Route path="/admin/accounts" element=

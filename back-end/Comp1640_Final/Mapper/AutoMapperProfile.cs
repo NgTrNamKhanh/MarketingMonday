@@ -8,8 +8,10 @@ namespace Comp1640_Final.Mapper
     {
         public AutoMapperProfile()
         {
-            CreateMap<ListArticleDTO, Article>();
+            CreateMap<AddArticleDTO, Article>();
+            CreateMap<EditArticleDTO, Article>();
             CreateMap<Article, ArticleDTO>();
+            CreateMap<Article, SubmissionDTO>();
             CreateMap<Event, EventDTO>();
             CreateMap<EventDTO, Event>();
         }

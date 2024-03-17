@@ -3,6 +3,7 @@ using Comp1640_Final.Data;
 using Comp1640_Final.DTO;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,15 +19,19 @@ namespace Comp1640_Final.Controllers
         private readonly ProjectDbContext _context;
         private static IWebHostEnvironment _webHostEnvironment;
 
+        private readonly UserManager<ApplicationUser> _userManager;
+
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
             ProjectDbContext context,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<ApplicationUser> userManager)
         {
             _articleService = articleService;
             _mapper = mapper;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
         [HttpGet]
         public async Task<IActionResult> GetArticles()
@@ -36,8 +41,10 @@ namespace Comp1640_Final.Controllers
 
             foreach (var article in articles)
             {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                articleDTO.StudentName = user.FirstName +" "+user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -47,16 +54,21 @@ namespace Comp1640_Final.Controllers
         [HttpGet("id/{articleId}")]
         public async Task<IActionResult> GetArticleByID(Guid articleId)
         {
-            if (!_articleService.ArticleExists(articleId))
+            if (!_articleService.ArticleExists(articleId)) 
+            {
                 return NotFound();
 
-            var article = _mapper.Map<ArticleDTO>(_articleService.GetArticleByID(articleId));
+            }
+            var article = _articleService.GetArticleByID(articleId);
+            var articleDTO = _mapper.Map<ArticleDTO>(article);
+            var user = await _userManager.FindByIdAsync(article.StudentId);
             var imageBytes = await _articleService.GetImagesByArticleId(articleId);
-            article.ImageBytes = imageBytes.ToList();
+            articleDTO.StudentName = user.FirstName + " " + user.LastName;
+            articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(article);
+            return Ok(articleDTO);
         }
 
         [HttpGet("title/{articleTitle}")]
@@ -69,8 +81,10 @@ namespace Comp1640_Final.Controllers
 
             foreach (var article in articles)
             {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -86,22 +100,23 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound();
 
-            var articleDTOs = new List<ArticleDTO>();
+            var articleDTOs = new List<SubmissionDTO>();
 
             foreach (var article in articles)
             {
-                var articleDTO = _mapper.Map<ArticleDTO>(article);
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionDTO>(article);
                 articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
         }
-        
-        [HttpGet("student/{publishStatusId}/faculty/{facultyId}")]
-        public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId)
+        [HttpGet("approved/faculty/{facultyId}")]
+        public async Task<IActionResult> GetApprovedAticles(int facultyId)
         {
-            var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
+            var articles = await _articleService.GetApprovedArticles(facultyId);
 
             if (articles == null || !articles.Any())
                 return NotFound();
@@ -110,8 +125,31 @@ namespace Comp1640_Final.Controllers
 
             foreach (var article in articles)
             {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTOs.Add(articleDTO);
+            }
+            return Ok(articleDTOs);
+        }
+        [HttpGet("status/{publishStatusId}/faculty/{facultyId}")]
+        public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId)
+        {
+            var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
+
+            if (articles == null || !articles.Any())
+                return NotFound();
+
+            var articleDTOs = new List<SubmissionDTO>();
+
+            foreach (var article in articles)
+            {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -127,12 +165,14 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound();
 
-            var articleDTOs = new List<ArticleDTO>();
+            var articleDTOs = new List<SubmissionDTO>();
 
             foreach (var article in articles)
             {
-                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var articleDTO = _mapper.Map<SubmissionDTO>(article);
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -185,8 +225,8 @@ namespace Comp1640_Final.Controllers
             return File(fileStream, "application/octet-stream", Path.GetFileName(absolutePath));
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Article>> AddArticle([FromForm]ListArticleDTO articleAdd)
+        [HttpPost("student")]
+        public async Task<ActionResult<Article>> AddArticle([FromForm]AddArticleDTO articleAdd)
         {
             if (articleAdd == null)
                 return BadRequest(ModelState);
@@ -224,6 +264,7 @@ namespace Comp1640_Final.Controllers
                 }
             }
 
+
             if (articleAdd.DocFiles.Length > 0)
             {
                 try
@@ -244,22 +285,23 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully added");
         }
+
+
         [HttpPut("{articleId}")]
-        public async Task<ActionResult<Article>> UpdateArticle(Guid articleId, [FromForm] ListArticleDTO articleUpdate)
+        public async Task<ActionResult<Article>> UpdateArticle([FromForm] EditArticleDTO articleUpdate)
         {
             if (articleUpdate == null)
                 return BadRequest(ModelState);
 
-            if (!_articleService.ArticleExists(articleId))
+            if (!_articleService.ArticleExists(articleUpdate.Id))
                 return NotFound();
 
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var articleMap = _mapper.Map<Article>(articleUpdate);
-            articleMap.Id = articleId;
             articleMap.UploadDate = DateTime.Now;
-            var article = _articleService.GetArticleByID(articleId);
+            var article = _articleService.GetArticleByID(articleMap.Id);
 
             if (articleUpdate.ImageFiles.Count > 0)
             {

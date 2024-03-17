@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ChatBubble, ChatBubbleOutline, ModeComment, MoreVert, RecommendRounded, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
+import { ChatBubbleOutline, MoreVert, RecommendRounded, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
 import "./post.css";
 const commentsData = [
     {
@@ -60,7 +60,7 @@ const commentsData = [
 export default function Post({ post}) {
     const [like, setLike] = useState(post.likes)
     useEffect(() => {
-        setLike(post.likes); // Update like count when post prop changes
+        setLike(post.likes);
     }, [post.likes]);
     const [isLiked, setIsLiked] = useState(false)
     const handleLike = () => {
@@ -85,36 +85,36 @@ export default function Post({ post}) {
 
     // Determine the layout of pictures based on their count
     let pictureLayout;
-    if (post.postimgs.length === 1) {
+    if (post.imageBytes.length === 1) {
         pictureLayout = (
             <div className="postCenter">
-                {post.postimgs.map((img, index) => (
+                {post.imageBytes.map((img, index) => (
                     <img key={index} src={img} className="postImg" alt={`Post image ${index}`} />
                 ))}
             </div>
         );
-    } else if (post.postimgs.length === 2) {
+    } else if (post.imageBytes.length === 2) {
         pictureLayout = (
             <div className="postImgGroup">
-                <img src={post.postimgs[0]} className="postImg postImgBottom" alt="Post image 1" />
-                <img src={post.postimgs[1]} className="postImg postImgBottom" alt="Post image 2" />
+                <img src={post.imageBytes[0]} className="postImg postImgBottom" alt="Post image 1" />
+                <img src={post.imageBytes[1]} className="postImg postImgBottom" alt="Post image 2" />
             </div>
         );
     } else{
         pictureLayout = (
             <div className="postCenter">
                 <div className="postImgGroup">
-                    <img src={post.postimgs[0]} className="postImg postImgBottom" alt="Post image 1" />
-                    <img src={post.postimgs[1]} className="postImg postImgBottom" alt="Post image 2" />
+                    <img src={post.imageBytes[0]} className="postImg postImgBottom" alt="Post image 1" />
+                    <img src={post.imageBytes[1]} className="postImg postImgBottom" alt="Post image 2" />
                 </div>
                 <div className="postImgGroup">
-                    <img src={post.postimgs[2]} className="postImg postImgBottom" alt={`Post image 3`} />
-                    {post.postimgs.length > 3 && 
+                    <img src={post.imageBytes[2]} className="postImg postImgBottom" alt={`Post image 3`} />
+                    {post.imageBytes.length > 3 && 
                         <div className="extraImg">
-                            {post.postimgs.slice(3,7).map((img, index) => (
+                            {post.imageBytes.slice(3,7).map((img, index) => (
                                 <img key={index} src={img} className="postImg postImgBottom" alt={`Post image ${index + 3}`} />
                             ))}
-                            <div className="overlay">+{post.postimgs.length - 3}</div>
+                            <div className="overlay">+{post.imageBytes.length - 3}</div>
                         </div>
                     }
                 </div>
@@ -193,9 +193,9 @@ export default function Post({ post}) {
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <img src={post.img} className="postProfileImg" alt="profile" />
-                        <span className="postUsername">{post.username}</span>
-                        <span className="postDate">{post.date}</span>
+                        <img src={post.studentId} className="postProfileImg" alt="profile" />
+                        <span className="postUsername">{post.studentName}</span>
+                        <span className="postDate">{new Date(post.date).toLocaleDateString()} {new Date(post.date).toLocaleTimeString()}</span>
                     </div>
                     <div className="postTopRight">
                         <MoreVert/>
@@ -203,12 +203,12 @@ export default function Post({ post}) {
                 </div>
                 <div className="postCenter">
                     <h2 className='postTitle'>{post.title}</h2>
-                    <p className='postContent'>{post.content}</p>
-                    {post.files.map((file, index) => (
+                    <p className='postContent'>{post.description}</p>
+                    {/* {post.files.map((file, index) => (
                         <div key={index} className="itemContainer">
                             <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
                         </div>
-                    ))}
+                    ))} */}
                 </div>
                 {pictureLayout}
                 <div className="postBottom">

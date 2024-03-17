@@ -10,5 +10,6 @@ namespace Comp1640_Final.Models
         NotApproval = 2,
         [Display(Name = "Pending")]
         Pending = 3,
+
     }
 }
