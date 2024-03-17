@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import authService from "../../../services/auth.service";
 import "../authentication.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const LoginBox = ({setCurrentUser}) => {
     const navigator = useNavigate();
@@ -10,6 +11,7 @@ const LoginBox = ({setCurrentUser}) => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [checked, setChecked] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     // Handle form submission
     const handleSubmit = async (event) => {
 
@@ -36,6 +38,9 @@ const LoginBox = ({setCurrentUser}) => {
     const handleCheckboxChange = (event) => {
         setChecked(event.target.checked);
     };
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
     return (
         <div className="login">
             <div className="loginWrapper">
@@ -58,14 +63,31 @@ const LoginBox = ({setCurrentUser}) => {
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
-                        <div className="loginField">
-                            <label>Password</label>
+                        <div className="passwordField">
+                            <div className="passwordFieldTop">
+                                <label>Password</label>
+                                <div className="passwordFieldToogle">
+                                {showPassword? 
+                                    <div className="togglePasswordButton"  onClick={togglePasswordVisibility}>
+                                        <VisibilityOff /> 
+                                        <span>Hide</span>
+                                        
+                                    </div>
+                                    : 
+                                    <div className="togglePasswordButton"  onClick={togglePasswordVisibility}>
+                                        <Visibility /> 
+                                        <span>Show</span>
+                                    </div>
+                                }
+                                </div>
+                            </div>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 className="loginInput"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            
                             <span className="passwordAdd">Use 8 or more characters with a mix of letters, numbers & symbols</span>
                         </div>
                         <div className="checkBox">

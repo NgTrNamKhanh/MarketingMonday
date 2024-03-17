@@ -55,11 +55,14 @@ export default function Article() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const [tncOpen, setTnCOpen] = useState(false);
-    const [startDate, setStartDate] = useState(new Date()); 
-    const [endDate, setEndDate] = useState(new Date(2024, 2, 4)); 
+    const [startDate, setStartDate] = useState(); 
+    const [endDate, setEndDate] = useState(); 
     const [remainingTime, setRemainingTime] = useState(0);
 
     const [currentUser, setCurrentUser] = useState(null);
+    const [event, setEvent] = useState();
+
+    
 
     useEffect(() => {
         const user = authService.getCurrentUser();
@@ -67,16 +70,31 @@ export default function Article() {
             setCurrentUser(user);
         }
     }, []);
-
     useEffect(() => {
+        const fetchEvent = async () => {
+            if (currentUser) {
+                try {
+                    const response = await authHeader().get(apis.event + "student/" + currentUser.id);
+                    setEvent(response.data);
+                    setStartDate(response.data.startDate)
+                    setEndDate(response.data.endDate)
+                } catch (error) {
+                    console.error("Error fetching event data:", error);
+                }
+            }
+        };
+        fetchEvent();
+    }, [currentUser]);
+    useEffect(() => {
+        const endDateConverted = new Date(endDate); 
         const intervalId = setInterval(() => {
             const currentTime = new Date();
-            const diff = endDate.getTime() - currentTime.getTime();
+            const diff = endDateConverted.getTime() - currentTime.getTime();
             setRemainingTime(diff > 0 ? diff : 0);
         }, 1000);
 
         return () => clearInterval(intervalId);
-    }, [startDate, endDate]);
+    }, [endDate]);
 
     const handleCloseTnCDialog = () => {
         setTnCOpen(false);
@@ -157,9 +175,16 @@ export default function Article() {
                 <hr className="articleHr" />
                 
                 <div className="dateSection">
-                    <p>Opened: {startDate.toLocaleDateString()}</p>
-                    <p>Due: {endDate.toLocaleDateString()}</p>
-                    <p>Time Remaining: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
+                    {startDate && endDate ? (
+                        <>
+                            <p>Event Name: {event.eventName}</p>
+                            <p>Opened: {new Date(startDate).toLocaleDateString()} {new Date(startDate).toLocaleTimeString()}</p>
+                            <p>Due: {new Date(endDate).toLocaleDateString()} {new Date(endDate).toLocaleTimeString()}</p>
+                            <p>Time Remaining: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
+                        </>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
                 </div>
                 <h2 className="createSubmission">Create a submission</h2>
                 <Formik
