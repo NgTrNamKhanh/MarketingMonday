@@ -12,20 +12,16 @@ namespace Comp1640_Final.Services
         Article GetArticleByID(Guid id);
         Task<IEnumerable<Article>> GetArticlesByTitle(string title);
         Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
-        Task<IEnumerable<Article>> GetStudentConfirmedArticle(int facultyID);
-        Task<IEnumerable<Article>> GetStudentOnHoldArticle(int facultyID);
-        Task<IEnumerable<Article>> GetStudentOnHoldNotCommentedArticle(int facultyID);
-        Task<IEnumerable<Article>> GetStudentOnHoldCommentedArticle(int facultyID);
-        Task<IEnumerable<Article>> GetStudentNotApprovaldArticle(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
+        Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId);
         bool IsValidImageFile(List<IFormFile> imageFile);
         Task<IEnumerable<string>> SaveImagesAsync(List<IFormFile> imageFile, string subFolderName);
         bool IsValidDocFile(IFormFile imageFile);
         Task<string> SaveDocAsync(IFormFile docFile, string subFolderName);
         bool ArticleExists(Guid articleId);
         bool DeleteArticle(Article article);
+        Task<IEnumerable<byte[]>> GetImagesByArticleIdAsync(Guid articleId);
         bool Save();
-
 
     }
     public class AritcleService : IAritcleService
@@ -55,40 +51,16 @@ namespace Comp1640_Final.Services
         {
             return await _context.Articles.Where(p => p.FacultyId == facultyID).ToListAsync();
         }
-        public async Task<IEnumerable<Article>> GetStudentConfirmedArticle(int facultyID)
-        {
-            return await _context.Articles
-                .Where(p => p.FacultyId == facultyID && p.PublishStatusId == (int)EPublishStatus.Approval)
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Article>> GetStudentOnHoldArticle(int facultyID)
-        {
-            return await _context.Articles
-                .Where(p => p.FacultyId == facultyID && p.PublishStatusId == (int)EPublishStatus.Pending)
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Article>> GetStudentOnHoldCommentedArticle(int facultyID)
-        {
-            return await _context.Articles
-                .Where(p => p.FacultyId == facultyID && !string.IsNullOrWhiteSpace(p.CoordinatorComment) && p.PublishStatusId == (int)EPublishStatus.Pending)
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Article>> GetStudentOnHoldNotCommentedArticle(int facultyID)
-        {
-            return await _context.Articles
-                .Where(p => p.FacultyId == facultyID && string.IsNullOrWhiteSpace(p.CoordinatorComment) && p.PublishStatusId == (int)EPublishStatus.Pending)
-                .ToListAsync();
-        }
-        public async Task<IEnumerable<Article>> GetStudentNotApprovaldArticle(int facultyID)
-        {
-            return await _context.Articles
-                .Where(p => p.FacultyId == facultyID && p.PublishStatusId == (int)EPublishStatus.NotApproval)
-                .ToListAsync();
-        }
         public async Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId)
         {
             return await _context.Articles
                 .Where(p => p.FacultyId == facultyId && p.PublishStatusId == publishStatusId)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId)
+        {
+            return await _context.Articles
+                .Where(p => p.PublishStatusId == publishStatusId)
                 .ToListAsync();
         }
         public bool ArticleExists(Guid articleId)
@@ -198,6 +170,36 @@ namespace Comp1640_Final.Services
             }
 
             return "\\Docs\\" + subfolderName + "\\" + fileName;
+        }
+
+        public async Task<IEnumerable<byte[]>> GetImagesByArticleIdAsync(Guid articleId)
+        {
+            var article = await _context.Articles.FindAsync(articleId);
+
+            if (article == null)
+            {
+                return null; // Or handle as needed
+            }
+
+            var imagePaths = article.ImagePath?.Split(';');
+            var imageBytesList = new List<byte[]>();
+
+            foreach (var imagePath in imagePaths)
+            {
+                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('\\'));
+
+                if (System.IO.File.Exists(filePath))
+                {
+                    var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                    imageBytesList.Add(imageBytes);
+                }
+                else
+                {
+                    // Optionally log or handle the case where the image file is not found
+                }
+            }
+
+            return imageBytesList;
         }
 
     }

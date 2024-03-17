@@ -16,9 +16,7 @@ namespace Comp1640_Final.Models
         [NotMapped]
         public List<IFormFile> ImageFiles {  get; set; } 
         public string? ImagePath { get; set; }
-        //public string ImageName { get; set; }
-        //public byte[] ImageContent { get; set; }
-        //public string ImageContentType { get; set; }
+
         [NotMapped]
         public IFormFile DocFiles { get; set; }
         public string? DocPath { get; set; }
@@ -44,11 +42,9 @@ namespace Comp1640_Final.Models
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
         public int FacultyId { get; set; }
         public string StudentId { get; set; }
         public List<IFormFile> ImageFiles { get; set; }
         public IFormFile DocFiles { get; set; }
-        //public string MarketingCoordinatorId { get; set; }
     }
 }

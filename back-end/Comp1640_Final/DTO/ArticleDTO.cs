@@ -9,6 +9,7 @@
         public string StudentId { get; set; }
         public string ImagePath { get; set; }
         public string DocPath { get; set; }
+        public List<byte[]> ImageBytes { get; set; }
 
         //public string MarketingCoordinatorId { get; set; }
     }

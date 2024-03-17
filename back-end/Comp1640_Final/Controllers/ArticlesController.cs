@@ -4,6 +4,7 @@ using Comp1640_Final.DTO;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Controllers
 {
@@ -27,23 +28,30 @@ namespace Comp1640_Final.Controllers
             _webHostEnvironment = webHostEnvironment;
         }
         [HttpGet]
-        public IActionResult GetArticles()
+        public async Task<IActionResult> GetArticles()
         {
-            var articles = _mapper.Map<List<ArticleDTO>>(_articleService.GetArticles());
+            var articles = _articleService.GetArticles();
+            var articleDTOs = new List<ArticleDTO>();
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            foreach (var article in articles)
+            {
+                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
 
-            return Ok(articles);
+            return Ok(articleDTOs);
         }
         [HttpGet("id/{articleId}")]
-        public IActionResult GetArticleByID(Guid articleId)
+        public async Task<IActionResult> GetArticleByID(Guid articleId)
         {
             if (!_articleService.ArticleExists(articleId))
                 return NotFound();
 
             var article = _mapper.Map<ArticleDTO>(_articleService.GetArticleByID(articleId));
-
+            var imageBytes = await _articleService.GetImagesByArticleIdAsync(articleId);
+            article.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -53,13 +61,19 @@ namespace Comp1640_Final.Controllers
         [HttpGet("title/{articleTitle}")]
         public async Task<IActionResult> GetArticleByTitle(string articleTitle)
         {
-            var articles = await _articleService.GetArticlesByTitle(articleTitle);
+            var articles = await _articleService.GetArticlesByTitle(articleTitle); 
 
             if (articles == null || !articles.Any())
-                return NotFound();
+                return NotFound(); var articleDTOs = new List<ArticleDTO>();
 
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
+            foreach (var article in articles)
+            {
+                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
+            
             return Ok(articleDTOs);
         }
 
@@ -71,68 +85,15 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound();
 
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+            var articleDTOs = new List<ArticleDTO>();
 
-            return Ok(articleDTOs);
-        }
-        [HttpGet("studentConfimed/faculty/{facultyId}")]
-        public async Task<IActionResult> GetStudentConfirmedArticle(int facultyId)
-        {
-            var articles = await _articleService.GetStudentConfirmedArticle(facultyId);
-
-            if (articles == null || !articles.Any())
-                return NotFound();
-
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
-            return Ok(articleDTOs);
-        }
-        [HttpGet("studentOnHold/faculty/{facultyId}")]
-        public async Task<IActionResult> GetStudentOnHoldArticle(int facultyId)
-        {
-            var articles = await _articleService.GetStudentOnHoldArticle(facultyId);
-
-            if (articles == null || !articles.Any())
-                return NotFound();
-
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
-            return Ok(articleDTOs);
-        }
-        [HttpGet("studentOnHoldCommented/faculty/{facultyId}")]
-        public async Task<IActionResult> GetStudentOnHoldCommentedArticle(int facultyId)
-        {
-            var articles = await _articleService.GetStudentOnHoldCommentedArticle(facultyId);
-
-            if (articles == null || !articles.Any())
-                return NotFound();
-
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
-            return Ok(articleDTOs);
-        }
-        [HttpGet("studentOnHoldNotCommented/faculty/{facultyId}")]
-        public async Task<IActionResult> GetStudentOnHoldNotCommentedArticle(int facultyId)
-        {
-            var articles = await _articleService.GetStudentOnHoldNotCommentedArticle(facultyId);
-
-            if (articles == null || !articles.Any())
-                return NotFound();
-
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
-            return Ok(articleDTOs);
-        }
-        [HttpGet("studentOnHoldNotApproval/faculty/{facultyId}")]
-        public async Task<IActionResult> GetStudentOnHoldNotApprovalArticle(int facultyId)
-        {
-            var articles = await _articleService.GetStudentNotApprovaldArticle(facultyId);
-
-            if (articles == null || !articles.Any())
-                return NotFound();
-
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
-
+            foreach (var article in articles)
+            {
+                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
             return Ok(articleDTOs);
         }
         
@@ -144,90 +105,46 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound();
 
-            var articleDTOs = _mapper.Map<IEnumerable<ArticleDTO>>(articles);
+            var articleDTOs = new List<ArticleDTO>();
+
+            foreach (var article in articles)
+            {
+                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
 
             return Ok(articleDTOs);
         }
 
-        //[HttpGet("DownloadImages")]
-        //public IActionResult DownloadImages()
-        //{
-        //    var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images");
+        [HttpGet("publishStatus/{publishStatusId}")]
+        public async Task<IActionResult> GetArticleByPublishStatus(int publishStatusId)
+        {
+            var articles = await _articleService.GetArticleByPublishStatus(publishStatusId);
 
-        //    if (!Directory.Exists(imagesDirectory))
-        //    {
-        //        // Handle the case where the "Images" folder doesn't exist
-        //        return NotFound("The 'Images' folder does not exist.");
-        //    }
+            if (articles == null || !articles.Any())
+                return NotFound();
 
-        //    var imagePaths = Directory.GetFiles(imagesDirectory, "*.*", SearchOption.AllDirectories)
-        //                               .Where(file => file.ToLower().EndsWith(".jpg") || file.ToLower().EndsWith(".jpeg") || file.ToLower().EndsWith(".png"))
-        //                               .ToList();
+            var articleDTOs = new List<ArticleDTO>();
 
-        //    if (imagePaths.Count == 0)
-        //    {
-        //        // Handle the case where the "Images" folder is empty
-        //        return NotFound("The 'Images' folder does not contain any images.");
-        //    }
+            foreach (var article in articles)
+            {
+                var articleDTO = _mapper.Map<ArticleDTO>(article);
+                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
 
-        //    var tempFolderPath = Path.Combine(Path.GetTempPath(), "Images");
-        //    if (!Directory.Exists(tempFolderPath))
-        //        Directory.CreateDirectory(tempFolderPath);
-
-        //    foreach (var imagePath in imagePaths)
-        //    {
-        //        var relativePath = Path.GetRelativePath(imagesDirectory, imagePath);
-        //        var destinationPath = Path.Combine(tempFolderPath, relativePath);
-
-        //        var destinationDirectory = Path.GetDirectoryName(destinationPath);
-        //        if (!Directory.Exists(destinationDirectory))
-        //            Directory.CreateDirectory(destinationDirectory);
-
-        //        System.IO.File.Copy(imagePath, destinationPath, true);
-        //    }
-
-        //    var zipPath = Path.Combine(Path.GetTempPath(), "Images.zip");
-        //    ZipFile.CreateFromDirectory(tempFolderPath, zipPath, CompressionLevel.Fastest, true);
-
-        //    var zipBytes = System.IO.File.ReadAllBytes(zipPath);
-        //    return File(zipBytes, "application/zip", "Images.zip");
-        //}
+            return Ok(articleDTOs);
+        }
 
         [HttpGet("GetImages/{articleId}")]
         public async Task<IActionResult> GetImagesByArticleId(Guid articleId)
         {
-            var article = _articleService.GetArticleByID(articleId);
+            var imageBytesList = await _articleService.GetImagesByArticleIdAsync(articleId);
 
-            if (article == null)
-            {
-                return NotFound("Article not found");
-            }
-
-            if (string.IsNullOrEmpty(article.ImagePath))
-            {
-                return NotFound("No images found for the article");
-            }
-
-            var imagePaths = article.ImagePath.Split(';');
-
-            var imageBytesList = new List<byte[]>();
-
-            foreach (var imagePath in imagePaths)
-            {
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('\\'));
-
-                if (System.IO.File.Exists(filePath))
-                {
-                    var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                    imageBytesList.Add(imageBytes);
-                }
-                else
-                {
-                    // Optionally log or handle the case where the image file is not found
-                }
-            }
-
-            if (imageBytesList.Count == 0)
+            if (imageBytesList == null || !imageBytesList.Any())
             {
                 return NotFound("No images found for the article");
             }
@@ -279,6 +196,7 @@ namespace Comp1640_Final.Controllers
             var articleMap = _mapper.Map<Article>(articleAdd);
             articleMap.Id = Guid.NewGuid();
             articleMap.PublishStatusId = (int)EPublishStatus.Pending;
+            articleMap.UploadDate = DateTime.Now;
 
             if (articleAdd.ImageFiles.Count > 0)
             {
@@ -304,10 +222,6 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
-            //else
-            //{
-            //    return BadRequest("No image files were uploaded.");
-            //}
 
             if (articleAdd.DocFiles.Length > 0)
             {
@@ -321,10 +235,6 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
-            //else
-            //{
-            //    return BadRequest("Upload Doc Failed");
-            //}
 
             _context.Articles.Add(articleMap);
             await _context.SaveChangesAsync();
@@ -332,7 +242,7 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully added");
         }
         [HttpPut("{articleId}")]
-        public async Task<ActionResult<Article>> UpdateArticle(Guid articleId, ListArticleDTO articleUpdate)
+        public async Task<ActionResult<Article>> UpdateArticle(Guid articleId, [FromForm] ListArticleDTO articleUpdate)
         {
             if (articleUpdate == null)
                 return BadRequest(ModelState);
@@ -345,6 +255,8 @@ namespace Comp1640_Final.Controllers
 
             var articleMap = _mapper.Map<Article>(articleUpdate);
             articleMap.Id = articleId;
+            articleMap.UploadDate = DateTime.Now;
+            var article = _articleService.GetArticleByID(articleId);
 
             if (articleUpdate.ImageFiles.Count > 0)
             {
@@ -356,30 +268,39 @@ namespace Comp1640_Final.Controllers
                     }
 
                     var imagePaths = await _articleService.SaveImagesAsync(articleUpdate.ImageFiles, articleMap.Id.ToString());
-                    if (imagePaths.Any())
+
+                    // Delete old image files
+                    var oldImagePaths = article.ImagePath?.Split(';');
+                    foreach (var oldImagePath in oldImagePaths)
                     {
-                        articleMap.ImagePath = string.Join(";", imagePaths);
+                        var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, oldImagePath.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
                     }
-                    else
-                    {
-                        return BadRequest("Failed to save image files.");
-                    }
+
+                    articleMap.ImagePath = string.Join(";", imagePaths);
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.ToString());
                 }
             }
-            //else
-            //{
-            //    return BadRequest("No image files were uploaded.");
-            //}
 
             if (articleUpdate.DocFiles.Length > 0)
             {
                 try
                 {
                     var docPath = await _articleService.SaveDocAsync(articleUpdate.DocFiles, articleMap.Id.ToString());
+
+                    // Delete old document file
+                    var oldDocPath = Path.Combine(_webHostEnvironment.WebRootPath, article.DocPath.TrimStart('\\'));
+                    if (System.IO.File.Exists(oldDocPath))
+                    {
+                        System.IO.File.Delete(oldDocPath);
+                    }
+
                     articleMap.DocPath = docPath;
                 }
                 catch (Exception ex)
@@ -387,14 +308,14 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
-            //else
-            //{
-            //    return BadRequest("Upload Doc Failed");
-            //}
+
+            if (article != null)
+            {
+                _context.Entry(article).State = EntityState.Detached;
+            }
 
             _context.Articles.Update(articleMap);
             await _context.SaveChangesAsync();
-
 
             return Ok("Successfully updated");
         }
@@ -428,18 +349,26 @@ namespace Comp1640_Final.Controllers
             {
                 return NotFound();
             }
-
             var articleToDelete = _articleService.GetArticleByID(articleId);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images", articleId.ToString());
+            if (Directory.Exists(imagesDirectory))
+            {
+                Directory.Delete(imagesDirectory, true);
+            }
+
+            var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs", articleId.ToString());
+            if (Directory.Exists(docsDirectory))
+            {
+                Directory.Delete(docsDirectory, true);
+            }
 
             if (!_articleService.DeleteArticle(articleToDelete))
             {
                 ModelState.AddModelError("", "Something went wrong deleting article");
             }
 
-            return NoContent();
+            return Ok("Successfully delete article");
         }
     }
 }
