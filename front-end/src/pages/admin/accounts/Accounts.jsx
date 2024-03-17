@@ -10,6 +10,7 @@ import useFetch from "../../../hooks/useFetch";
 import apis from "../../../services/apis.service";
 import authService from "../../../services/auth.service";
 import authHeader from "../../../services/auth.header";
+import axios from "axios";
 // const data = [
 //     {
 //         id: 1,
@@ -54,6 +55,7 @@ const Accounts = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState(null);
+    const image = useFetch(apis.article+"GetImages/6EDD3D33-8DDF-485A-988C-4FC3CD17E519").data
 
     const user = authService.getCurrentUser();
     
@@ -99,9 +101,7 @@ const Accounts = () => {
             
             try {
                 // Send a DELETE request to the server
-                const res = await authHeader().delete(url, {
-                    withCredentials: true,
-                });
+                const res = await authHeader().delete(url);
         
                 // Check if the delete was successful
                 if (res.status === 200) {
@@ -355,9 +355,21 @@ const Accounts = () => {
                     />
                 )}
                 </div>
+                {image.map((imageBytes, index) => (
+                    <img src={`data:image/jpeg;base64,${imageBytes}`} alt="Rendered Image"/>
+                ))}
             {/* </Box> */}
         </div>
     );
+    function arrayBufferToBase64(buffer) {
+        let binary = '';
+        const bytes = new Uint8Array(buffer);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary);
+        }
 };
 
 export default Accounts;

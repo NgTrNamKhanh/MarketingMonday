@@ -2,6 +2,13 @@ import { AttachFile, PermMedia } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import "./article.css";
 import TermsAndConditions from "../../components/termsAndConditions/TermsAndConditions";
+import authHeader from "../../services/auth.header";
+import apis from "../../services/apis.service";
+import { Form, Formik } from "formik";
+import { Button, TextField } from "@mui/material";
+import * as yup from "yup";
+import authService from "../../services/auth.service";
+import { useNavigate } from "react-router-dom";
 const termsAndConditionsText = (
     <ul>
         <li>
@@ -33,16 +40,35 @@ const headerText = (
     <p>Before this article can be submitted for the Coodinator to see, there are a few Terms and Conditions:</p>
     </>
 );
+const initialValues = {
+    title: "",
+    description: "",
+};
+const userSchema = yup.object().shape({
+    title: yup.string().required("required"),
+    description: yup.string().required("required"),
+});
 export default function Article() {
+    const navigator = useNavigate();
     const [selectedPhotos, setSelectedPhotos] = useState([]);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [message, setMessage] = useState("");
     const [tncOpen, setTnCOpen] = useState(false);
     const [startDate, setStartDate] = useState(new Date()); 
     const [endDate, setEndDate] = useState(new Date(2024, 2, 4)); 
     const [remainingTime, setRemainingTime] = useState(0);
 
+    const [currentUser, setCurrentUser] = useState(null);
+
     useEffect(() => {
-        // Calculate remaining time when startDate or endDate changes
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
+
+    useEffect(() => {
         const intervalId = setInterval(() => {
             const currentTime = new Date();
             const diff = endDate.getTime() - currentTime.getTime();
@@ -58,9 +84,7 @@ export default function Article() {
     const handleOpenTnCDialog = () => {
         setTnCOpen(true);
     };
-    const handleSubmit = () =>{
-        console.log("Hi")
-    };
+    
 
     const handlePhotoUpload = (event) => {
         const files = Array.from(event.target.files);
@@ -91,79 +115,170 @@ export default function Article() {
         updatedFiles.splice(index, 1);
         setSelectedFiles(updatedFiles);
     };
+    const handleSubmit = async(values) =>{
+        setIsSubmitting(true);
+        const FormData = require('form-data');
+        const formData = new FormData();
+        // Append fields to the FormData object
+        formData.append('Title', values.title);
+        formData.append('Description', values.description);
+        formData.append('Date', new Date().toISOString()); 
+        formData.append('FacultyId', currentUser.facultyId);
+        formData.append('StudentId', currentUser.id);
+        selectedPhotos.forEach((photo, index) => {
+            formData.append(`ImageFiles`, photo, photo.name);
+        });
+        
+        // Append document files
+        selectedFiles.forEach((file, index) => {
+            formData.append(`DocFiles`, file, file.name);
+        });
+        const url =  apis.article
 
+        try{
+            const res = await authHeader().post(url, formData);
+            if (res.status === 200) {
+                setMessage("Account edited successfully.");
+                navigator("/");
+            } else {
+                setIsSubmitting(false);
+                setMessage(`An error occurred: ${res.data}`);
+            }
+        }catch (error) {
+            setIsSubmitting(false);
+            setMessage(error.response.data);
+        }
+    };
 
     return (
         <div className="article">
             <div className="articleWrapper">
                 <h1>Submission</h1>
                 <hr className="articleHr" />
+                
                 <div className="dateSection">
                     <p>Opened: {startDate.toLocaleDateString()}</p>
                     <p>Due: {endDate.toLocaleDateString()}</p>
                     <p>Time Remaining: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
                 </div>
                 <h2 className="createSubmission">Create a submission</h2>
-                <div className="articleContent">
-                    <input type="text" className="articleTitle" placeholder="Title"/>
-                    <br />
-                    <textarea placeholder="Write your article?" className="articleInput"></textarea>
-                </div>
-                <div className="articleBottom">
-                    <div className="selectedItems">
-                        {selectedPhotos.map((photo, index) => (
-                            <div key={index} className="itemContainer">
-                                <img src={URL.createObjectURL(photo)} alt={`Uploaded photo ${index}`} className="itemContainerImg"/>
-                                <a href={URL.createObjectURL(photo)} className="fileLink" target="_blank" rel="noopener noreferrer">{photo.name}</a>
-                                <button className="removeButton" onClick={() => handleRemovePhoto(index)}>X</button>
-                            </div>
-                        ))}
-                        {selectedFiles.map((file, index) => (
-                            <div key={index} className="itemContainer">
-                                <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
-                                <button className="removeButton" onClick={() => handleRemoveFile(index)}>X</button>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="articleOptions">
-                        <div className="articleOption">
-                            <label htmlFor="photoInput" className="fileInput">
-                                <PermMedia htmlColor="tomato" className="articleIcon" />
-                            </label>
-                            <input
-                                id="photoInput"
-                                type="file"
-                                accept=".jpg, .jpeg, .png"
-                                style={{ display: "none" }}
-                                onChange={handlePhotoUpload}
-                                multiple
-                            />
-                        </div>
-                        <div className="articleOption">
-                            <label htmlFor="fileInput" className="fileInput">
-                                <AttachFile htmlColor="blue" className="articleIcon" />
-                            </label>
-                            <input
-                                id="fileInput"
-                                type="file"
-                                accept=".docx, .doc"
-                                style={{ display: "none" }}
-                                onChange={handleFileUpload}
-                                multiple
-                            />
-                        </div>
-                        <TermsAndConditions
-                            open = {tncOpen}
-                            handleClose = {handleCloseTnCDialog}
-                            handleConfirm = {handleSubmit}
-                            termsAndConditionsText = {termsAndConditionsText}
-                            headerText = {headerText}
+                <Formik
+                    onSubmit={handleSubmit}
+                    initialValues={initialValues}
+                    validationSchema={userSchema}
+                >
+                {({
+                    values,
+                    errors,
+                    touched,
+                    handleBlur,
+                    handleChange,
+                    handleSubmit,
+                }) => (
+                    <Form onSubmit={handleSubmit}>
+                    {/* <Box
+                        display="grid"
+                        gap="4vh"
+                        gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+                        sx={{
+                        "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                        }}
+                    > */}
+                    <div className="articleContent">
+                        {/* <input type="text" className="articleTitle" placeholder="Title"/> */}
+                        <TextField
+                            fullWidth
+                            variant="filled"
+                            type="text"
+                            label="Title"
+                            onBlur={handleBlur}
+                            onChange={handleChange}
+                            value={values.title}
+                            name="title"
+                            error={!!touched.title && !!errors.title}
+                            helperText={touched.title && errors.title}
+                            className="articleTitle"
                         />
+                    <br />
+                    {/* <textarea placeholder="Write your article?" className="articleInput"></textarea> */}
+                    <TextField
+                        fullWidth
+                        variant="filled"
+                        type="text"
+                        label="Write your content!"
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.description}
+                        name="description"
+                        error={!!touched.description && !!errors.description}
+                        helperText={touched.description && errors.description}
+                        multiline
+                        rows={9}
+                        className="articleInput"
+                        // sx={{ gridColumn: "span 2" }}
+                    />
                     </div>
-                </div>
-                <div className="buttonContainer">
-                    <button onClick={handleOpenTnCDialog} className="articleButton">Submit</button>
-                </div>
+                    <div className="articleBottom">
+                        <div className="selectedItems">
+                            {selectedPhotos.map((photo, index) => (
+                                <div key={index} className="itemContainer">
+                                    <img src={URL.createObjectURL(photo)} alt={`Uploaded photo ${index}`} className="itemContainerImg"/>
+                                    <a href={URL.createObjectURL(photo)} className="fileLink" target="_blank" rel="noopener noreferrer">{photo.name}</a>
+                                    <button className="removeButton" onClick={() => handleRemovePhoto(index)}>X</button>
+                                </div>
+                            ))}
+                            {selectedFiles.map((file, index) => (
+                                <div key={index} className="itemContainer">
+                                    <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
+                                    <button className="removeButton" onClick={() => handleRemoveFile(index)}>X</button>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="articleOptions">
+                            <div className="articleOption">
+                                <label htmlFor="photoInput" className="fileInput">
+                                    <PermMedia htmlColor="tomato" className="articleIcon" />
+                                </label>
+                                <input
+                                    id="photoInput"
+                                    type="file"
+                                    accept=".jpg, .jpeg, .png"
+                                    style={{ display: "none" }}
+                                    onChange={handlePhotoUpload}
+                                    multiple
+                                />
+                            </div>
+                            <div className="articleOption">
+                                <label htmlFor="fileInput" className="fileInput">
+                                    <AttachFile htmlColor="blue" className="articleIcon" />
+                                </label>
+                                <input
+                                    id="fileInput"
+                                    type="file"
+                                    accept=".docx, .doc"
+                                    style={{ display: "none" }}
+                                    onChange={handleFileUpload}
+                                    multiple
+                                />
+                            </div>
+                            <TermsAndConditions
+                                open = {tncOpen}
+                                handleClose = {handleCloseTnCDialog}
+                                handleConfirm = {handleSubmit}
+                                termsAndConditionsText = {termsAndConditionsText}
+                                headerText = {headerText}
+                            />
+                        </div>
+                    </div>
+                    <div className="buttonContainer">
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting ? <span>Loading...</span> : "Submit"}
+                        </Button>
+                    </div>
+                    {/* </Box> */}
+                </Form>
+            )}
+            </Formik>
             </div>
         </div>
     );

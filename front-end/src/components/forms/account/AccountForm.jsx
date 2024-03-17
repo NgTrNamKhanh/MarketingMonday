@@ -88,10 +88,7 @@ const AccountForm = ({
             
             if(!isEdit){
                 const url = apis.admin+"createAccount";
-                const res = await authHeader().post(url, accountSubmit, {
-                    // headers: authHeader(),
-                    withCredentials: true,
-                });
+                const res = await authHeader().post(url, accountSubmit, {});
                 if (res.status === 200) {
                     const updatedData = await reFetch();
                     localStorage.setItem("accounts", JSON.stringify(updatedData));
