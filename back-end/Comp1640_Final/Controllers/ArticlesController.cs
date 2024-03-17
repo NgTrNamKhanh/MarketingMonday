@@ -5,6 +5,7 @@ using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Comp1640_Final.Controllers
 {
@@ -36,7 +37,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
-                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -50,7 +51,7 @@ namespace Comp1640_Final.Controllers
                 return NotFound();
 
             var article = _mapper.Map<ArticleDTO>(_articleService.GetArticleByID(articleId));
-            var imageBytes = await _articleService.GetImagesByArticleIdAsync(articleId);
+            var imageBytes = await _articleService.GetImagesByArticleId(articleId);
             article.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -69,7 +70,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
-                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -90,7 +91,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
-                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -110,7 +111,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
-                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -131,7 +132,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
-                var imageBytes = await _articleService.GetImagesByArticleIdAsync(article.Id);
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -142,7 +143,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("GetImages/{articleId}")]
         public async Task<IActionResult> GetImagesByArticleId(Guid articleId)
         {
-            var imageBytesList = await _articleService.GetImagesByArticleIdAsync(articleId);
+            var imageBytesList = await _articleService.GetImagesByArticleId(articleId);
 
             if (imageBytesList == null || !imageBytesList.Any())
             {
@@ -207,7 +208,7 @@ namespace Comp1640_Final.Controllers
                         return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                     }
 
-                    var imagePaths = await _articleService.SaveImagesAsync(articleAdd.ImageFiles, articleMap.Id.ToString());
+                    var imagePaths = await _articleService.SaveImages(articleAdd.ImageFiles, articleMap.Id.ToString());
                     if (imagePaths.Any())
                     {
                         articleMap.ImagePath = string.Join(";", imagePaths);
@@ -227,7 +228,7 @@ namespace Comp1640_Final.Controllers
             {
                 try
                 {
-                    var docPath = await _articleService.SaveDocAsync(articleAdd.DocFiles, articleMap.Id.ToString());
+                    var docPath = await _articleService.SaveDoc(articleAdd.DocFiles, articleMap.Id.ToString());
                     articleMap.DocPath = docPath;
                 }
                 catch (Exception ex)
@@ -236,8 +237,10 @@ namespace Comp1640_Final.Controllers
                 }
             }
 
-            _context.Articles.Add(articleMap);
-            await _context.SaveChangesAsync();
+            if (!await _articleService.AddArticle(articleMap))
+            {
+                return BadRequest("Failed to add article.");
+            }
 
             return Ok("Successfully added");
         }
@@ -267,7 +270,7 @@ namespace Comp1640_Final.Controllers
                         return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                     }
 
-                    var imagePaths = await _articleService.SaveImagesAsync(articleUpdate.ImageFiles, articleMap.Id.ToString());
+                    var imagePaths = await _articleService.SaveImages(articleUpdate.ImageFiles, articleMap.Id.ToString());
 
                     // Delete old image files
                     var oldImagePaths = article.ImagePath?.Split(';');
@@ -292,7 +295,7 @@ namespace Comp1640_Final.Controllers
             {
                 try
                 {
-                    var docPath = await _articleService.SaveDocAsync(articleUpdate.DocFiles, articleMap.Id.ToString());
+                    var docPath = await _articleService.SaveDoc(articleUpdate.DocFiles, articleMap.Id.ToString());
 
                     // Delete old document file
                     var oldDocPath = Path.Combine(_webHostEnvironment.WebRootPath, article.DocPath.TrimStart('\\'));
@@ -314,8 +317,10 @@ namespace Comp1640_Final.Controllers
                 _context.Entry(article).State = EntityState.Detached;
             }
 
-            _context.Articles.Update(articleMap);
-            await _context.SaveChangesAsync();
+            if (!await _articleService.UpdateArticle(articleMap))
+            {
+                return BadRequest("Failed to update article.");
+            }
 
             return Ok("Successfully updated");
         }
@@ -336,10 +341,38 @@ namespace Comp1640_Final.Controllers
 
             article.Id = articleId;
             article.PublishStatusId = publicStatus;
-            _context.Articles.Update(article);
-            await _context.SaveChangesAsync();
+
+            if (!await _articleService.UpdateArticle(article))
+            {
+                return BadRequest("Failed to update article.");
+            }
 
             return Ok("Successfully change article status");
+        }
+
+        [HttpPut("addComment/{articleId}")]
+        public async Task<ActionResult<Article>> AddCommentArticle(Guid articleId, string comment)
+        {
+            if (string.IsNullOrWhiteSpace(comment))
+                return BadRequest(ModelState);
+
+            if (!_articleService.ArticleExists(articleId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var article = _articleService.GetArticleByID(articleId);
+
+            article.Id = articleId;
+            article.CoordinatorComment = comment;
+
+            if (!await _articleService.UpdateArticle(article))
+            {
+                return BadRequest("Failed to update article.");
+            }
+
+            return Ok("Successfully add commnet for article");
         }
 
         [HttpDelete("{articleId}")]

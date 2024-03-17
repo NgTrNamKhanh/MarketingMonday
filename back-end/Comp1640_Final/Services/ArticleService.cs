@@ -14,13 +14,15 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
         Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId);
+        Task<bool> UpdateArticle(Article article);
+        Task<bool> AddArticle(Article article);
         bool IsValidImageFile(List<IFormFile> imageFile);
-        Task<IEnumerable<string>> SaveImagesAsync(List<IFormFile> imageFile, string subFolderName);
+        Task<IEnumerable<string>> SaveImages(List<IFormFile> imageFile, string subFolderName);
         bool IsValidDocFile(IFormFile imageFile);
-        Task<string> SaveDocAsync(IFormFile docFile, string subFolderName);
+        Task<string> SaveDoc(IFormFile docFile, string subFolderName);
         bool ArticleExists(Guid articleId);
         bool DeleteArticle(Article article);
-        Task<IEnumerable<byte[]>> GetImagesByArticleIdAsync(Guid articleId);
+        Task<IEnumerable<byte[]>> GetImagesByArticleId(Guid articleId);
         bool Save();
 
     }
@@ -67,6 +69,32 @@ namespace Comp1640_Final.Services
         {
             return _context.Articles.Any(p => p.Id == articleId);
         }
+        public async Task<bool> UpdateArticle(Article article)
+        {
+            try
+            {
+                _context.Articles.Update(article);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+        public async Task<bool> AddArticle(Article article)
+        {
+            try
+            {
+                _context.Articles.Add(article);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public bool Save()
         {
             var saved = _context.SaveChanges();
@@ -104,7 +132,7 @@ namespace Comp1640_Final.Services
 
             return true;
         }
-        public async Task<IEnumerable<string>> SaveImagesAsync(List<IFormFile> imageFiles, string subfolderName)
+        public async Task<IEnumerable<string>> SaveImages(List<IFormFile> imageFiles, string subfolderName)
         {
             var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images", subfolderName);
 
@@ -153,7 +181,7 @@ namespace Comp1640_Final.Services
 
             return true;
         }
-        public async Task<string> SaveDocAsync(IFormFile docFile, string subfolderName)
+        public async Task<string> SaveDoc(IFormFile docFile, string subfolderName)
         {
             var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs", subfolderName);
 
@@ -172,7 +200,7 @@ namespace Comp1640_Final.Services
             return "\\Docs\\" + subfolderName + "\\" + fileName;
         }
 
-        public async Task<IEnumerable<byte[]>> GetImagesByArticleIdAsync(Guid articleId)
+        public async Task<IEnumerable<byte[]>> GetImagesByArticleId(Guid articleId)
         {
             var article = await _context.Articles.FindAsync(articleId);
 
