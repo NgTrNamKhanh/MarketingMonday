@@ -46,7 +46,7 @@ export default function CoordinatorSidebar() {
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                <li className="sidebarListItem" onClick={() => setShowArticlesDropdown(!showArticlesDropdown)}>
+                    <li className="sidebarListItem" onClick={() => setShowArticlesDropdown(!showArticlesDropdown)}>
                         <EmojiObjects className="sidebarIcon"/>
                         <span className="sidebarListItemText">Articles</span>
                         {showArticlesDropdown ? <span className="dropdownIcon">▲</span> : <span className="dropdownIcon">▼</span>}

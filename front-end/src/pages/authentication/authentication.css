@@ -92,3 +92,19 @@
 	font-size: 14px;
 	margin: 10px;
 }
+
+.passwordField {
+    margin-bottom: 20px;
+}
+.passwordFieldTop{
+	margin-bottom: 10px;
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.togglePasswordButton{
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
