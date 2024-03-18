@@ -9,6 +9,7 @@ import { Button, TextField } from "@mui/material";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
 const termsAndConditionsText = (
     <ul>
         <li>
@@ -62,7 +63,7 @@ export default function Article() {
     const [currentUser, setCurrentUser] = useState(null);
     const [event, setEvent] = useState();
 
-    
+    const [data, loading, error, reFetch]  = useFetch(apis.event + "student/" + currentUser.id)
 
     useEffect(() => {
         const user = authService.getCurrentUser();
@@ -74,17 +75,16 @@ export default function Article() {
         const fetchEvent = async () => {
             if (currentUser) {
                 try {
-                    const response = await authHeader().get(apis.event + "student/" + currentUser.id);
-                    setEvent(response.data);
-                    setStartDate(response.data.startDate)
-                    setEndDate(response.data.endDate)
+                    setEvent(data);
+                    setStartDate(data.startDate)
+                    setEndDate(data.endDate)
                 } catch (error) {
                     console.error("Error fetching event data:", error);
                 }
             }
         };
         fetchEvent();
-    }, [currentUser]);
+    }, [data, currentUser]);
     useEffect(() => {
         const endDateConverted = new Date(endDate); 
         const intervalId = setInterval(() => {

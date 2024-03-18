@@ -65,7 +65,7 @@ const EventForm = ({
     const handleFacultyChange = (e) => {
         setFaculty(e.target.value);
     };
-
+    console.log(dateRange)
     const handleSubmit = async (values) => {
         const eventSubmit = {
             eventName: values.eventName,
@@ -73,7 +73,7 @@ const EventForm = ({
             endDate: dateRange[0].endDate,
             facultyId: faculty
         };
-
+    
         try {
             
             setIsSubmitting(true);
@@ -96,6 +96,7 @@ const EventForm = ({
                 }
             }else{
                 const url = `${apis.event}${event.id}`
+                console.log(eventSubmit)
                 const res = await authHeader().put(url, eventSubmit, {
                     // headers: authHeader(),
                     withCredentials: true,
@@ -197,7 +198,7 @@ const EventForm = ({
                             ranges={dateRange}
                             className="datePicker"
                             // minDate={new Date()}
-                            />
+                            /> 
                         )}
                     </div>
                 </Box>

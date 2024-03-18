@@ -2,6 +2,8 @@ import { MoreVert } from '@mui/icons-material';
 import './submission.css';
 import { useEffect, useRef, useState } from 'react';
 import TermsAndConditions from '../termsAndConditions/TermsAndConditions';
+import apis from '../../services/apis.service';
+import authHeader from '../../services/auth.header';
 const termsAndConditionsText = (
     <div>
         <p>
@@ -28,27 +30,27 @@ const termsAndConditionsText = (
 );
 const headerText = (
     <>
-        <p>Thank you for submitting this articles, your work is a great asset to the school!</p>
-        <p>Before this article can be submitted for the Coodinator to see, there are a few Terms and Conditions:</p>
+        <p>Thank you for assessing this submission, your work is a great asset to the school!</p>
+        <p>Before this submission can be assessed, there are a few Terms and Conditions:</p>
     </>
 );
-export default function  Submission ({ submission, onComment, onVerify }) {
+export default function  Submission ({ submission, reFetch }) {
     console.log(submission)
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [tncOpen, setTnCOpen] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);
     const [comment, setComment] = useState(submission.coordinatorComment);
-
+    const [isSubmitting, setIsSubmitting] = useState();
     const optionsRef = useRef(null);
+
+    const [submitStatus, setSubmitStatus] =  useState();
     useEffect(() => {
-        // Function to handle click outside of the options dropdown
         function handleClickOutside(event) {
             if (optionsRef.current && !optionsRef.current.contains(event.target)) {
                 setOptionsOpen(false);
             }
         }
     
-        // Function to handle scroll outside of the options dropdown
         function handleScrollOutside(event) {
             if (optionsRef.current && !optionsRef.current.contains(event.target)) {
                 setOptionsOpen(false);
@@ -67,21 +69,58 @@ export default function  Submission ({ submission, onComment, onVerify }) {
     const handleCloseTnCDialog = () => {
         setTnCOpen(false);
     };
-    const handleOpenTnCDialog = () => {
+    const handleOpenTnCDialog = (submitStatus) => {
+        setSubmitStatus(submitStatus)
         setTnCOpen(true);
     };
     const handleSubmit = () =>{
-        console.log("Hi")
+        handleVerifyOrReject();
     };
-    const handleComment = (e) => {
+    const handleComment = async(e) => {
         e.preventDefault();
         setIsCommenting(false);
         setComment(e.target.value);
+        try {
+            setIsSubmitting(true);
+            const url = apis.article+"addComment/"+submission.id+"?comment="+comment
+            const res = await authHeader().put(url, {});
+            if (res.status === 200) {
+                const updatedData = await reFetch();
+
+                // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                setIsSubmitting(false);
+                // setMessage("Account edited successfully.");
+            } else {
+                setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+            }
+        } catch (error) {
+            setIsSubmitting(false);
+            // setMessage(error.response.data);
+        }
     };
 
-    const handleVerify = () => {
-        // Implement verify functionality
-        onVerify(submission.id);
+    const handleVerifyOrReject = async () => {
+        try {
+            console.log(submitStatus)
+            setIsSubmitting(true);
+            const url = `${apis.article}updateStatus/${submission.id}?publicStatus=${submitStatus}`;
+
+            const res = await authHeader().put(url, {});
+            if (res.status === 200) {
+                const updatedData = await reFetch();
+
+                // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                setIsSubmitting(false);
+                // setMessage("Account edited successfully.");
+            } else {
+                setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+            }
+        } catch (error) {
+            setIsSubmitting(false);
+            // setMessage(error.response.data);
+        }
     };
     
     let pictureLayout;
@@ -124,17 +163,30 @@ export default function  Submission ({ submission, onComment, onVerify }) {
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        if (submission.coordinatorComment) {
-            setStatus('commented');
-        } else if (submission.publishStatusId === 1) {
+        if (submission.publishStatusId === 1) {
             setStatus('approved');
-        } else if (submission.publishStatusId === 3 && submission.coordinatorComment === null) {
-            setStatus('not commented');
-        } else if (submission.publishStatusId === 2) {
+        }  else if (submission.publishStatusId === 2) {
             setStatus('reject');
+        }else if (submission.publishStatusId === 3 && submission.coordinatorComment === null) {
+            setStatus('not commented');
+        } 
+        else if (submission.coordinatorComment) {
+            setStatus('commented');
         }
+        
     }, [submission.coordinatorComment, submission.publishStatusId]);
-
+    function getStatusColor(status) {
+        switch (status) {
+            case 'approved':
+                return 'green';
+            case 'reject':
+                return 'red';
+            case 'commented':
+                return 'yellow';
+            default:
+                return 'orange';
+        }
+    }
 
     return (
         <div className="submission">
@@ -145,27 +197,38 @@ export default function  Submission ({ submission, onComment, onVerify }) {
                         <span className="submissionUsername">{submission.studentName}</span>
                         <span className="submissionDate">
                             {new Date(submission.date).toLocaleDateString()} {new Date(submission.date).toLocaleTimeString()}
-                            ({status})
+                        </span>
+                        <span className="submissionDate">
+                            (
+                            <span style={{ color: getStatusColor(status) }}>
+                                {status}
                             </span>
+                            )
+                        </span>
                     </div>
                     <div className="submissionTopRight">
                     <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
                     {optionsOpen && (
                         <div className="submissionDropdownContent" ref={optionsRef}>
                             {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                                <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
-                                        Comment
-                                </a>
-                            {/* </Link> */}
-                            {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                            <div className="submissionDropdownContentItem">
-                                        <span>Report</span>
-                                </div>
+                            <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
+                                    Comment
+                            </a>
                             {/* </Link> */}
                             {/* <Link to="/settings" className="dropdownContentItemLink"> */}
-                                <div className="submissionDropdownContentItem" onClick={handleOpenTnCDialog}>
+                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>
                                         <span>Confirm</span> 
-                                </div>
+                            </div>
+                            {/* </Link> */}
+                            {/* <Link to="/profile" className="dropdownContentItemLink"> */}
+                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(2)}>
+                                        <span>Reject</span>
+                            </div>
+                            {/* </Link> */}
+                            {/* <Link to="/settings" className="dropdownContentItemLink"> */}
+                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(3)}>
+                                        <span>Put On Hold</span> 
+                            </div>
                             {/* </Link> */}
                         </div>
                     )}
@@ -190,7 +253,7 @@ export default function  Submission ({ submission, onComment, onVerify }) {
                             onChange={(e) => setComment(e.target.value)}
                         />
                         {isCommenting && (
-                            <button type="submit">Submit</button>
+                            <button type="submit" disabled={isSubmitting}>{isSubmitting?'Loading...':'Comment'}</button>
                         )}
                     </form>
                 </div>

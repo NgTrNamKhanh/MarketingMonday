@@ -38,7 +38,7 @@ const Events = () => {
     const [toastMessage, setToastMessage] = useState("");
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState(null);
-    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    // const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const handleOpenEditDialog = (event) => {
         setSelectedEvent(event);
         setEditDialogOpen(true);
@@ -50,20 +50,20 @@ const Events = () => {
         setSelectedEvent(null);
         setShowToast(true);
     };
-    const handleOpenDeleteDialog = (acc) => {
-        selectedEvent(acc);
-        setDeleteDialogOpen(true);
-    };
+    // const handleOpenDeleteDialog = (acc) => {
+    //     selectedEvent(acc);
+    //     setDeleteDialogOpen(true);
+    // };
     const handleDefaultCloseEditDialog = () => {
         setEditDialogOpen(false);
         };
 
-    const handleCloseDeleteDialog = () => {
-        setToastMessage("Event deleted successfully");
-        setDeleteDialogOpen(false);
-        selectedEvent(null);
-        setShowToast(true);
-    };
+    // const handleCloseDeleteDialog = () => {
+    //     setToastMessage("Event deleted successfully");
+    //     setDeleteDialogOpen(false);
+    //     selectedEvent(null);
+    //     setShowToast(true);
+    // };
     const columns = [
         {
             field: "eventName",
@@ -78,6 +78,11 @@ const Events = () => {
             flex: 1,
             headerClassName: "header-text",
             cellClassName: "data-cell",
+            renderCell: (params) => (
+                <span className="data-cell">
+                    {new Date(params.row.startDate).toLocaleDateString()} {new Date(params.row.startDate).toLocaleTimeString()}
+                </span>
+            ),
         },
         {
             field: "endDate",
@@ -85,7 +90,13 @@ const Events = () => {
             flex: 1,
             headerClassName: "header-text",
             cellClassName: "data-cell",
+            renderCell: (params) => (
+                <span className="data-cell">
+                    {new Date(params.row.endDate).toLocaleDateString()} {new Date(params.row.endDate).toLocaleTimeString()}
+                </span>
+            ),
         },
+        
         {
             field: "facultyId",
             headerName: "Faculty",

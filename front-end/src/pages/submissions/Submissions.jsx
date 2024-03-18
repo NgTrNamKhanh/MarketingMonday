@@ -4,7 +4,7 @@ import "./submissions.css"
 import { useParams } from 'react-router-dom';
 import authHeader from '../../services/auth.header';
 import apis from '../../services/apis.service';
-
+import useFetch from '../../hooks/useFetch'
 const submissions = [
     {
         id: 1,
@@ -63,13 +63,14 @@ export default function Submissions () {
     const  [filteredSubmissions, setFilteredSubmissions] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState("all");
 
+    const {data,loading, error, reFetch} = useFetch(apis.article + "faculty/" + facultyId)
     useEffect(()=>{
         const fetchPosts = async () => {
             if (facultyId) {
                 try {
-                    const response = await authHeader().get(apis.article + "faculty/" + facultyId);
-                    setSubmissions(response.data)
-                    setFilteredSubmissions(response.data)
+                    // const response = await authHeader().get(apis.article + "faculty/" + facultyId);
+                    setSubmissions(data)
+                    setFilteredSubmissions(data)
 
                 }catch (error) {
                     console.error("Error fetching submission data:", error);
@@ -77,15 +78,10 @@ export default function Submissions () {
             }
         }
         fetchPosts();
-    },[facultyId])
+    },[data, facultyId])
 
-    const handleComment = (submissionId) => {
-        // Implement comment functionality
-    };
 
-    const handleVerify = (submissionId) => {
-        // Implement verify functionality
-    };
+
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
         // Call function to sort posts based on selected filter
@@ -133,8 +129,7 @@ export default function Submissions () {
                     <Submission
                         key={submission.id}
                         submission={submission}
-                        onComment={handleComment}
-                        onVerify={handleVerify}
+                        reFetch = {reFetch}
                     />
                 ))}
             </div>
