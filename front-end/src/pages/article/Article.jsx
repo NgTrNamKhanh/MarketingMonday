@@ -10,6 +10,8 @@ import * as yup from "yup";
 import authService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
+import { CKEditor } from "@ckeditor/ckeditor5-react";
+import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 const termsAndConditionsText = (
     <ul>
         <li>
@@ -240,6 +242,7 @@ export default function Article() {
                     > */}
                     <div className="articleContent">
                         {/* <input type="text" className="articleTitle" placeholder="Title"/> */}
+                        
                         <TextField
                             fullWidth
                             variant="filled"
@@ -255,7 +258,27 @@ export default function Article() {
                         />
                     <br />
                     {/* <textarea placeholder="Write your article?" className="articleInput"></textarea> */}
-                    <TextField
+                    <CKEditor
+                            editor={ClassicEditor}
+                            data={values.description}
+                            value={values.description}
+                            onReady={(editor) => {
+                                console.log('CKEditor React Component is ready to use!', editor);
+                            }}
+                            name="description"
+                            helperText={touched.description && errors.description}
+                            error={!!touched.description && !!errors.description}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                handleChange({ target: { name: 'description', value: data } });
+                                console.log(data);
+                            }}
+                            className="articleTextEditer"
+                    />
+                    {touched.description && errors.description && (
+                        <div style={{ color: 'red' }}>{errors.description}</div>
+                    )}
+                    {/* <TextField
                         fullWidth
                         variant="filled"
                         type="text"
@@ -270,7 +293,7 @@ export default function Article() {
                         rows={9}
                         className="articleInput"
                         // sx={{ gridColumn: "span 2" }}
-                    />
+                    /> */}
                     </div>
                     <div className="articleBottom">
                         <div className="selectedItems">

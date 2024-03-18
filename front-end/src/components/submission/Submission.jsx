@@ -236,7 +236,7 @@ export default function  Submission ({ submission, reFetch }) {
                 </div>
                 <div className="submissionCenter">
                     <h2 className='submissionTitle'>{submission.title}</h2>
-                    <p className='submissionContent'>{submission.description}</p>
+                    <div className='submissionContent' dangerouslySetInnerHTML={{ __html: submission.description }} />
                     {/* {submission.files.map((file, index) => (
                         <div key={index} className="itemContainer">
                             <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>

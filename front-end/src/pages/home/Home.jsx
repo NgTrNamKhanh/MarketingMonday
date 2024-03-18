@@ -18,7 +18,7 @@ import Events from "../admin/events/Events";
 import Article from "../article/Article";
 import './home.css'
 import { ProtectedRoute } from "../../common/with-router";
-import Unauthorized from "../unauthorized/Unauthorized";
+import Unauthorized from "../errors/unauthorized/Unauthorized";
 
 export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
