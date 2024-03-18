@@ -1,0 +1,14 @@
+.unauthorized{
+    margin: 50px 200px;
+}
+.unauthorizedWrapper{
+    display: flex;
+    align-items: start;
+    /* flex-direction: column; */
+}
+.unauthorizedTitle{
+
+}
+.unauthorizedImg{
+    
+}

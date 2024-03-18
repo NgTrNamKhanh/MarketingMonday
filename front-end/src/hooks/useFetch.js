@@ -42,7 +42,7 @@ const useFetch = (url) => {
             // });
             // setData(res.data);
         } catch (err) {
-        setError(err.response?.data?.message || err.toString());
+        setError(err.response?.data || err.toString());
         }
         setLoading(false);
     };

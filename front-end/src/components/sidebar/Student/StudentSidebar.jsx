@@ -63,7 +63,7 @@ export default function StudentSidebar() {
                             ))}
                         </ul>
                     )}
-                    <Link to="/student/submission" className="sidebarListItemLink"> 
+                    <Link to="/submission" className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <Category className="sidebarIcon"/>
                             <span className="sidebarListItemText">Add a Submission</span>

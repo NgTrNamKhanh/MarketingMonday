@@ -78,27 +78,26 @@ export default function Feed() {
     const { facultyId } = useParams();
     const [selectedFilter, setSelectedFilter] = useState("recent");
     const [posts, setPosts] = useState([]);
+    const [error, setError] = useState()
     useEffect(()=>{
         const fetchPosts = async () => {
             if (facultyId) {
                 try {
+                    setError(null)
                     const response = await authHeader().get(apis.article + "approved/faculty/" + facultyId);
                     setPosts(response.data)
 
                 }catch (error) {
+                    setError(error.response.data)
+                    setPosts([])
                     console.error("Error fetching post data:", error);
                 }
             }
         }
         fetchPosts();
     },[facultyId])
-    console.log(posts)
-    // useEffect(() => {
-    //     setPosts(postsData);
-    // }, []);
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
-        // Call function to sort posts based on selected filter
         sortPosts(event.target.value);
     };
 
@@ -133,11 +132,15 @@ export default function Feed() {
                         <option value="comments">Most Commented</option>
                     </select>
                 </div>
-                {posts.map(post => (
+                {error ? (
+                    <div>{error}</div>
+                        ) : (
+                    posts.map(post => (
                     <Post
                         post = {post}
                     />
-                ))}
+                    ))
+                )}
             </div>
         </div>
     )

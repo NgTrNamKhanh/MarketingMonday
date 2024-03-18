@@ -27,10 +27,20 @@ const LoginBox = ({setCurrentUser}) => {
                     const userData = await authService.login(email, password);
                     console.log("Logged in successfully:", userData);
                     setCurrentUser(userData)
-                    navigator("/");
+                    if(userData.roles.includes('Admin')){
+                        navigator("/dashboard");
+                    }else if (userData.roles.includes('Coordinator')){
+                        navigator(`/submissions/${userData.facultyId}`);
+                    }else if (userData.roles.includes('Manager')){
+                        navigator("/dashboard");
+                    }else if(userData.roles.includes('Student')){
+                        navigator(`/feed/${userData.facultyId}`);
+                    }else if (userData.roles.includes('Guest')){
+                        navigator(`/feed/${userData.facultyId}`);
+                    }
                 } catch (error) {
                     console.log(error)
-                    setError(error);
+                    setError(error.response.data);
                 }
             }
         }

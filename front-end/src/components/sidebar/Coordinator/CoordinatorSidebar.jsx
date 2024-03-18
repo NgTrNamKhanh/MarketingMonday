@@ -70,7 +70,7 @@ export default function CoordinatorSidebar() {
                         </ul>
                     )}
                     {currentUser && (
-                        <Link to={`/manager/submissions/${currentUser.facultyId}`}  className="sidebarListItemLink"> 
+                        <Link to={`/submissions/${currentUser.facultyId}`}  className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <Category className="sidebarIcon"/>
                             <span className="sidebarListItemText">Submissions</span>

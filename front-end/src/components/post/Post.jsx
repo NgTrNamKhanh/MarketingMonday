@@ -83,36 +83,36 @@ export default function Post({ post}) {
         }
     } 
 
-    // Determine the layout of pictures based on their count
     let pictureLayout;
     if (post.imageBytes.length === 1) {
         pictureLayout = (
             <div className="postCenter">
                 {post.imageBytes.map((img, index) => (
-                    <img key={index} src={img} className="postImg" alt={`Post image ${index}`} />
+                    <img src={`data:image/jpeg;base64,${img}`} key={index} className="postImg"  alt={`post image ${index}`}/>
+                    // <img key={index} src={img} className="postImg" alt={`post image ${index}`} />
                 ))}
             </div>
         );
     } else if (post.imageBytes.length === 2) {
         pictureLayout = (
             <div className="postImgGroup">
-                <img src={post.imageBytes[0]} className="postImg postImgBottom" alt="Post image 1" />
-                <img src={post.imageBytes[1]} className="postImg postImgBottom" alt="Post image 2" />
+                <img src={`data:image/jpeg;base64,${post.imageBytes[0]}`} className="postImg postImgBottom" alt="Rendered Image"/>
+                <img src={`data:image/jpeg;base64,${post.imageBytes[1]}`} className="postImg postImgBottom" alt="Rendered Image"/>
             </div>
         );
     } else{
         pictureLayout = (
             <div className="postCenter">
                 <div className="postImgGroup">
-                    <img src={post.imageBytes[0]} className="postImg postImgBottom" alt="Post image 1" />
-                    <img src={post.imageBytes[1]} className="postImg postImgBottom" alt="Post image 2" />
+                    <img src={`data:image/jpeg;base64,${post.imageBytes[0]}`}  alt="Rendered Image"/>
+                    <img src={`data:image/jpeg;base64,${post.imageBytes[1]}`} alt="Rendered Image"/>
                 </div>
                 <div className="postImgGroup">
-                    <img src={post.imageBytes[2]} className="postImg postImgBottom" alt={`Post image 3`} />
+                    <img src={`data:image/jpeg;base64,${post.imageBytes[2]}`}className="postImg"  alt="Rendered Image"/>
                     {post.imageBytes.length > 3 && 
                         <div className="extraImg">
                             {post.imageBytes.slice(3,7).map((img, index) => (
-                                <img key={index} src={img} className="postImg postImgBottom" alt={`Post image ${index + 3}`} />
+                                <img src={`data:image/jpeg;base64,${img}`} key={index} className="postImg postImgBottom" alt={`post image ${index + 3}`}/>
                             ))}
                             <div className="overlay">+{post.imageBytes.length - 3}</div>
                         </div>

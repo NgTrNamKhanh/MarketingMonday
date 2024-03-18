@@ -86,14 +86,29 @@ export default function Article() {
         fetchEvent();
     }, [ currentUser]);
     useEffect(() => {
-        const endDateConverted = new Date(endDate); 
-        const intervalId = setInterval(() => {
-            const currentTime = new Date();
-            const diff = endDateConverted.getTime() - currentTime.getTime();
-            setRemainingTime(diff > 0 ? diff : 0);
-        }, 1000);
+        const calculateRemainingTime = () => {
+            const endDateConverted = new Date(endDate); 
+            const currentDate = new Date();
+            const timeDifference = endDateConverted.getTime() - currentDate.getTime();
+            if (timeDifference >= 0) {
+                // Calculate remaining time components
+                const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+        
+                // Format the remaining time into a readable string
+                const remainingTimeStr = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
+                setRemainingTime(remainingTimeStr);
+            } else {
+            setRemainingTime('Expired');
+            }
+        }
+        calculateRemainingTime();
 
-        return () => clearInterval(intervalId);
+        // Update remaining time every second
+        const interval = setInterval(calculateRemainingTime, 1000);
+        return () => clearInterval(interval);
     }, [endDate]);
 
     const handleCloseTnCDialog = () => {
@@ -135,36 +150,46 @@ export default function Article() {
     };
     const handleSubmit = async(values) =>{
         setIsSubmitting(true);
-        const FormData = require('form-data');
-        const formData = new FormData();
-        // Append fields to the FormData object
-        formData.append('Title', values.title);
-        formData.append('Description', values.description);
-        formData.append('Date', new Date().toISOString()); 
-        formData.append('FacultyId', currentUser.facultyId);
-        formData.append('StudentId', currentUser.id);
-        selectedPhotos.forEach((photo, index) => {
-            formData.append(`ImageFiles`, photo, photo.name);
-        });
-        
-        // Append document files
-        selectedFiles.forEach((file, index) => {
-            formData.append(`DocFiles`, file, file.name);
-        });
-        const url =  apis.article+"student"
-
-        try{
-            const res = await authHeader().post(url, formData);
-            if (res.status === 200) {
-                setMessage("Account edited successfully.");
-                navigator("/");
-            } else {
+        if(selectedPhotos.length === 0){
+            setMessage("Please select a photo")
+            setIsSubmitting(false)
+            return
+        }else if (selectedFiles.length === 0){
+            setMessage("Please select a file")
+            setIsSubmitting(false)
+            return
+        }else{
+            const FormData = require('form-data');
+            const formData = new FormData();
+            formData.append('Title', values.title);
+            formData.append('Description', values.description);
+            formData.append('Date', new Date().toISOString()); 
+            formData.append('FacultyId', currentUser.facultyId);
+            formData.append('StudentId', currentUser.id);
+            selectedPhotos.forEach((photo, index) => {
+                formData.append(`ImageFiles`, photo, photo.name);
+            });
+            
+            // Append document files
+            selectedFiles.forEach((file, index) => {
+                formData.append(`DocFiles`, file, file.name);
+            });
+            const url =  apis.article+"student"
+    
+            try{
+                const res = await authHeader().post(url, formData);
+                if (res.status === 200) {
+                    setMessage("Account edited successfully.");
+                    navigator("/");
+                } else {
+                    setIsSubmitting(false);
+                    setMessage(`An error occurred: ${res.data}`);
+                }
+            }catch (error) {
                 setIsSubmitting(false);
-                setMessage(`An error occurred: ${res.data}`);
+                console.log(error)
+                setMessage(error.response.data);
             }
-        }catch (error) {
-            setIsSubmitting(false);
-            setMessage(error.response.data);
         }
     };
 
@@ -180,7 +205,11 @@ export default function Article() {
                             <p>Event Name: {event.eventName}</p>
                             <p>Opened: {new Date(startDate).toLocaleDateString()} {new Date(startDate).toLocaleTimeString()}</p>
                             <p>Due: {new Date(endDate).toLocaleDateString()} {new Date(endDate).toLocaleTimeString()}</p>
-                            <p>Time Remaining: {Math.floor(remainingTime / (1000 * 60 * 60 * 24))} days</p>
+                            {remainingTime === 'Expired' ? (
+                                <p>This article is expired</p>
+                            ) : (
+                                <p>Time Remaining: {remainingTime}</p>
+                            )}
                         </>
                     ) : (
                         <p>Loading...</p>
@@ -295,8 +324,11 @@ export default function Article() {
                             />
                         </div>
                     </div>
+                    <div className="articleError">
+                        <span>{message}</span>
+                    </div>
                     <div className="buttonContainer">
-                        <Button type="submit" disabled={isSubmitting}>
+                        <Button type="submit" disabled={isSubmitting || remainingTime === 'Expired'}>
                             {isSubmitting ? <span>Loading...</span> : "Submit"}
                         </Button>
                     </div>

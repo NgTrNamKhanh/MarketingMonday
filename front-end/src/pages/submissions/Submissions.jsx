@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Submission from '../../components/submission/Submission';
 import "./submissions.css"
 import { useParams } from 'react-router-dom';
@@ -62,25 +62,27 @@ export default function Submissions () {
     const [submissions, setSubmissions] = useState([]);
     const  [filteredSubmissions, setFilteredSubmissions] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState("all");
+    const [error, setError] = useState()
 
-    const {data,loading, error, reFetch} = useFetch(apis.article + "faculty/" + facultyId)
     useEffect(()=>{
-        const fetchPosts = async () => {
+        const fetchSubmissions = async () => {
             if (facultyId) {
                 try {
-                    // const response = await authHeader().get(apis.article + "faculty/" + facultyId);
-                    setSubmissions(data)
-                    setFilteredSubmissions(data)
+                    setError(null)
+                    const response = await authHeader().get(apis.article + "faculty/" + facultyId);
+                    setSubmissions(response.data)
+                    setFilteredSubmissions(response.data);
 
                 }catch (error) {
-                    console.error("Error fetching submission data:", error);
+                    setSubmissions([])
+                    setFilteredSubmissions([])
+                    setError(error.response.data)
+                    console.error(error.response.data);
                 }
             }
         }
-        fetchPosts();
-    },[data, facultyId])
-
-
+        fetchSubmissions();
+    },[facultyId])
 
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
@@ -115,23 +117,23 @@ export default function Submissions () {
     return (
         <div className="submissions">
             <div className="submissionsWrapper">
-                <div className="postFilter">
-                    <select value={selectedFilter} onChange={handleFilterChange}>
-                        <option value="all">All</option>
-                        <option value="approved">Approved</option>
-                        <option value="not commented">Not Commented</option>
-                        <option value="commented">Commented</option>
-                        <option value="reject">Reject</option>
-                    </select>
-                </div>
-                <h1>Submissions</h1>
-                {filteredSubmissions.map((submission) => (
-                    <Submission
-                        key={submission.id}
-                        submission={submission}
-                        reFetch = {reFetch}
-                    />
-                ))}
+            <div className="postFilter">
+                <select value={selectedFilter} onChange={handleFilterChange}>
+                <option value="all">All</option>
+                <option value="approved">Approved</option>
+                <option value="not commented">Not Commented</option>
+                <option value="commented">Commented</option>
+                <option value="reject">Reject</option>
+                </select>
+            </div>
+            <h1>Submissions</h1>
+            {error ? (
+                <div>{error}</div>
+            ) : (
+                filteredSubmissions.map((submission) => (
+                    <Submission key={submission.id} submission={submission} />
+                ))
+            )}
             </div>
         </div>
     );

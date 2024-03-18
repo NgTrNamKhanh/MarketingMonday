@@ -59,7 +59,7 @@ namespace Comp1640_Final.Controllers
                 return Ok(accountDto);
             }
 
-            return BadRequest();
+            return BadRequest("Email or password is not correct");
         }
 
         private string CreateToken(ApplicationUser user, string role)

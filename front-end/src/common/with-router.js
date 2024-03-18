@@ -21,7 +21,7 @@ export const ProtectedRoute = ({ element, requiredRoles }) => {
             // Allow rendering the protected component
         } else {
             // Redirect to another route if the role doesn't match
-            navigate('/login');
+            navigate('/unauthorized');
         }
     }, [navigate, user, requiredRoles]);
 

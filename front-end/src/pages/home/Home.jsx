@@ -18,6 +18,7 @@ import Events from "../admin/events/Events";
 import Article from "../article/Article";
 import './home.css'
 import { ProtectedRoute } from "../../common/with-router";
+import Unauthorized from "../unauthorized/Unauthorized";
 
 export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -58,36 +59,37 @@ export default function Home() {
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login  setCurrentUser={setCurrentUser}/>} />
-                            <Route path="/admin/dashboard" element=
+                            <Route path="/dashboard" element=
                                 {<ProtectedRoute
                                     element={<Dashboard />}
                                     requiredRoles={['Admin', 'Manager']}
                                 />}  
                             />
-                            <Route path="/student/submission" element=
+                            <Route path="/submission" element=
                                 {<ProtectedRoute
                                     element={<Article />}
                                     requiredRoles={['Student']}
                                 />}  
                             />
-                            <Route path="/admin/events" element=
+                            <Route path="/events" element=
                                 {<ProtectedRoute
                                     element={<Events />}
                                     requiredRoles={['Admin']}
                                 />} 
                             />
-                            <Route path="/manager/submissions/:facultyId" element=
+                            <Route path="/submissions/:facultyId" element=
                                 {<ProtectedRoute
                                     element={<Submissions />}
                                     requiredRoles={['Admin', 'Manager', 'Coordinator']}
                                 />} 
                             />
-                            <Route path="/admin/accounts" element=
+                            <Route path="/accounts" element=
                                 {<ProtectedRoute
                                     element={<Accounts />}
                                     requiredRoles={['Admin']}
                                 />}  
-                                />
+                            />
+                            <Route path="/unauthorized" element={<Unauthorized/>}/>
                         </Routes>
                     </div>
                 </div>

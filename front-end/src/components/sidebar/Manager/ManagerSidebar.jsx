@@ -48,7 +48,7 @@ export default function ManagerSidebar() {
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                    <Link to="/admin/dashboard" className="sidebarListItemLink"> 
+                    <Link to="/dashboard" className="sidebarListItemLink"> 
                         <li className="sidebarListItem" >
                             <BarChart className="sidebarIcon"/>
                             <span className="sidebarListItemText">Dashboard</span>
@@ -77,7 +77,7 @@ export default function ManagerSidebar() {
                     {showSubmissionsDropdown && (
                         <ul className="sidebarDropdownContent">
                             {facultyOptions.map((faculty, index) => (
-                                <Link key={index} to="/manager/submissions" className="sidebarListItemLink">
+                                <Link key={index} to={`/submissions/${faculty.id}`} className="sidebarListItemLink">
                                     <li className="sidebarListItem">{faculty.name}</li>
                                 </Link>
                             ))}

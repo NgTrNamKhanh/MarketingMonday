@@ -21,7 +21,6 @@ export default function Topbar({setCurrentUser}) {
         setDropdownOpen(false);
         setClosedByInteraction(true); 
     };
-    console.log(dropdownOpen)
     const handleLogOut = () => {
         console.log("logged out")
         authService.logout();
@@ -36,7 +35,7 @@ export default function Topbar({setCurrentUser}) {
                 setDropdownOpen(false);
                 setNotificationOpen(false);
             } else {
-                setClosedByInteraction(false); // Reset flag when interaction occurs
+                setClosedByInteraction(false); 
             }
         }
 
@@ -45,7 +44,7 @@ export default function Topbar({setCurrentUser}) {
                 setDropdownOpen(false);
                 setNotificationOpen(false);
             } else {
-                setClosedByInteraction(false); // Reset flag when interaction occurs
+                setClosedByInteraction(false); 
             }
         }
 

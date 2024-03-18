@@ -98,7 +98,7 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetArticlesByFacultyId(facultyId);
 
             if (articles == null || !articles.Any())
-                return NotFound();
+                return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionDTO>();
 
@@ -119,7 +119,7 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetApprovedArticles(facultyId);
 
             if (articles == null || !articles.Any())
-                return NotFound();
+                return BadRequest("There is no article here");
 
             var articleDTOs = new List<ArticleDTO>();
 
@@ -140,7 +140,7 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
 
             if (articles == null || !articles.Any())
-                return NotFound();
+                return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionDTO>();
 

@@ -35,7 +35,6 @@ const headerText = (
     </>
 );
 export default function  Submission ({ submission, reFetch }) {
-    console.log(submission)
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [tncOpen, setTnCOpen] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);

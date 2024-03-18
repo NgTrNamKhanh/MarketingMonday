@@ -47,20 +47,20 @@ export default function AdminSidebar() {
         <div className="sidebar">
             <div className="sidebarWrapper">
                 <ul className="sidebarList">
-                    <Link to="/admin/dashboard" className="sidebarListItemLink"> 
+                    <Link to="/dashboard" className="sidebarListItemLink"> 
                         <li className="sidebarListItem" >
                             <BarChart className="sidebarIcon"/>
                             <span className="sidebarListItemText">Dashboard</span>
                             
                         </li>
                     </Link>
-                    <Link to="/admin/accounts" className="sidebarListItemLink"> 
+                    <Link to="/accounts" className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <ManageAccounts className="sidebarIcon"/>
                             <span className="sidebarListItemText">Accounts</span>
                         </li>
                     </Link>
-                    <Link to="/admin/events" className="sidebarListItemLink"> 
+                    <Link to="/events" className="sidebarListItemLink"> 
                         <li className="sidebarListItem">
                             <EventNote className="sidebarIcon"/>
                             <span className="sidebarListItemText">Events</span>
