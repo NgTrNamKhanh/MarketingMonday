@@ -5,7 +5,7 @@
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
         public string StudentName { get; set; }
 
@@ -20,7 +20,7 @@
         public Guid Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
         public string StudentName { get; set; }
         public int PublishStatusId { get; set; }
