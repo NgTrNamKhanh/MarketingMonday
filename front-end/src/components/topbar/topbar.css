@@ -102,6 +102,8 @@
     min-width: 300px;
     max-width: 500px;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    overflow-y: scroll;
+    max-height: calc(100vh - 50px);
 }
 .dropdownContentItem{
     display: flex;
@@ -134,4 +136,17 @@
 }
 .dropdownHr{
     margin: 0 16px;
+}
+.notificationsWrapper{
+    color: black;
+    padding: 20px;
+}
+::-webkit-scrollbar{
+    width: 5px;
+}
+::-webkit-scrollbar-track{
+    background-color: #f1f1f1;
+}
+::-webkit-scrollbar-thumb{
+    background-color: rgb(179,179,179);
 }
