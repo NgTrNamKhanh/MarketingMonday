@@ -63,7 +63,6 @@ export default function Article() {
     const [currentUser, setCurrentUser] = useState(null);
     const [event, setEvent] = useState();
 
-    const [data, loading, error, reFetch]  = useFetch(apis.event + "student/" + currentUser.id)
 
     useEffect(() => {
         const user = authService.getCurrentUser();
@@ -75,16 +74,17 @@ export default function Article() {
         const fetchEvent = async () => {
             if (currentUser) {
                 try {
-                    setEvent(data);
-                    setStartDate(data.startDate)
-                    setEndDate(data.endDate)
+                    const response = await authHeader().get(apis.event + "student/" + currentUser.id);
+                    setEvent(response.data);
+                    setStartDate(response.data.startDate)
+                    setEndDate(response.data.endDate)
                 } catch (error) {
                     console.error("Error fetching event data:", error);
                 }
             }
         };
         fetchEvent();
-    }, [data, currentUser]);
+    }, [ currentUser]);
     useEffect(() => {
         const endDateConverted = new Date(endDate); 
         const intervalId = setInterval(() => {
@@ -151,7 +151,7 @@ export default function Article() {
         selectedFiles.forEach((file, index) => {
             formData.append(`DocFiles`, file, file.name);
         });
-        const url =  apis.article
+        const url =  apis.article+"student"
 
         try{
             const res = await authHeader().post(url, formData);

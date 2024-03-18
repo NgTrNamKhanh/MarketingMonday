@@ -128,30 +128,31 @@ export default function  Submission ({ submission, reFetch }) {
         pictureLayout = (
             <div className="submissionCenter">
                 {submission.imageBytes.map((img, index) => (
-                    <img key={index} src={img} className="submissionImg" alt={`submission image ${index}`} />
+                    <img src={`data:image/jpeg;base64,${img}`} key={index} className="submissionImg"  alt={`submission image ${index}`}/>
+                    // <img key={index} src={img} className="submissionImg" alt={`submission image ${index}`} />
                 ))}
             </div>
         );
     } else if (submission.imageBytes.length === 2) {
         pictureLayout = (
             <div className="submissionImgGroup">
-                <img src={submission.imageBytes[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
-                <img src={submission.imageBytes[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
+                <img src={`data:image/jpeg;base64,${submission.imageBytes[0]}`} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
+                <img src={`data:image/jpeg;base64,${submission.imageBytes[1]}`} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
             </div>
         );
     } else{
         pictureLayout = (
             <div className="submissionCenter">
                 <div className="submissionImgGroup">
-                    <img src={submission.imageBytes[0]} className="submissionImg submissionImgBottom" alt="submission image 1" />
-                    <img src={submission.imageBytes[1]} className="submissionImg submissionImgBottom" alt="submission image 2" />
+                    <img src={`data:image/jpeg;base64,${submission.imageBytes[0]}`}  alt="Rendered Image"/>
+                    <img src={`data:image/jpeg;base64,${submission.imageBytes[1]}`} alt="Rendered Image"/>
                 </div>
                 <div className="submissionImgGroup">
-                    <img src={submission.imageBytes[2]} className="submissionImg submissionImgBottom" alt={`submission image 3`} />
+                    <img src={`data:image/jpeg;base64,${submission.imageBytes[2]}`}className="submissionImg"  alt="Rendered Image"/>
                     {submission.imageBytes.length > 3 && 
                         <div className="extraImg">
                             {submission.imageBytes.slice(3,7).map((img, index) => (
-                                <img key={index} src={img} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`} />
+                                <img src={`data:image/jpeg;base64,${img}`} key={index} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`}/>
                             ))}
                             <div className="overlay">+{submission.imageBytes.length - 3}</div>
                         </div>
