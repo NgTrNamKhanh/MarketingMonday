@@ -275,7 +275,7 @@ export default function Article() {
                             }}
                             className="articleTextEditer"
                     />
-                    {touched.description && errors.description && (
+                    {!!touched.description && !!errors.description && (
                         <div style={{ color: 'red' }}>{errors.description}</div>
                     )}
                     {/* <TextField
