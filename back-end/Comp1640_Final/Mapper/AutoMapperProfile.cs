@@ -18,6 +18,8 @@ namespace Comp1640_Final.Mapper
             //Event
             CreateMap<Event, EventDTO>();
             CreateMap<EventDTO, Event>();
+            CreateMap<CreateAccountDTO, Account>();
+            CreateMap<EditAccountDTO, Account>();
 
             // Comment
             CreateMap<Comment, CommentDTO>();

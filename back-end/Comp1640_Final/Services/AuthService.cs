@@ -27,10 +27,14 @@ namespace Comp1640_Final.Services
                 UserName = account.Email,
                 FacultyId = account.FacultyId,
                 PhoneNumber = account.PhoneNumber,
+                AvatarImagePath = account.AvatarImagePath,
             };
             var result = await _userManager.CreateAsync(identityUser, account.Password);
             var role = await _userManager.AddToRoleAsync(identityUser, account.Role);
-            
+            foreach (var error in result.Errors)
+            {
+                Console.WriteLine($"Error: {error.Description}");
+            }
             return result.Succeeded && role.Succeeded;
         }
 

@@ -43,6 +43,7 @@ namespace Comp1640_Final.Controllers
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.StudentName = user.FirstName +" "+user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -63,6 +64,7 @@ namespace Comp1640_Final.Controllers
             var articleDTO = _mapper.Map<ArticleDTO>(article);
             var user = await _userManager.FindByIdAsync(article.StudentId);
             var imageBytes = await _articleService.GetImagesByArticleId(articleId);
+            articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -83,6 +85,7 @@ namespace Comp1640_Final.Controllers
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -107,6 +110,7 @@ namespace Comp1640_Final.Controllers
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -127,6 +131,7 @@ namespace Comp1640_Final.Controllers
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
@@ -148,6 +153,7 @@ namespace Comp1640_Final.Controllers
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -170,6 +176,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var articleDTO = _mapper.Map<SubmissionDTO>(article);
+                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;

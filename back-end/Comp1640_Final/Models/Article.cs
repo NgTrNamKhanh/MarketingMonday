@@ -13,6 +13,7 @@ namespace Comp1640_Final.Models
         public string? CoordinatorComment { get; set; }
         public DateTime UploadDate { get; set; }
         public int PublishStatusId { get; set; }
+
         [NotMapped]
         public List<IFormFile> ImageFiles {  get; set; } 
         public string? ImagePath { get; set; }
@@ -45,7 +46,7 @@ namespace Comp1640_Final.Models
         public int FacultyId { get; set; }
         public string StudentId { get; set; }
         public List<IFormFile> ImageFiles { get; set; }
-        public IFormFile DocFiles { get; set; }
+        public IFormFile? DocFiles { get; set; }
     }
 
     public class EditArticleDTO

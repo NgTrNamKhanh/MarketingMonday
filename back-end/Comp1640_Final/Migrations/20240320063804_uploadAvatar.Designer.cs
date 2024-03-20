@@ -4,6 +4,7 @@ using Comp1640_Final.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Comp1640_Final.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    partial class ProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240320063804_uploadAvatar")]
+    partial class uploadAvatar
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -129,6 +132,7 @@ namespace Comp1640_Final.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MarketingCoordinatorId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("PublishStatusId")
@@ -155,46 +159,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("Articles", (string)null);
-                });
-
-            modelBuilder.Entity("Comp1640_Final.Models.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("ArticleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("CommentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CreateOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("ParentCommentId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("CommentId");
-
-                    b.HasIndex("ParentCommentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Articles");
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Event", b =>
@@ -222,7 +187,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasIndex("FacultyId");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Faculty", b =>
@@ -239,7 +204,7 @@ namespace Comp1640_Final.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Faculties", (string)null);
+                    b.ToTable("Faculties");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -400,7 +365,8 @@ namespace Comp1640_Final.Migrations
                     b.HasOne("Comp1640_Final.Models.ApplicationUser", "MarketingCoordinator")
                         .WithMany()
                         .HasForeignKey("MarketingCoordinatorId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Comp1640_Final.Models.ApplicationUser", "Student")
                         .WithMany()
@@ -415,36 +381,6 @@ namespace Comp1640_Final.Migrations
                     b.Navigation("MarketingCoordinator");
 
                     b.Navigation("Student");
-                });
-
-            modelBuilder.Entity("Comp1640_Final.Models.Comment", b =>
-                {
-                    b.HasOne("Comp1640_Final.Models.Article", "Article")
-                        .WithMany()
-                        .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Comp1640_Final.Models.Comment", null)
-                        .WithMany("Replies")
-                        .HasForeignKey("CommentId");
-
-                    b.HasOne("Comp1640_Final.Models.Comment", "ParentComment")
-                        .WithMany()
-                        .HasForeignKey("ParentCommentId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Comp1640_Final.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Article");
-
-                    b.Navigation("ParentComment");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Event", b =>
@@ -507,11 +443,6 @@ namespace Comp1640_Final.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Comp1640_Final.Models.Comment", b =>
-                {
-                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("Comp1640_Final.Models.Faculty", b =>

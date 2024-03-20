@@ -26,7 +26,7 @@ namespace Comp1640_Final.Data
                 Email = "admin@gmail.com",
                 FacultyId = 1,
                 EmailConfirmed = true
-                
+
             };
 
             var manager = new ApplicationUser
@@ -81,13 +81,13 @@ namespace Comp1640_Final.Data
                 await userMgr.CreateAsync(manager, "Manager@123");
                 await userMgr.AddToRoleAsync(manager, "Manager");
 
-                await userMgr.CreateAsync( coordinator, "Coordinator@123");
+                await userMgr.CreateAsync(coordinator, "Coordinator@123");
                 await userMgr.AddToRoleAsync(coordinator, "Coordinator");
 
-                await userMgr.CreateAsync( student, "Student@123");
+                await userMgr.CreateAsync(student, "Student@123");
                 await userMgr.AddToRoleAsync(student, "Student");
 
-                await userMgr.CreateAsync( guest, "Guest@123");
+                await userMgr.CreateAsync(guest, "Guest@123");
                 await userMgr.AddToRoleAsync(guest, "Guest");
 
             }

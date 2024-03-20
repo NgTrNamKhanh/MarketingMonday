@@ -12,6 +12,7 @@ namespace Comp1640_Final.Models
         [PersonalData]
         [Column(TypeName = "nvarchar(100)")]
         public string LastName { get; set; }
+        public string? AvatarImagePath { get; set; }
 
         [ForeignKey("FacultyId")]
         public int FacultyId { get; set; }
