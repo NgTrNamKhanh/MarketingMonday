@@ -13,6 +13,8 @@ namespace Comp1640_Final.Data
         public DbSet<Faculty> Faculties { get; set; }
         public DbSet<Event> Events { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure the foreign key constraint for StudentId in the Articles entity
@@ -29,6 +31,27 @@ namespace Comp1640_Final.Data
                 .HasForeignKey(a => a.MarketingCoordinatorId)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict); // Specify the behavior for delete operation
+
+            // -------------------- Comment -----------------------
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.User)
+                .WithMany()
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.Article)
+                .WithMany()
+                .HasForeignKey(c => c.ArticleId)
+                .OnDelete(DeleteBehavior.Restrict); 
+
+            modelBuilder.Entity<Comment>()
+                .HasOne(c => c.ParentComment)
+                .WithMany()
+                .HasForeignKey(c =>  c.ParentCommentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict); 
+
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityUserLogin<string>>()

@@ -8,12 +8,21 @@ namespace Comp1640_Final.Mapper
     {
         public AutoMapperProfile()
         {
+            //Article
             CreateMap<AddArticleDTO, Article>();
             CreateMap<EditArticleDTO, Article>();
             CreateMap<Article, ArticleDTO>();
             CreateMap<Article, SubmissionDTO>();
+
+            //Event
             CreateMap<Event, EventDTO>();
             CreateMap<EventDTO, Event>();
+
+            // Comment
+            CreateMap<Comment, CommentDTO>();
+            CreateMap<CommentDTO, Comment>();
+            CreateMap<Comment, ReplyDTO>();
+            CreateMap<ReplyDTO, Comment>();
         }
     }
 }
