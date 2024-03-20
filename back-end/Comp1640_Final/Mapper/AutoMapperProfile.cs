@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Comp1640_Final.DTO.Request;
+using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Models;
 
 namespace Comp1640_Final.Mapper
@@ -21,8 +22,9 @@ namespace Comp1640_Final.Mapper
             // Comment
             CreateMap<Comment, CommentDTO>();
             CreateMap<CommentDTO, Comment>();
-            CreateMap<Comment, ReplyDTO>();
-            CreateMap<ReplyDTO, Comment>();
+            CreateMap<Comment, CommentResponse>();
+            //CreateMap<Comment, ReplyDTO>();
+            //CreateMap<ReplyDTO, Comment>();
         }
     }
 }

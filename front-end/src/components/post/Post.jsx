@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChatBubbleOutline, MoreVert, RecommendRounded, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
 import "./post.css";
+import useFetch from '../../hooks/useFetch';
 const commentsData = [
     {
         id: 1,
@@ -177,8 +178,11 @@ export default function Post({ post}) {
         </div>
         )
     }
-    const RenderComments = ({ comments }) => { 
-        
+    const RenderComments = ( {postId}) => { 
+        if(postId){
+            const [data, loading, error,reFetch] = useFetch()
+
+        }
         if (comments === undefined || !Array.isArray(comments) || comments.length==0) { 
             return (<p >There is no comment</p>);
         } else {
@@ -240,7 +244,7 @@ export default function Post({ post}) {
                 {showComment &&(
                     <div className="commentsSection">
                     <h3>Comments</h3>
-                    <RenderComments comments={commentsData.filter((comment) => comment.articalId === post.id && comment.parentComment === null)} />
+                    <RenderComments postId={post.id} />
                 </div>
                 )}
             </div>

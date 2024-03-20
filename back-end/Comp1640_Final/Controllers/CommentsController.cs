@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Comp1640_Final.Data;
-using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Request;
+using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Migrations;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
@@ -31,8 +32,103 @@ namespace Comp1640_Final.Controllers
         [HttpGet("getComment")]
         public async Task<IActionResult> GetComments()
         {
-            var comment = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
-            return Ok(comment);
+            var comments = await _commentService.GetComments();
+            if (comments == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<CommentResponse> commentResponses = new List<CommentResponse>();
+                foreach (var comment in comments)
+                {
+                    var commentResponse = _mapper.Map<CommentResponse>(comment);
+
+                    var user = await _userManager.FindByIdAsync(comment.UserId);
+                    if (user != null)
+                    {
+                        UserComment userComment = new UserComment
+                        {
+                            UserId = user.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName
+                        };
+                        commentResponse.UserComment = userComment;
+                    }
+
+                    commentResponses.Add(commentResponse);
+                }
+
+                return Ok(commentResponses);
+            }
+        }
+
+        [HttpGet("getParentComments")]
+        public async Task<IActionResult> GetParentComments(Guid articleId)
+        {
+            var comments =  await _commentService.GetParentComments(articleId);
+            if (comments == null)
+            {
+                return NotFound();
+            }
+            else 
+            {
+                List<CommentResponse> commentResponses = new List<CommentResponse>();
+                foreach (var comment in comments) 
+                {
+                    var commentResponse = _mapper.Map<CommentResponse>(comment);
+
+                    var user = await _userManager.FindByIdAsync(comment.UserId);
+                    if (user != null)
+                    {
+                        UserComment userComment = new UserComment
+                        {
+                            UserId = user.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName
+                        };
+                        commentResponse.UserComment = userComment;
+                    }
+
+                    commentResponses.Add(commentResponse);
+                }
+
+                return Ok(commentResponses);
+            }
+        }
+
+        [HttpGet("getReplies")]
+        public async Task<IActionResult> GetReplies(Guid parentId)
+        {
+            var comments = await _commentService.GetReplies(parentId);
+            if (comments == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                List<CommentResponse> commentResponses = new List<CommentResponse>();
+                foreach (var comment in comments)
+                {
+                    var commentResponse = _mapper.Map<CommentResponse>(comment);
+
+                    var user = await _userManager.FindByIdAsync(comment.UserId);
+                    if (user != null)
+                    {
+                        UserComment userComment = new UserComment
+                        {
+                            UserId = user.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName
+                        };
+                        commentResponse.UserComment = userComment;
+                    }
+
+                    commentResponses.Add(commentResponse);
+                }
+
+                return Ok(commentResponses);
+            }
         }
 
         //[HttpGet("getReply")]
@@ -54,9 +150,9 @@ namespace Comp1640_Final.Controllers
         [HttpPost("createComment")]
         public async Task<ActionResult<Comment>> PostComment(CommentDTO commentDto)
         {
-            commentDto.Id = Guid.NewGuid();
-            commentDto.ParentCommentId = null;
             var comment = _mapper.Map<Comment>(commentDto);
+            comment.Id = Guid.NewGuid();
+            comment.ParentCommentId = null;
             var result = await _commentService.PostComment(comment);
             if (!result)
             {
@@ -75,9 +171,9 @@ namespace Comp1640_Final.Controllers
             {
                 return BadRequest("Not found");
             }
-            commentDto.Id= Guid.NewGuid();
-            commentDto.ParentCommentId = parentCommentId;
             var reply = _mapper.Map<Comment>(commentDto);
+            reply.Id = Guid.NewGuid();
+            reply.ParentCommentId = parentCommentId;
 
             var result = await _commentService.PostComment(reply);
             if (!result)

@@ -1,12 +1,15 @@
 ﻿using Comp1640_Final.Data;
 using Comp1640_Final.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Services
 {
 
     public interface ICommentService
     {
-        ICollection<Comment> GetComments();
+        Task<ICollection<Comment>> GetComments();
+        Task<ICollection<Comment>> GetParentComments(Guid articleId);
+        Task<ICollection<Comment>> GetReplies(Guid parentId);
         Task<bool> PostComment(Comment cmt);
 
         Task<bool> EditComment(Comment cmt);
@@ -42,9 +45,19 @@ namespace Comp1640_Final.Services
             return await Save();
         }
 
-        public ICollection<Comment> GetComments()
+        public async Task<ICollection<Comment>> GetComments()
         {
-            return _context.Comments.OrderBy(p => p.Id).ToList();
+            return await _context.Comments.OrderBy(p => p.Id).ToListAsync();
+        }
+
+        public async Task<ICollection<Comment>> GetParentComments(Guid articleId)
+        {
+            return await _context.Comments.Where(p => p.ArticleId == articleId).ToListAsync();
+        }
+
+        public async Task<ICollection<Comment>> GetReplies(Guid parentId)
+        {
+            return await _context.Comments.Where(p => p.ParentCommentId == parentId).ToListAsync();
         }
 
         public async Task<bool> PostComment(Comment cmt)
