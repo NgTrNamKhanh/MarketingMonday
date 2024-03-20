@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Comp1640_Final.DTO
+namespace Comp1640_Final.DTO.Response
 {
-    public class LoginReponse
+    public class LoginResponse
     {
-        public String? Id { get; set; }
+        public string? Id { get; set; }
 
         public string FirstName { get; set; }
 
@@ -15,6 +15,6 @@ namespace Comp1640_Final.DTO
         public int FacultyId { get; set; }
 
         public string Jwt_token { get; set; }
-       
+
     }
 }

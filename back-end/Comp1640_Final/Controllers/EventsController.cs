@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Comp1640_Final.Data;
-using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Request;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Identity;

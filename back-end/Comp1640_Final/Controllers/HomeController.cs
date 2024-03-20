@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Response;
 using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Identity;
@@ -44,7 +44,7 @@ namespace Comp1640_Final.Controllers
                 //var token = GenerateJwtToken(identityUser, roles);
                 var token = CreateToken(identityUser, roles[0]);
 
-                var accountDto = new LoginReponse
+                var accountDto = new LoginResponse
                 {
                     Id = identityUser.Id,
                     FirstName = identityUser.FirstName,

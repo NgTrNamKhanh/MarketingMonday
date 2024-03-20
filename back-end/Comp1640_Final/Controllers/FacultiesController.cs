@@ -28,15 +28,15 @@ namespace Comp1640_Final.Controllers
 		[HttpGet("contributions/by-year")]
 		public  async Task<IActionResult> GetContributionsByYear()
 		{
-			var faculties = _service.GetFaculties();
-			return Ok(faculties);
+			var contributions = _service.GetContributionsByYear();
+			return Ok(contributions);
 		}
 
 		[HttpGet("contributors/by-year")]
 		public async Task<IActionResult> GetContributorsByYear()
 		{
-			var faculties = _service.GetFaculties();
-			return Ok(faculties);
+			var contributors = _service.GetContributorsByYear();
+			return Ok(contributors);
 		}
 
 	}

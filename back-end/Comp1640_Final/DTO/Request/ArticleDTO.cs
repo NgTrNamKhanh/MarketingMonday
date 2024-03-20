@@ -1,4 +1,4 @@
-﻿namespace Comp1640_Final.DTO
+﻿namespace Comp1640_Final.DTO.Request
 {
     public class ArticleDTO
     {

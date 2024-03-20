@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Comp1640_Final.DTO
+namespace Comp1640_Final.DTO.Request
 {
     public class EventDTO
     {

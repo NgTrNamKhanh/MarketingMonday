@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Mail;
-using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Request;
 
 namespace Comp1640_Final.Controllers
 {

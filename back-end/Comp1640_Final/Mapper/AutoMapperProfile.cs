@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Request;
 using Comp1640_Final.Models;
 
 namespace Comp1640_Final.Mapper
