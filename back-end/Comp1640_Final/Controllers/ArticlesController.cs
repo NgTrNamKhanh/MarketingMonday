@@ -355,6 +355,11 @@ namespace Comp1640_Final.Controllers
             {
                 try
                 {
+                    if (!_articleService.IsValidDocFile(articleAdd.DocFiles))
+                    {
+                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
+                    }
+
                     var docPath = await _articleService.SaveDoc(articleAdd.DocFiles, articleMap.Id.ToString());
                     articleMap.DocPath = docPath;
                 }
@@ -423,6 +428,11 @@ namespace Comp1640_Final.Controllers
             {
                 try
                 {
+                    if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
+                    {
+                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
+                    }
+
                     var docPath = await _articleService.SaveDoc(articleUpdate.DocFiles, articleMap.Id.ToString());
 
                     // Delete old document file
