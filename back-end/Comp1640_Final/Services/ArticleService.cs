@@ -171,7 +171,7 @@ namespace Comp1640_Final.Services
         {
             if (docFile == null || docFile.Length == 0)
             {
-                return false;
+                return true;
             }
 
             // Get the file extension

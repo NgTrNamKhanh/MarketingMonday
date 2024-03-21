@@ -29,7 +29,7 @@ namespace Comp1640_Final.Services
         {
             if (imageFile == null || imageFile.Length == 0)
             {
-                return false;
+                return true;
             }
 
             var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" }; // Add more file extensions as needed
