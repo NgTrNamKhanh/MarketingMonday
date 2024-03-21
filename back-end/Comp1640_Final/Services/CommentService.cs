@@ -13,6 +13,7 @@ namespace Comp1640_Final.Services
         Task<bool> PostComment(Comment cmt);
 
         Task<bool> EditComment(Comment cmt);
+        Task<int> GetCommentsCount(Guid  articleId);
         Task<bool> Save();
 
         Task<bool>  DeleteComment(Comment cmt);    
@@ -49,10 +50,14 @@ namespace Comp1640_Final.Services
         {
             return await _context.Comments.OrderBy(p => p.Id).ToListAsync();
         }
+        public async Task<int> GetCommentsCount(Guid articleId)
+        {
+            return await _context.Comments.CountAsync(p => p.ArticleId == articleId);
+        }
 
         public async Task<ICollection<Comment>> GetParentComments(Guid articleId)
         {
-            return await _context.Comments.Where(p => p.ArticleId == articleId).ToListAsync();
+            return await _context.Comments.Where(p => p.ArticleId == articleId && p.ParentCommentId == null).ToListAsync();
         }
 
         public async Task<ICollection<Comment>> GetReplies(Guid parentId)

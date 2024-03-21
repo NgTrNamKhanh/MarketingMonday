@@ -35,6 +35,20 @@ const headerText = (
     </>
 );
 export default function  Submission ({ submission, reFetch }) {
+    console.log(submission)
+    const formatDate = (dateString) => {
+        const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true, 
+        };
+    
+        return new Date(dateString).toLocaleString(undefined, options);
+    };
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [tncOpen, setTnCOpen] = useState(false);
     const [isCommenting, setIsCommenting] = useState(false);
@@ -193,10 +207,10 @@ export default function  Submission ({ submission, reFetch }) {
             <div className="submissionWrapper">
                 <div className="submissionTop">
                     <div className="submissionTopLeft">
-                        <img src={submission.studentName} className="submissionProfileImg" alt="profile" />
+                        <img src={`data:image/jpeg;base64,${submission.studentAvatar}`} className="submissionProfileImg" alt="profile" />
                         <span className="submissionUsername">{submission.studentName}</span>
                         <span className="submissionDate">
-                            {new Date(submission.date).toLocaleDateString()} {new Date(submission.date).toLocaleTimeString()}
+                            {formatDate(submission.uploadDate)}
                         </span>
                         <span className="submissionDate">
                             (

@@ -12,8 +12,8 @@ namespace Comp1640_Final.Mapper
             //Article
             CreateMap<AddArticleDTO, Article>();
             CreateMap<EditArticleDTO, Article>();
-            CreateMap<Article, ArticleDTO>();
-            CreateMap<Article, SubmissionDTO>();
+            CreateMap<Article, ArticleResponse>();
+            CreateMap<Article, SubmissionResponse>();
 
             //Event
             CreateMap<Event, EventDTO>();

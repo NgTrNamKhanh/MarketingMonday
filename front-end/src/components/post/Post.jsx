@@ -1,83 +1,60 @@
 import React, { useEffect, useState } from 'react';
-import { ChatBubbleOutline, MoreVert, RecommendRounded, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
+import { ChatBubbleOutline, MoreVert, RecommendRounded, Send, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
 import "./post.css";
 import useFetch from '../../hooks/useFetch';
-const commentsData = [
-    {
-        id: 1,
-        articalId: 1,
-        accountId: 1,
-        userImg: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: 'User 1',
-        parentComment: null,
-        commentDate: "February 20, 2024",
-        content: "This sucks",
-        hasReplies: true,
-        likes: 10,
-        dislikes: 2,
-    },
-    {
-        id: 2,
-        articalId: 1,
-        accountId: 1,
-        userImg: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: 'User 1',
-        parentComment: 1,
-        commentDate: "February 20, 2024",
-        content: "Boooo",
-        hasReplies: true,
-        likes: 11,
-        dislikes: 2,
-    },
-    {
-        id: 3,
-        articalId: 1,
-        accountId: 1,
-        userImg: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: 'User 1',
-        parentComment: 2,
-        commentDate: "February 20, 2024",
-        content: "Ewww",
-        hasReplies: false,
-        likes: 10,
-        dislikes: 11,
-    },
-    {
-        id: 4,
-        articalId: 1,
-        accountId: 1,
-        userImg: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: 'User 1',
-        parentComment: null,
-        commentDate: "February 20, 2024",
-        content: "?????",
-        hasReplies: false,
-        likes: 10,
-        dislikes: 3,
-    },
-
-];
+import apis from '../../services/apis.service';
+import {  ScaleLoader } from 'react-spinners';
+import authHeader from '../../services/auth.header';
+import authService from '../../services/auth.service';
 
 export default function Post({ post}) {
-    const [like, setLike] = useState(post.likes)
+    const formatDate = (dateString) => {
+        const options = {
+            year: 'numeric',
+            month: 'numeric',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true, 
+        };
+    
+        return new Date(dateString).toLocaleString(undefined, options);
+    };
+    const [isSubmitting, setIsSubmitting] = useState(false); 
+    console.log(post)
+    const [currentUser, setCurrentUser] = useState(null);
+
     useEffect(() => {
-        setLike(post.likes);
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
+    const [likesCount, setLikesCount] = useState(post.likes)
+    useEffect(() => {
+        setLikesCount(post.likes);
     }, [post.likes]);
+
     const [isLiked, setIsLiked] = useState(false)
     const handleLike = () => {
-        setLike(isLiked? like -1 : like+1)
+        setLikesCount(isLiked? likesCount -1 : likesCount+1)
         setIsLiked(!isLiked)
         if(isDisliked){
             handleDislike()
         }
     }
-    const [dislike, setDisLike] = useState(post.dislikes)
+    const [commentsCount, setCommentsCount] = useState(post.commmentCount)
     useEffect(() => {
-        setDisLike(post.dislikes); // Update like count when post prop changes
-    }, [post.likes]);
+        setCommentsCount(post.commmentCount);
+    }, [post.commmentCount]);
+    const [dislikesCount, setDisLikesCount] = useState(post.dislikes)
+    useEffect(() => {
+        setDisLikesCount(post.dislikes); 
+    }, [post.dislikes]);
     const [isDisliked, setIsDisLiked] = useState(false)
     const handleDislike = () => {
-        setDisLike(isDisliked? dislike -1 : dislike+1)
+        setDisLikesCount(isDisliked? dislikesCount -1 : dislikesCount+1)
         setIsDisLiked(!isDisliked)
         if(isLiked){
             handleLike()
@@ -122,24 +99,50 @@ export default function Post({ post}) {
             </div>
         );
     } 
-    const [showComment, setShowComment] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    // Open modal
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Close modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
     const CommentBlock = ({comment}) => {
-        console.log(comment.userImg)
+        const [replies, setReplies] = useState([]);
+        const [loading, setLoading] = useState(true);
+
+        useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id }});
+                    setReplies(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching comments:", error);
+                    setLoading(false);
+                }
+            };
+
+            fetchData();
+        }, [comment.id]);
+
         const [showReplies, setShowReplies] = useState(false);
-        const [commentLikes, setCommentLikes] = useState(comment.likes)
+        const [commentLikesCount, setCommentLikesCount] = useState(comment.likes)
         const [isCommentLiked, setIsCommentLiked] = useState(false)
         const handleCommentLike = () => {
-            setCommentLikes(isCommentLiked? commentLikes -1 : commentLikes+1)
+            setCommentLikesCount(isCommentLiked? commentLikesCount -1 : commentLikesCount+1)
             setIsCommentLiked(!isCommentLiked)
             if(isCommentDisliked){
                 handleCommnetDislike()
             }
         }
-        const [commentDislikes, setCommentDisLikes] = useState(comment.dislikes)
+        const [commentDislikesCount, setCommentDisLikesCount] = useState(comment.dislikes)
         const [isCommentDisliked, setIsCommnetDisLiked] = useState(false)
         const handleCommnetDislike = () => {
-            setCommentDisLikes(isCommentDisliked? commentDislikes -1 : commentDislikes+1)
+            setCommentDisLikesCount(isCommentDisliked? commentDislikesCount -1 : commentDislikesCount+1)
             setIsCommnetDisLiked(!isCommentDisliked)
             if(isCommentLiked){
                 handleCommentLike()
@@ -148,22 +151,49 @@ export default function Post({ post}) {
         const toggleReplies = () => {
             setShowReplies(!showReplies);
         };
+        const [openCommentInput, setOpenCommentInput] = useState(false);
+        const handleReply =  async (event) =>{
+            event.preventDefault();
+            setIsSubmitting(true)
+            try {
+                const reply = {
+                    content: event.target.comment.value,
+                    userId: currentUser.id,
+                    articleId: post.id
+                }
+                setIsSubmitting(true);
+                const res = await authHeader().post(apis.comment+"createReply", reply, {params:{parentCommentId:comment.id }});
+                if (res.status === 200) {
+                    setReplies(prevComments => [...prevComments, res.data]);
+                    // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    // setMessage("Account edited successfully.");
+                } else {
+                    setIsSubmitting(false);
+                    // setMessage(`An error occurred: ${res.data}`);
+                }
+            } catch (error) {
+                setIsSubmitting(false);
+                // setMessage(error.response.data);
+            }
+    
+        }
         return (
         <div key={comment.id} className="comment" >
-            <img src={comment.userImg} className="commentProfileImg" alt="profile" />
+            <img src={`data:image/jpeg;base64,${comment.userComment.userAvatar}`} className="commentProfileImg" alt="profile" />
             <div className="commentTop">
                 <div className="commentTopLeft">
-                    <span className="commentUsername">{comment.username}</span>
-                    <span className="commentDate">{comment.commentDate}</span>
+                    <span className="commentUsername">{comment.userComment.userName}{comment.userComment.lastName}</span>
+                    <span className="commentDate">{formatDate(comment.createOn)}</span>
                 </div>
             </div>
             <p className="commentContent">{comment.content}</p>
             <div className="commentActions">
                 <ThumbUp className={`commentIcon ${isCommentLiked ? 'liked' : ''}`} onClick={() => handleCommentLike()} />
-                <span>{commentLikes}</span>
+                <span>{commentLikesCount}</span>
                 <ThumbDown className={`commentIcon ${isCommentDisliked ? 'disliked' : ''}`} onClick={() => handleCommnetDislike()} />
-
-                <span>{commentDislikes}</span>
+                <span>{commentDislikesCount}</span>
+                <span className='replyClick' onClick={()=>setOpenCommentInput(!openCommentInput)}>Reply</span>
             </div>
             {comment.hasReplies && (
                 <span onClick={toggleReplies} style={{ cursor: 'pointer' }} className="viewReplies ">
@@ -171,35 +201,192 @@ export default function Post({ post}) {
                 </span>
             )}
             <div className="commentReply">
-            {showReplies && comment.hasReplies && (
-                <RenderComments comments={commentsData.filter((reply) => reply.articalId === post.id && reply.parentComment === comment.id)} />
-            )}
+                {showReplies && comment.hasReplies && (
+                    <RenderComments comments= {replies} loading={loading}/>
+                )}
+                {openCommentInput && (
+                <CommentForm handleComment={handleReply} />
+                )}
             </div>
+            
         </div>
         )
     }
-    const RenderComments = ( {postId}) => { 
-        if(postId){
-            const [data, loading, error,reFetch] = useFetch()
-
+    const RenderComments = ({ comments, loading}) => {
+        if (loading) {
+            return (<ScaleLoader/>);
         }
-        if (comments === undefined || !Array.isArray(comments) || comments.length==0) { 
-            return (<p >There is no comment</p>);
-        } else {
-            return comments.map((comment) => (
-                <CommentBlock comment={comment}/>
-            ));
+        if (!comments.length) {
+            return <p>There are no comments.</p>;
         }
+        return (
+            <div>
+                {comments.map(comment => (
+                    <CommentBlock key={comment.id} comment={comment} />
+                ))}
+            </div>
+        );
     };
+    
+    const Modal = ({post, closeModal}) =>{
+        const [comments, setComments] = useState([]);
+        const [loading, setLoading] = useState(false);
+        
+        const handleComment =  async  (event) =>{
+            event.preventDefault();
+            setIsSubmitting(true)
+            try {
+                const comment = {
+                    content: event.target.comment.value,
+                    userId: currentUser.id,
+                    articleId: post.id
+                }
+                setIsSubmitting(true);
+                const res = await authHeader().post(apis.comment+"createComment", comment);
+                if (res.status === 200) {
+                    setComments(prevComments => [...prevComments, res.data]);
+                    setCommentsCount(prevCount => prevCount + 1)
+                    // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                    setIsSubmitting(false);
+                    // setMessage("Account edited successfully.");
+                } else {
+                    setIsSubmitting(false);
+                    // setMessage(`An error occurred: ${res.data}`);
+                }
+            } catch (error) {
+                setIsSubmitting(false);
+                // setMessage(error.response.data);
+            }
+    
+        }
+        
+        useEffect(() => {
+            const fetchData = async () => {
+                setLoading(true)
+                try {
+                    const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id }});
+                    setComments(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching comments:", error);
+                    setLoading(false);
+                }
+            };
+
+            fetchData();
+        }, [post.id]);
+        return(
+            <div className="modal">
+                    <div className="modalWrapper">
+                        <div className="modalStickyTop">
+                            <div className="modalTop">
+                                <div className="modalTopLeft">
+                                    <h1 className="postUsername">{post.studentName}'s post</h1>
+                                </div>
+                                <div className="modalTopRight">
+                                    <button className="closeButton" onClick={closeModal}>X</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="modalMainContent">
+                            <div className="modalTop">
+                                <div className="modalTopLeft">
+                                    <img src={`data:image/jpeg;base64,${post.studentAvatar}`} className="postProfileImg" alt="profile" />
+                                    <span className="postUsername">{post.studentName}</span>
+                                    <span className="postDate">{formatDate(post.uploadDate)}</span>
+                                </div>
+                                <div className="postTopRight">
+                                    <MoreVert/>
+                                </div>
+                            </div>
+                            <div className="modalCenter">
+                                <h2 className='postTitle'>{post.title}</h2>
+                                <p className='postContent'>{post.description}</p>
+                                {/* {post.files.map((file, index) => (
+                                    <div key={index} className="itemContainer">
+                                        <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
+                                    </div>
+                                ))} */}
+                            </div>
+                            {pictureLayout}
+                            <div className="modalBottom">
+                                <div className="postBottomLeft">
+                                    <RecommendRounded className={`likeIcon postIcon`} />
+                                    <span className="postLikeCounter">{likesCount}</span>
+                                    <RecommendRounded className={`disLikeIcon postIcon`} />
+                                    <span className="postLikeCounter">{dislikesCount}</span>
+                                </div>
+                                <div className="postBottomRight" onClick={()=>{setIsModalOpen(!isModalOpen)}}>
+                                    <span className="postCommentText">{post.commmentCount} comments</span>
+                                </div>
+                            </div>
+                            <hr className="postHr"/>
+                            <div className="actionsSection">
+                                <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
+                                    {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
+                                    <span className='actionText'>Like</span>
+                                </div>
+                                <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
+                                {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
+                                    <span className='actionText'>Dislike</span>
+                                </div>
+                                <div className="action" onClick={()=>{setIsModalOpen(!isModalOpen)}}>
+                                    <ChatBubbleOutline/>
+                                    <span className='actionText'>Comment</span>
+                                </div>
+                            </div>
+                
+                            <div className="commentsSection">
+                                <h3>Comments</h3>
+                                <RenderComments comments={comments} loading={loading}/>
+                            </div>
+                        </div>
+                        <div className="modalStickyBottom">
+                                <CommentForm handleComment={handleComment}/>
+                        </div>
+                    </div>
+            </div>
+        )
+    }
+    const CommentForm = ({handleComment}) => {
+        const [commentValue, setCommentValue] = useState('');
+        const handleCommentChange = (event) => {
+            setCommentValue(event.target.value);
+        };
+        return (
+            <div className="commentInputWrapper">
+                <img src={`data:image/jpeg;base64,${currentUser.avatar}`} className="userAvatar" alt="profile" />
+                <form className='commentForm' onSubmit={handleComment}>
+                    <input 
+                        type="text"
+                        name="comment"
+                        value={commentValue}
+                        onChange={handleCommentChange}
+                        placeholder="Write a comment..."
+                        className="commentInput"
+                        disabled={isSubmitting} 
+                    />
+                        <button 
+                            disabled={isSubmitting || !commentValue.trim()} 
+                            type="submit" 
+                            className="commentButton"
+                        >
+                                <Send/>
+                        </button>
+                </form>
+            </div>
+
+        )
+    }
     
     return (
         <div className="post">
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <img src={post.studentId} className="postProfileImg" alt="profile" />
+                        <img src={`data:image/jpeg;base64,${post.studentAvatar}`} className="postProfileImg" alt="profile" />
                         <span className="postUsername">{post.studentName}</span>
-                        <span className="postDate">{new Date(post.date).toLocaleDateString()} {new Date(post.date).toLocaleTimeString()}</span>
+                        <span className="postDate">{formatDate(post.uploadDate)}</span>
                     </div>
                     <div className="postTopRight">
                         <MoreVert/>
@@ -218,12 +405,12 @@ export default function Post({ post}) {
                 <div className="postBottom">
                     <div className="postBottomLeft">
                         <RecommendRounded className={`likeIcon postIcon`} />
-                        <span className="postLikeCounter">{like}</span>
+                        <span className="postLikeCounter">{likesCount}</span>
                         <RecommendRounded className={`disLikeIcon postIcon`} />
-                        <span className="postLikeCounter">{dislike}</span>
+                        <span className="postLikeCounter">{dislikesCount}</span>
                     </div>
-                    <div className="postBottomRight" onClick={()=>{setShowComment(!showComment)}}>
-                        <span className="postCommentText">{post.commentsCount} comments</span>
+                    <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
+                        <span className="postCommentText">{commentsCount} comments</span>
                     </div>
                 </div>
                 <hr className="postHr"/>
@@ -236,18 +423,13 @@ export default function Post({ post}) {
                     {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
                         <span className='actionText'>Dislike</span>
                     </div>
-                    <div className="action" onClick={()=>{setShowComment(!showComment)}}>
+                    <div className="action" onClick={()=>{setIsModalOpen(true)}}>
                         <ChatBubbleOutline/>
                         <span className='actionText'>Comment</span>
                     </div>
                 </div>
-                {showComment &&(
-                    <div className="commentsSection">
-                    <h3>Comments</h3>
-                    <RenderComments postId={post.id} />
-                </div>
-                )}
             </div>
+            {isModalOpen && <Modal post={post} closeModal={closeModal} />}
         </div>
     );
 }

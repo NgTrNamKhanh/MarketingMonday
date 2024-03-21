@@ -33,7 +33,7 @@ export default function Home() {
     return (
         <Router> 
             <div>
-            {currentUser && <Topbar  setCurrentUser={setCurrentUser}/>}
+            {currentUser && <Topbar  setCurrentUser={setCurrentUser} user={currentUser}/>}
                 <div className="homeContainer">
                     {currentUser && (
                             <>

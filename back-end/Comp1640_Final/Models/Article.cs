@@ -39,25 +39,25 @@ namespace Comp1640_Final.Models
         public ApplicationUser MarketingCoordinator { get; set; }
     }
 
-    public class AddArticleDTO
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int FacultyId { get; set; }
-        public string StudentId { get; set; }
-        public List<IFormFile> ImageFiles { get; set; }
-        public IFormFile? DocFiles { get; set; }
-    }
+    //public class AddArticleDTO
+    //{
+    //    public string Title { get; set; }
+    //    public string Description { get; set; }
+    //    public int FacultyId { get; set; }
+    //    public string StudentId { get; set; }
+    //    public List<IFormFile> ImageFiles { get; set; }
+    //    public IFormFile? DocFiles { get; set; }
+    //}
 
-    public class EditArticleDTO
-    {
-        public Guid Id { get; set; }
+    //public class EditArticleDTO
+    //{
+    //    public Guid Id { get; set; }
 
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public int FacultyId { get; set; }
-        public string StudentId { get; set; }
-        public List<IFormFile> ImageFiles { get; set; }
-        public IFormFile DocFiles { get; set; }
-    }
+    //    public string Title { get; set; }
+    //    public string Description { get; set; }
+    //    public int FacultyId { get; set; }
+    //    public string StudentId { get; set; }
+    //    public List<IFormFile> ImageFiles { get; set; }
+    //    public IFormFile DocFiles { get; set; }
+    //}
 }

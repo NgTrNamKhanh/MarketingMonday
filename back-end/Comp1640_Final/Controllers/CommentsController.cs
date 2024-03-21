@@ -5,6 +5,7 @@ using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Migrations;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,13 +21,18 @@ namespace Comp1640_Final.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICommentService _commentService;
+        private static IWebHostEnvironment _webHostEnvironment;
+        private readonly IUserService _userService;
 
-        public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, ICommentService commentService)
+        public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, ICommentService commentService, IWebHostEnvironment webHostEnvironment, IUserService userService)
         {
             _context = context;
             _mapper = mapper;
             _userManager = userManager;
             _commentService = commentService;
+            _webHostEnvironment = webHostEnvironment;
+            _userService = userService;
+
         }
 
         [HttpGet("getComment")]
@@ -35,7 +41,7 @@ namespace Comp1640_Final.Controllers
             var comments = await _commentService.GetComments();
             if (comments == null)
             {
-                return NotFound();
+                return Ok(comments);
             }
             else
             {
@@ -43,15 +49,26 @@ namespace Comp1640_Final.Controllers
                 foreach (var comment in comments)
                 {
                     var commentResponse = _mapper.Map<CommentResponse>(comment);
-
+                    ICollection<Comment> replies = await _commentService.GetReplies(comment.Id);
+                    bool hasReplies = replies.Count > 0;
+                    commentResponse.hasReplies = hasReplies;
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
+                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                        // If imageBytes is null, read the default image file
+                        if (userImageBytes == null)
+                        {
+                            var defaultImageFileName = "default-avatar.jpg";
+                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                        }
                         UserComment userComment = new UserComment
                         {
                             UserId = user.Id,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName
+                            UserAvatar = userImageBytes,
+                            UserName = user.FirstName + " " + user.LastName,
                         };
                         commentResponse.UserComment = userComment;
                     }
@@ -69,23 +86,35 @@ namespace Comp1640_Final.Controllers
             var comments =  await _commentService.GetParentComments(articleId);
             if (comments == null)
             {
-                return NotFound();
+                return Ok(comments);
             }
             else 
             {
                 List<CommentResponse> commentResponses = new List<CommentResponse>();
                 foreach (var comment in comments) 
                 {
-                    var commentResponse = _mapper.Map<CommentResponse>(comment);
 
+                    var commentResponse = _mapper.Map<CommentResponse>(comment);
+                    ICollection<Comment> replies = await _commentService.GetReplies(comment.Id);
+                    bool hasReplies = replies.Count > 0;
+                    commentResponse.hasReplies = hasReplies;
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
+                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                        // If imageBytes is null, read the default image file
+                        if (userImageBytes == null)
+                        {
+                            var defaultImageFileName = "default-avatar.jpg";
+                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                        }
                         UserComment userComment = new UserComment
                         {
                             UserId = user.Id,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName
+                            UserAvatar = userImageBytes,
+                            UserName = user.FirstName + " " + user.LastName,
                         };
                         commentResponse.UserComment = userComment;
                     }
@@ -103,7 +132,7 @@ namespace Comp1640_Final.Controllers
             var comments = await _commentService.GetReplies(parentId);
             if (comments == null)
             {
-                return NotFound();
+                return Ok(comments);
             }
             else
             {
@@ -111,15 +140,26 @@ namespace Comp1640_Final.Controllers
                 foreach (var comment in comments)
                 {
                     var commentResponse = _mapper.Map<CommentResponse>(comment);
-
+                    ICollection<Comment> replies = await _commentService.GetReplies(comment.Id);
+                    bool hasReplies = replies.Count > 0;
+                    commentResponse.hasReplies = hasReplies;
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
+                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                        // If imageBytes is null, read the default image file
+                        if (userImageBytes == null)
+                        {
+                            var defaultImageFileName = "default-avatar.jpg";
+                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                        }
                         UserComment userComment = new UserComment
                         {
                             UserId = user.Id,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName
+                            UserAvatar = userImageBytes,
+                            UserName = user.FirstName + " " + user.LastName,
                         };
                         commentResponse.UserComment = userComment;
                     }
@@ -153,6 +193,7 @@ namespace Comp1640_Final.Controllers
             var comment = _mapper.Map<Comment>(commentDto);
             comment.Id = Guid.NewGuid();
             comment.ParentCommentId = null;
+            comment.CreateOn = DateTime.Now;
             var result = await _commentService.PostComment(comment);
             if (!result)
             {
@@ -160,7 +201,8 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Add successful");
+                var commentResult = _context.Comments.Find(comment.Id);
+                return Ok(commentResult);
             }
         }
         [HttpPost("createReply")]
@@ -174,6 +216,7 @@ namespace Comp1640_Final.Controllers
             var reply = _mapper.Map<Comment>(commentDto);
             reply.Id = Guid.NewGuid();
             reply.ParentCommentId = parentCommentId;
+            reply.CreateOn = DateTime.Now;
 
             var result = await _commentService.PostComment(reply);
             if (!result)
@@ -182,7 +225,8 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Add successful");
+                var replyResult = _context.Comments.Find(reply.Id);
+                return Ok(replyResult);
             }
         }
 

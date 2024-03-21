@@ -9,6 +9,7 @@ const apis = {
     event: "https://localhost:7218/api/events/",
     article: "https://localhost:7218/api/Articles/",
     normal: "https://localhost:7218/api/",
+    comment: "https://localhost:7218/api/comment/"
 };
 
 export default apis;

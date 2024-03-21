@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO.Request;
+using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Identity;
@@ -18,33 +19,49 @@ namespace Comp1640_Final.Controllers
         private readonly IMapper _mapper;
         private readonly ProjectDbContext _context;
         private static IWebHostEnvironment _webHostEnvironment;
-
+        private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ICommentService _commentService;
 
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
             ProjectDbContext context,
             IWebHostEnvironment webHostEnvironment,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            IUserService userService,
+            ICommentService commentService)
         {
             _articleService = articleService;
             _mapper = mapper;
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _userService = userService;
+            _commentService = commentService;
         }
         [HttpGet]
         public async Task<IActionResult> GetArticles()
         {
             var articles = _articleService.GetArticles();
-            var articleDTOs = new List<ArticleDTO>();
+            var articleDTOs = new List<SubmissionResponse>();
 
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<ArticleDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar  = userImageBytes;
                 articleDTO.StudentName = user.FirstName +" "+user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -61,10 +78,20 @@ namespace Comp1640_Final.Controllers
 
             }
             var article = _articleService.GetArticleByID(articleId);
-            var articleDTO = _mapper.Map<ArticleDTO>(article);
+            var articleDTO = _mapper.Map<SubmissionResponse>(article);
             var user = await _userManager.FindByIdAsync(article.StudentId);
             var imageBytes = await _articleService.GetImagesByArticleId(articleId);
-            articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+            var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+            // If imageBytes is null, read the default image file
+            if (userImageBytes == null)
+            {
+                var defaultImageFileName = "default-avatar.jpg";
+                var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+            }
+            articleDTO.StudentAvatar = userImageBytes;
+            //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -79,14 +106,24 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetArticlesByTitle(articleTitle); 
 
             if (articles == null || !articles.Any())
-                return NotFound(); var articleDTOs = new List<ArticleDTO>();
+                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
 
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<ArticleDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -103,14 +140,24 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return BadRequest("There is no submission here");
 
-            var articleDTOs = new List<SubmissionDTO>();
+            var articleDTOs = new List<SubmissionResponse>();
 
             foreach (var article in articles)
             {
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<SubmissionDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -125,14 +172,25 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return BadRequest("There is no article here");
 
-            var articleDTOs = new List<ArticleDTO>();
+            var articleDTOs = new List<ArticleResponse>();
 
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<ArticleDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var articleDTO = _mapper.Map<ArticleResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -147,14 +205,24 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return BadRequest("There is no submission here");
 
-            var articleDTOs = new List<SubmissionDTO>();
+            var articleDTOs = new List<SubmissionResponse>();
 
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<SubmissionDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -171,14 +239,25 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound();
 
-            var articleDTOs = new List<SubmissionDTO>();
+            var articleDTOs = new List<SubmissionResponse>();
 
             foreach (var article in articles)
             {
-                var articleDTO = _mapper.Map<SubmissionDTO>(article);
-                articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
+
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);

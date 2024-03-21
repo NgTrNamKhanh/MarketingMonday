@@ -10,7 +10,7 @@ namespace Comp1640_Final.Models
 
         public string Content { get; set; }
 
-        public DateTime CreateOn { get; set; } = DateTime.UtcNow;
+        public DateTime CreateOn { get; set; } = DateTime.Now;
 
         public string UserId { get; set; }
         [ForeignKey("UserId")]

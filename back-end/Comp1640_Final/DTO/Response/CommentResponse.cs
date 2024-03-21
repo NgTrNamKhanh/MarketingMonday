@@ -9,14 +9,15 @@
         public Guid ArticleId { get; set; }
 
         public UserComment UserComment { get; set; }
-        public Guid ParentCommentId { get; set; }
+        public string ParentCommentId { get; set; }
+        public bool  hasReplies { get; set; }
 
     }
     public class UserComment 
     {
         public string UserId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public byte[] UserAvatar { get; set; }
+        public string UserName { get; set; }
 
     }
 }

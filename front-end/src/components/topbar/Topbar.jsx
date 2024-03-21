@@ -5,10 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 import Notification from "../notification/Notification";
 
-export default function Topbar({setCurrentUser}) {
+export default function Topbar({user, setCurrentUser}) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [closedByInteraction, setClosedByInteraction] = useState(true);
+
     const navigator = useNavigate();
     const handleDropdownToggle = () => {
         setDropdownOpen(!dropdownOpen);
@@ -100,7 +101,7 @@ export default function Topbar({setCurrentUser}) {
                                 <Link to="/profile" className="dropdownContentItemLink">
                                     <div className="dropdownContentItem">
                                             <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" className="topbarImg linkIcon" />
-                                            <span>Nigga</span>
+                                            <span>{user.firstName} {user.lastName}</span>
                                             <ChevronRight className="moreIcon"/>
                                     </div>
                                 </Link>

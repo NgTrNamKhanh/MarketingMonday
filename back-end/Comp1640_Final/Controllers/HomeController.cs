@@ -2,6 +2,8 @@
 using Comp1640_Final.DTO.Response;
 using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
+using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -21,12 +23,16 @@ namespace Comp1640_Final.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
-        public HomeController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper, IConfiguration configuration)
+        private static IWebHostEnvironment _webHostEnvironment;
+        private readonly IUserService _userService;
+        public HomeController(IAuthService authService, UserManager<ApplicationUser> userManager, IMapper mapper, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IUserService userService)
         {
             _authService = authService;
             _userManager = userManager;
             _mapper = mapper;
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+            _userService = userService;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(string email, string passWord)
@@ -43,6 +49,14 @@ namespace Comp1640_Final.Controllers
 
                 //var token = GenerateJwtToken(identityUser, roles);
                 var token = CreateToken(identityUser, roles[0]);
+                var userImageBytes = await _userService.GetImagesByUserId(identityUser.Id);
+
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
 
                 var accountDto = new LoginResponse
                 {
@@ -53,6 +67,7 @@ namespace Comp1640_Final.Controllers
                     Email = identityUser.Email,
                     Roles = roles.ToArray(),
                     FacultyId = identityUser.FacultyId,
+                    Avatar = userImageBytes,
                     Jwt_token = token
                 };
 

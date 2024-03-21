@@ -4,7 +4,6 @@
     {
 
         public string Content { get; set; }
-        public DateTime CreateOn { get; set; }
         public string UserId { get; set; }
         public Guid ArticleId { get; set; }
 
