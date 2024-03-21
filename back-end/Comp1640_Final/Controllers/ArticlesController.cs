@@ -62,6 +62,7 @@ namespace Comp1640_Final.Controllers
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
                 articleDTO.StudentAvatar  = userImageBytes;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.StudentName = user.FirstName +" "+user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -92,6 +93,7 @@ namespace Comp1640_Final.Controllers
             }
             articleDTO.StudentAvatar = userImageBytes;
             //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+            articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -124,6 +126,7 @@ namespace Comp1640_Final.Controllers
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
                 articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -158,6 +161,40 @@ namespace Comp1640_Final.Controllers
                 }
                 articleDTO.StudentAvatar = userImageBytes;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTOs.Add(articleDTO);
+            }
+            return Ok(articleDTOs);
+        }
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetArticleByProfile(string userId)
+        {
+            var articles = await _articleService.GetArticleByProfile(userId);
+
+            if (articles == null || !articles.Any())
+                return BadRequest("There is no submission here");
+
+            var articleDTOs = new List<SubmissionResponse>();
+
+            foreach (var article in articles)
+            {
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -223,6 +260,7 @@ namespace Comp1640_Final.Controllers
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
                 articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -257,6 +295,7 @@ namespace Comp1640_Final.Controllers
                     var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();

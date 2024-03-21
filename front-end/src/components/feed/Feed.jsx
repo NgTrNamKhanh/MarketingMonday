@@ -74,34 +74,88 @@ import apis from "../../services/apis.service";
 //     // Add more posts as needed
 // ];
 
-export default function Feed() {
+export default function Feed({userId}) {
     const { facultyId } = useParams();
-    const [selectedFilter, setSelectedFilter] = useState("recent");
+    const [approvedSelectedFilter, setApprovedSelectedFilter] = useState("recent");
+    const isProfile = userId ? true : false;
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState()
+    const [filteredPosts, setFilteredPosts] = useState([]);
+    const [unapprovedSelectedFilter, setSelectedFilter] = useState("all");
+    const handleUnapprovedFilterChange = (event) => {
+        setSelectedFilter(event.target.value);
+        filterUnapprovedPosts(event.target.value);
+    };
+    const filterUnapprovedPosts = (filter) => {
+        let filteredPosts = [...posts];
+        switch (filter) {
+            case "all":
+                filteredPosts = posts;
+                break;
+            case "approved":
+                filteredPosts = filteredPosts.filter(submission => submission.publishStatusId === 1);
+                break;
+            case "not commented":
+                filteredPosts = filteredPosts.filter(submission => submission.coordinatorComment === null && submission.publishStatusId === 3);
+                break;
+            case "commented":
+                filteredPosts = filteredPosts.filter(submission => submission.coordinatorComment !== null && submission.publishStatusId === 3);
+                break;
+            case "reject":
+                filteredPosts = filteredPosts.filter(submission => submission.publishStatusId === 2);
+                break;
+            default:
+                filteredPosts = posts;
+                break;
+        }
+        setFilteredPosts(filteredPosts);
+    };
     useEffect(()=>{
         const fetchPosts = async () => {
             if (facultyId) {
                 try {
                     setError(null)
                     const response = await authHeader().get(apis.article + "approved/faculty/" + facultyId);
+                    setFilteredPosts(response.data)
                     setPosts(response.data)
 
                 }catch (error) {
                     setError(error.response.data)
                     setPosts([])
+                    setFilteredPosts([])
                     console.error("Error fetching post data:", error);
                 }
             }
         }
         fetchPosts();
     },[facultyId])
-    const handleFilterChange = (event) => {
-        setSelectedFilter(event.target.value);
-        sortPosts(event.target.value);
+    useEffect(()=>{
+        const fetchPosts = async () => {
+            if (userId) {
+                try {
+                    setError(null)
+                    const response = await authHeader().get(apis.article + "profile", {params: {userId: userId}});
+                    setPosts(response.data)
+                    setFilteredPosts(response.data)
+
+                }catch (error) {
+                    setError(error.response.data)
+                    setPosts([])
+                    setFilteredPosts([])
+                    console.error("Error fetching post data:", error);
+                }
+            }
+        }
+        fetchPosts();
+    },[userId])
+    console.log(posts)
+    const handleApprovedFilterChange = (event) => {
+        setSelectedFilter("all");
+        setApprovedSelectedFilter(event.target.value);
+        sortApprovedPosts(event.target.value);
     };
 
-    const sortPosts = (filter) => {
+    const sortApprovedPosts = (filter) => {
         let sortedPosts = [...posts];
         switch (filter) {
             case "views":
@@ -118,26 +172,38 @@ export default function Feed() {
                 sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
                 break;
         }
-        setPosts(sortedPosts);
+        setFilteredPosts(sortedPosts);
     };
-
+    console.log(filteredPosts)
     return (
         <div className="feed">
             <div className="feedWrapper">
                 <div className="postFilter">
-                    <select value={selectedFilter} onChange={handleFilterChange}>
+                    <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange}>
                         <option value="recent">Most Recent</option>
                         <option value="views">Most Viewed</option>
                         <option value="likes">More Liked</option>
                         <option value="comments">Most Commented</option>
                     </select>
                 </div>
+                {userId && (
+                    <div className="postFilter">
+                        <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange}>
+                        <option value="all">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="not commented">Not Commented</option>
+                        <option value="commented">Commented</option>
+                        <option value="reject">Reject</option>
+                        </select>
+                    </div>
+                )}
                 {error ? (
                     <div>{error}</div>
                         ) : (
-                    posts.map(post => (
+                    filteredPosts.map(post => (
                     <Post
                         post = {post}
+                        isProfile = {isProfile}
                     />
                     ))
                 )}

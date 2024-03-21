@@ -202,7 +202,8 @@ namespace Comp1640_Final.Controllers
             else
             {
                 var commentResult = _context.Comments.Find(comment.Id);
-                return Ok(commentResult);
+                var commentResponse = _mapper.Map<CommentResponse>(commentResult);
+                return Ok(commentResponse);
             }
         }
         [HttpPost("createReply")]
@@ -226,7 +227,8 @@ namespace Comp1640_Final.Controllers
             else
             {
                 var replyResult = _context.Comments.Find(reply.Id);
-                return Ok(replyResult);
+                var replyResponse = _mapper.Map<CommentResponse>(replyResult);
+                return Ok(replyResponse);
             }
         }
 

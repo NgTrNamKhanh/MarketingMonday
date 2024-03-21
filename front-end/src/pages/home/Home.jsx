@@ -56,7 +56,7 @@ export default function Home() {
                                     requiredRoles={['Admin', 'Manager', 'Coordinator','Student','Guess']}
                                 />}  
                             />
-                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/profile" element={<Profile/>} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login  setCurrentUser={setCurrentUser}/>} />
                             <Route path="/dashboard" element=

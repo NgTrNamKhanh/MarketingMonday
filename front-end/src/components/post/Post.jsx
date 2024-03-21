@@ -7,7 +7,7 @@ import {  ScaleLoader } from 'react-spinners';
 import authHeader from '../../services/auth.header';
 import authService from '../../services/auth.service';
 
-export default function Post({ post}) {
+export default function Post({ post, isProfile}) {
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -62,6 +62,7 @@ export default function Post({ post}) {
     } 
 
     let pictureLayout;
+    console.log(post.imageBytes.length)
     if (post.imageBytes.length === 1) {
         pictureLayout = (
             <div className="postCenter">
@@ -232,22 +233,27 @@ export default function Post({ post}) {
         const [comments, setComments] = useState([]);
         const [loading, setLoading] = useState(false);
         
-        const handleComment =  async  (event) =>{
+        const handleComment =  async (event) =>{
             event.preventDefault();
-            setIsSubmitting(true)
+            setIsSubmitting(true);
             try {
                 const comment = {
                     content: event.target.comment.value,
                     userId: currentUser.id,
                     articleId: post.id
                 }
-                setIsSubmitting(true);
+                console.log("1")
                 const res = await authHeader().post(apis.comment+"createComment", comment);
+                console.log("2")
                 if (res.status === 200) {
+                    console.log("3")
                     setComments(prevComments => [...prevComments, res.data]);
+                    console.log("4")
                     setCommentsCount(prevCount => prevCount + 1)
+                    console.log("5")
                     // localStorage.setItem("accounts", JSON.stringify(updatedData));
                     setIsSubmitting(false);
+                    console.log("6")
                     // setMessage("Account edited successfully.");
                 } else {
                     setIsSubmitting(false);
@@ -262,6 +268,7 @@ export default function Post({ post}) {
         
         useEffect(() => {
             const fetchData = async () => {
+                console.log("re render")
                 setLoading(true)
                 try {
                     const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id }});
@@ -301,7 +308,7 @@ export default function Post({ post}) {
                             </div>
                             <div className="modalCenter">
                                 <h2 className='postTitle'>{post.title}</h2>
-                                <p className='postContent'>{post.description}</p>
+                                <div className='postContent' dangerouslySetInnerHTML={{ __html: post.description }} />
                                 {/* {post.files.map((file, index) => (
                                     <div key={index} className="itemContainer">
                                         <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
@@ -378,7 +385,34 @@ export default function Post({ post}) {
 
         )
     }
-    
+    function getStatusColor(status) {
+        switch (status) {
+            case 'approved':
+                return 'green';
+            case 'reject':
+                return 'red';
+            case 'commented':
+                return 'yellow';
+            default:
+                return 'orange';
+        }
+    }
+    const [coordinatorComment, setCoordinatorComment] = useState(post.coordinatorComment);
+    const [status, setStatus] = useState('');
+    useEffect(() => {
+        if (post.publishStatusId === 1) {
+            setStatus('approved');
+        }  else if (post.publishStatusId === 2) {
+            setStatus('reject');
+        }else if (post.publishStatusId === 3 && post.coordinatorComment === null) {
+            setStatus('not commented');
+        } 
+        else if (post.coordinatorComment) {
+            setStatus('commented');
+        }
+        
+    }, [post.coordinatorComment, post.publishStatusId]);
+    console.log(status)
     return (
         <div className="post">
             <div className="postWrapper">
@@ -387,6 +421,13 @@ export default function Post({ post}) {
                         <img src={`data:image/jpeg;base64,${post.studentAvatar}`} className="postProfileImg" alt="profile" />
                         <span className="postUsername">{post.studentName}</span>
                         <span className="postDate">{formatDate(post.uploadDate)}</span>
+                        {!isProfile &&  (
+                            (<span style={{ color: getStatusColor(status) }}>
+                            {status}
+                            </span>)
+                            )
+                        }
+                        
                     </div>
                     <div className="postTopRight">
                         <MoreVert/>
@@ -394,7 +435,8 @@ export default function Post({ post}) {
                 </div>
                 <div className="postCenter">
                     <h2 className='postTitle'>{post.title}</h2>
-                    <p className='postContent'>{post.description}</p>
+                    <div className='postContent' dangerouslySetInnerHTML={{ __html: post.description }} />
+                    {/* <p className='postContent'>{post.description}</p> */}
                     {/* {post.files.map((file, index) => (
                         <div key={index} className="itemContainer">
                             <a href={URL.createObjectURL(file)} className="fileLink" target="_blank" rel="noopener noreferrer">{file.name}</a>
@@ -402,32 +444,47 @@ export default function Post({ post}) {
                     ))} */}
                 </div>
                 {pictureLayout}
-                <div className="postBottom">
-                    <div className="postBottomLeft">
-                        <RecommendRounded className={`likeIcon postIcon`} />
-                        <span className="postLikeCounter">{likesCount}</span>
-                        <RecommendRounded className={`disLikeIcon postIcon`} />
-                        <span className="postLikeCounter">{dislikesCount}</span>
+                {(status === 'approved' || !isProfile) && 
+                    (
+                        <>
+                        <div className="postBottom">
+                            <div className="postBottomLeft">
+                                <RecommendRounded className={`likeIcon postIcon`} />
+                                <span className="postLikeCounter">{likesCount}</span>
+                                <RecommendRounded className={`disLikeIcon postIcon`} />
+                                <span className="postLikeCounter">{dislikesCount}</span>
+                            </div>
+                            <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
+                                <span className="postCommentText">{commentsCount} comments</span>
+                            </div>
+                        </div>
+                        <hr className="postHr"/>
+                        <div className="actionsSection">
+                            <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
+                                {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
+                                <span className='actionText'>Like</span>
+                            </div>
+                            <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
+                            {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
+                                <span className='actionText'>Dislike</span>
+                            </div>
+                            <div className="action" onClick={()=>{setIsModalOpen(true)}}>
+                                <ChatBubbleOutline/>
+                                <span className='actionText'>Comment</span>
+                            </div>
+                        </div>
+                        </>
+                    )
+                }
+                {coordinatorComment && (
+                    <div className="commentSection" id='comment'>
+                        <span>Coordinator Comment: </span>
+                        <textarea 
+                            value={coordinatorComment}
+                            disabled={true}
+                        />
                     </div>
-                    <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
-                        <span className="postCommentText">{commentsCount} comments</span>
-                    </div>
-                </div>
-                <hr className="postHr"/>
-                <div className="actionsSection">
-                    <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
-                        {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
-                        <span className='actionText'>Like</span>
-                    </div>
-                    <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
-                    {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
-                        <span className='actionText'>Dislike</span>
-                    </div>
-                    <div className="action" onClick={()=>{setIsModalOpen(true)}}>
-                        <ChatBubbleOutline/>
-                        <span className='actionText'>Comment</span>
-                    </div>
-                </div>
+                )}
             </div>
             {isModalOpen && <Modal post={post} closeModal={closeModal} />}
         </div>

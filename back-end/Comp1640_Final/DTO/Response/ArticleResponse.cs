@@ -29,6 +29,8 @@
 
         public string CoordinatorComment { get; set; }
 
+        public int CommmentCount { get; set; }
+
         public List<byte[]> ImageBytes { get; set; }
 
         //public string MarketingCoordinatorId { get; set; }

@@ -14,6 +14,8 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
         Task<IEnumerable<Article>> GetApprovedArticles(int facultyID);
+
+        Task<IEnumerable<Article>> GetArticleByProfile(string userId);
         Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId);
         Task<bool> UpdateArticle(Article article);
         Task<bool> AddArticle(Article article);
@@ -72,6 +74,12 @@ namespace Comp1640_Final.Services
         {
             return await _context.Articles
                 .Where(p => p.PublishStatusId == publishStatusId)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Article>> GetArticleByProfile(string userId)
+        {
+            return await _context.Articles
+                .Where(p => p.StudentId == userId)
                 .ToListAsync();
         }
         public bool ArticleExists(Guid articleId)

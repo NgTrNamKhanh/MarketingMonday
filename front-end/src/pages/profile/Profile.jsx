@@ -1,21 +1,36 @@
+import { useEffect, useState } from "react";
 import Feed from "../../components/feed/Feed"
 import "./profile.css"
+import authService from "../../services/auth.service";
+import { ScaleLoader } from "react-spinners";
 
 export default function Profile() {
+    const [currentUser, setCurrentUser] = useState(null);
+
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
+    if (!currentUser) {
+        return (<ScaleLoader/>);
+    }
     return (
-        <div className="profile">
+            <div className="profile">
             <div className="profileRight">
                 <div className="profileRightTop">
                     <div className="profileCover">
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" className="profileCoverImg" />
-                        <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX" className="profileUserImg" />
+                        <img src={`data:image/jpeg;base64,${currentUser.avatar}`} className="profileCoverImg" alt="profile" />
+                        <img src={`data:image/jpeg;base64,${currentUser.avatar}`} className="profileUserImg" alt="profile" />
                     </div>
                 </div>
                 <div className="profileInfo">
-                    <h4 className="profileInfoName">Nigga</h4>
-                    <span className="profileInfoDesc">Nigga</span>
+                    <h4 className="profileInfoName">{currentUser.firstName} {currentUser.lastName}</h4>
                 </div>
-                <div className="profileRightBottom"></div>
+                <div className="profileRightBottom">
+                    <Feed userId = {currentUser.id}/>
+                </div>
             </div>
         </div>
     )
