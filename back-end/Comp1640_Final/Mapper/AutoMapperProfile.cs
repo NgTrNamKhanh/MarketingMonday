@@ -29,8 +29,10 @@ namespace Comp1640_Final.Mapper
             //CreateMap<ReplyDTO, Comment>();
 
             //Likes and Dislikes
-            CreateMap<InteractDTO,Like>();
-            CreateMap<InteractDTO,Dislike>();
+            CreateMap<ArticleInteractDTO,Like>();
+            CreateMap<ArticleInteractDTO, Dislike>();
+            CreateMap<CommentInteractDTO,Like>();
+            CreateMap<CommentInteractDTO, Dislike>();
             CreateMap<Like,InteractResponse>();
             CreateMap<Dislike,InteractResponse>();
         }

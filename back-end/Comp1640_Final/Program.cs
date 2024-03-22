@@ -56,8 +56,7 @@ builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ILikeService, LikeService>();
-
-
+builder.Services.AddScoped<IDislikeService, DislikeService>();
 
 
 builder.Services.AddControllers();

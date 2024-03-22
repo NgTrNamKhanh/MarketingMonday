@@ -6,7 +6,7 @@ namespace Comp1640_Final.Models
     public class Like
     {
         [Key]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime Date { get; set; }
 

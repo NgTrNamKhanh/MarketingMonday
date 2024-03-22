@@ -64,9 +64,9 @@ namespace Comp1640_Final.Controllers
                     var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
-                articleDTO.StudentAvatar  = userImageBytes;
+                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
-                articleDTO.StudentName = user.FirstName +" "+user.LastName;
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
@@ -76,7 +76,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("id/{articleId}")]
         public async Task<IActionResult> GetArticleByID(Guid articleId)
         {
-            if (!_articleService.ArticleExists(articleId)) 
+            if (!_articleService.ArticleExists(articleId))
             {
                 return NotFound();
 
@@ -108,7 +108,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("title/{articleTitle}")]
         public async Task<IActionResult> GetArticleByTitle(string articleTitle)
         {
-            var articles = await _articleService.GetArticlesByTitle(articleTitle); 
+            var articles = await _articleService.GetArticlesByTitle(articleTitle);
 
             if (articles == null || !articles.Any())
                 return NotFound(); var articleDTOs = new List<SubmissionResponse>();
@@ -134,7 +134,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
-            
+
             return Ok(articleDTOs);
         }
 
@@ -354,7 +354,7 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpPost("student")]
-        public async Task<ActionResult<Article>> AddArticle([FromForm]AddArticleDTO articleAdd)
+        public async Task<ActionResult<Article>> AddArticle([FromForm] AddArticleDTO articleAdd)
         {
             if (articleAdd == null)
                 return BadRequest(ModelState);

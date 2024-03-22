@@ -7,7 +7,10 @@ namespace Comp1640_Final.Services
 
     public interface ILikeService
     {
-        Task<ICollection<Like>> GetLikes(Guid articleId);
+        Task<ICollection<Like>> GetArticleLikes(Guid articleId);
+        Task<ICollection<Like>> GetCommentLikes(Guid commentId);
+        Task<Like> GetLikeByArticleAndUser(Guid articleId, string userId);
+        Task<Like> GetLikeByCommentAndUser(Guid commentId, string userId);
         Task<bool> PostLike(Like like);
         Task<int> GetLikesCount(Guid articleId);
         Task<bool> Save();
@@ -29,11 +32,22 @@ namespace Comp1640_Final.Services
             return await Save();
         }
 
-        public async Task<ICollection<Like>> GetLikes(Guid articleId)
+        public async Task<ICollection<Like>> GetArticleLikes(Guid articleId)
         {
             return await _context.Likes.Where(p => p.ArticleId == articleId).ToListAsync();
         }
-
+        public async Task<ICollection<Like>> GetCommentLikes(Guid commentId)
+        {
+            return await _context.Likes.Where(p => p.CommentId == commentId).ToListAsync();
+        }
+        public async Task<Like> GetLikeByArticleAndUser(Guid articleId, string userId)
+        {
+            return await _context.Likes.FirstOrDefaultAsync(p => p.ArticleId == articleId && p.UserId == userId);
+        }
+        public async Task<Like> GetLikeByCommentAndUser(Guid commentId, string userId)
+        {
+            return await _context.Likes.FirstOrDefaultAsync(p => p.CommentId == commentId && p.UserId == userId);
+        }
         public async Task<int> GetLikesCount(Guid articleId)
         {
             return await _context.Likes.CountAsync(p => p.ArticleId == articleId);

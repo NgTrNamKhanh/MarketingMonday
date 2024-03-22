@@ -103,6 +103,7 @@ namespace Comp1640_Final.Services
         {
             try
             {
+                article.MarketingCoordinatorId = "cbb38434-191a-4a7a-986a-811073eaca2f";
                 _context.Articles.Add(article);
                 await _context.SaveChangesAsync();
                 return true;
@@ -186,7 +187,7 @@ namespace Comp1640_Final.Services
             var fileExtension = Path.GetExtension(docFile.FileName);
 
             // Define the allowed file extension for DOC files
-            var allowedExtension = ".doc";
+            var allowedExtension = ".docx";
 
             // Check if the file extension matches the allowed extension
             if (!string.Equals(fileExtension, allowedExtension, StringComparison.OrdinalIgnoreCase))
