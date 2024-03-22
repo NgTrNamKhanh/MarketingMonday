@@ -14,6 +14,8 @@ namespace Comp1640_Final.Data
         public DbSet<Event> Events { get; set; }
 
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Dislike> Dislikes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -50,8 +52,56 @@ namespace Comp1640_Final.Data
                 .WithMany()
                 .HasForeignKey(c =>  c.ParentCommentId)
                 .IsRequired(false)
-                .OnDelete(DeleteBehavior.Restrict); 
+                .OnDelete(DeleteBehavior.Restrict);
 
+            // -------------------- End Comment -----------------------
+
+            // -------------------- Like -----------------------
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.Article)
+                .WithMany()
+                .HasForeignKey(l => l.ArticleId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.User)
+                .WithMany()
+                .HasForeignKey(l => l.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Like>()
+                .HasOne(l => l.Comment)
+                .WithMany()
+                .HasForeignKey(l => l.CommentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // -------------------- End Like -----------------------
+
+            // -------------------- Dislike -----------------------
+
+            modelBuilder.Entity<Dislike>()
+                .HasOne(d => d.Article)
+                .WithMany()
+                .HasForeignKey(d => d.ArticleId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Dislike>()
+                .HasOne(d => d.User)
+                .WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Dislike>()
+                .HasOne(d => d.Comment)
+                .WithMany()
+                .HasForeignKey(d => d.CommentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // -------------------- End Dislike -----------------------
 
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityUserLogin<string>>()

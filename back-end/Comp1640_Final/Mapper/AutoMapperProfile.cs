@@ -27,6 +27,12 @@ namespace Comp1640_Final.Mapper
             CreateMap<Comment, CommentResponse>();
             //CreateMap<Comment, ReplyDTO>();
             //CreateMap<ReplyDTO, Comment>();
+
+            //Likes and Dislikes
+            CreateMap<InteractDTO,Like>();
+            CreateMap<InteractDTO,Dislike>();
+            CreateMap<Like,InteractResponse>();
+            CreateMap<Dislike,InteractResponse>();
         }
     }
 }

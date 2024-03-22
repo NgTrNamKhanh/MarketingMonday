@@ -22,6 +22,7 @@ namespace Comp1640_Final.Controllers
         private readonly IUserService _userService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICommentService _commentService;
+        private readonly ILikeService _likeService;
 
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
@@ -29,7 +30,8 @@ namespace Comp1640_Final.Controllers
             IWebHostEnvironment webHostEnvironment,
             UserManager<ApplicationUser> userManager,
             IUserService userService,
-            ICommentService commentService)
+            ICommentService commentService,
+            ILikeService likeService)
         {
             _articleService = articleService;
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace Comp1640_Final.Controllers
             _userManager = userManager;
             _userService = userService;
             _commentService = commentService;
+            _likeService = likeService;
         }
         [HttpGet]
         public async Task<IActionResult> GetArticles()
@@ -580,5 +583,7 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully delete article");
         }
+
+
     }
 }
