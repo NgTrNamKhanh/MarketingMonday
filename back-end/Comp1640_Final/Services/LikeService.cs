@@ -12,7 +12,8 @@ namespace Comp1640_Final.Services
         Task<Like> GetLikeByArticleAndUser(Guid articleId, string userId);
         Task<Like> GetLikeByCommentAndUser(Guid commentId, string userId);
         Task<bool> PostLike(Like like);
-        Task<int> GetLikesCount(Guid articleId);
+        Task<int> GetArticleLikesCount(Guid articleId);
+        Task<int> GetCommentLikesCount(Guid commentId);
         Task<bool> Save();
         Task<bool> DeleteLike(Like like);
     }
@@ -48,11 +49,14 @@ namespace Comp1640_Final.Services
         {
             return await _context.Likes.FirstOrDefaultAsync(p => p.CommentId == commentId && p.UserId == userId);
         }
-        public async Task<int> GetLikesCount(Guid articleId)
+        public async Task<int> GetArticleLikesCount(Guid articleId)
         {
             return await _context.Likes.CountAsync(p => p.ArticleId == articleId);
         }
-
+        public async Task<int> GetCommentLikesCount(Guid commentId)
+        {
+            return await _context.Likes.CountAsync(p => p.CommentId == commentId);
+        }
         public async Task<bool> PostLike(Like like)
         {
             _context.Likes.Add(like);

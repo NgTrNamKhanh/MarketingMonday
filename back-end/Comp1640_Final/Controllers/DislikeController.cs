@@ -36,20 +36,32 @@ namespace Comp1640_Final.Controllers
             _likeService = likeService;
             _commentService = commentService;
         }
-        [HttpGet("count/{articleId}")]
-        public async Task<IActionResult> GetDislikesCount(Guid articleId)
+        [HttpGet("count/article/{articleId}")]
+        public async Task<IActionResult> GetArticleDislikesCount(Guid articleId)
         {
             try
             {
-                int likesCount = await _dislikeService.GetDislikesCount(articleId);
+                int likesCount = await _dislikeService.GetArticleDislikesCount(articleId);
                 return Ok(likesCount);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Failed to get likes count: {ex.Message}");
+                return StatusCode(500, $"Failed to get dislikes count: {ex.Message}");
             }
         }
-
+        [HttpGet("count/comment/{articleId}")]
+        public async Task<IActionResult> GetCommentDislikesCount(Guid commentId)
+        {
+            try
+            {
+                int likesCount = await _dislikeService.GetCommentDislikesCount(commentId);
+                return Ok(likesCount);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Failed to get dislikes count: {ex.Message}");
+            }
+        }
         [HttpGet("article/{articleId}")]
         public async Task<IActionResult> GetArticleDislikes(Guid articleId)
         {
