@@ -23,6 +23,7 @@ namespace Comp1640_Final.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ICommentService _commentService;
         private readonly ILikeService _likeService;
+        private readonly IDislikeService _dislikeService;
 
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
@@ -230,6 +231,8 @@ namespace Comp1640_Final.Controllers
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;

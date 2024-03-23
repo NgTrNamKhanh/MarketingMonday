@@ -35,12 +35,25 @@ namespace Comp1640_Final.Controllers
             _aritcleService = aritcleService;
             _commentService = commentService;
         }
-        [HttpGet("count/{articleId}")]
-        public async Task<IActionResult> GetLikesCount(Guid articleId)
+        //[HttpGet("count/article/{articleId}")]
+        //public async Task<IActionResult> GetArticleLikesCount(Guid articleId)
+        //{
+        //    try
+        //    {
+        //        int likesCount = await _likeService.GetArticleLikesCount(articleId);
+        //        return Ok(likesCount);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Failed to get likes count: {ex.Message}");
+        //    }
+        //}
+        [HttpGet("count/comment/{articleId}")]
+        public async Task<IActionResult> GetCommentLikesCount(Guid commentId)
         {
             try
             {
-                int likesCount = await _likeService.GetLikesCount(articleId);
+                int likesCount = await _likeService.GetCommentLikesCount(commentId);
                 return Ok(likesCount);
             }
             catch (Exception ex)
@@ -48,7 +61,6 @@ namespace Comp1640_Final.Controllers
                 return StatusCode(500, $"Failed to get likes count: {ex.Message}");
             }
         }
-
         [HttpGet("article/{articleId}")]
         public async Task<IActionResult> GetArticleLikes(Guid articleId)
         {
