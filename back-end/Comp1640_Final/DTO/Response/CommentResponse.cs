@@ -9,6 +9,10 @@
         public Guid ArticleId { get; set; }
 
         public UserComment UserComment { get; set; }
+        public int LikesCount { get; set; }
+        public int DislikesCount { get; set; }
+        public bool IsLiked { get; set; }
+        public bool IsDisliked { get; set; }
         public string ParentCommentId { get; set; }
         public bool  hasReplies { get; set; }
 

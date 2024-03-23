@@ -276,6 +276,7 @@
 .replyClick{
     cursor: pointer;
     font-size: 12px;
+    margin-left: 10px;
 }
 .actionText{
     padding-left: 5px;

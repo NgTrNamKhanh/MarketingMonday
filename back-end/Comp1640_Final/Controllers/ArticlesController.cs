@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace Comp1640_Final.Controllers
 {
@@ -24,6 +25,7 @@ namespace Comp1640_Final.Controllers
         private readonly ICommentService _commentService;
         private readonly ILikeService _likeService;
         private readonly IDislikeService _dislikeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
@@ -32,7 +34,9 @@ namespace Comp1640_Final.Controllers
             UserManager<ApplicationUser> userManager,
             IUserService userService,
             ICommentService commentService,
-            ILikeService likeService)
+            ILikeService likeService,
+            IDislikeService dislikeService,
+            IHttpContextAccessor httpContextAccessor)
         {
             _articleService = articleService;
             _mapper = mapper;
@@ -42,10 +46,14 @@ namespace Comp1640_Final.Controllers
             _userService = userService;
             _commentService = commentService;
             _likeService = likeService;
+            _dislikeService = dislikeService;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
         public async Task<IActionResult> GetArticles()
         {
+            var userId =  await GetUserId();
+
             var articles = _articleService.GetArticles();
             var articleDTOs = new List<SubmissionResponse>();
 
@@ -67,6 +75,10 @@ namespace Comp1640_Final.Controllers
                 }
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -77,6 +89,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("id/{articleId}")]
         public async Task<IActionResult> GetArticleByID(Guid articleId)
         {
+            var userId = await GetUserId();
             if (!_articleService.ArticleExists(articleId))
             {
                 return NotFound();
@@ -98,6 +111,10 @@ namespace Comp1640_Final.Controllers
             articleDTO.StudentAvatar = userImageBytes;
             //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
             articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+            articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+            articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+            articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+            articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -109,6 +126,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("title/{articleTitle}")]
         public async Task<IActionResult> GetArticleByTitle(string articleTitle)
         {
+            var userId = await GetUserId();
             var articles = await _articleService.GetArticlesByTitle(articleTitle);
 
             if (articles == null || !articles.Any())
@@ -131,6 +149,10 @@ namespace Comp1640_Final.Controllers
                 }
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -142,6 +164,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("faculty/{facultyId}")]
         public async Task<IActionResult> GetArticleByFacultyId(int facultyId)
         {
+            var userId = await GetUserId();
             var articles = await _articleService.GetArticlesByFacultyId(facultyId);
 
             if (articles == null || !articles.Any())
@@ -166,6 +189,10 @@ namespace Comp1640_Final.Controllers
                 articleDTO.StudentAvatar = userImageBytes;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -199,6 +226,10 @@ namespace Comp1640_Final.Controllers
                 articleDTO.StudentAvatar = userImageBytes;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -208,6 +239,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("approved/faculty/{facultyId}")]
         public async Task<IActionResult> GetApprovedAticles(int facultyId)
         {
+            var userId = await GetUserId();
             var articles = await _articleService.GetApprovedArticles(facultyId);
 
             if (articles == null || !articles.Any())
@@ -233,6 +265,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
@@ -243,6 +277,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("status/{publishStatusId}/faculty/{facultyId}")]
         public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId)
         {
+            var userId = await GetUserId();
             var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
 
             if (articles == null || !articles.Any())
@@ -267,6 +302,10 @@ namespace Comp1640_Final.Controllers
                 }
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -278,6 +317,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("publishStatus/{publishStatusId}")]
         public async Task<IActionResult> GetArticleByPublishStatus(int publishStatusId)
         {
+            var userId = await GetUserId();
             var articles = await _articleService.GetArticleByPublishStatus(publishStatusId);
 
             if (articles == null || !articles.Any())
@@ -302,6 +342,10 @@ namespace Comp1640_Final.Controllers
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                 }
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -585,6 +629,16 @@ namespace Comp1640_Final.Controllers
             }
 
             return Ok("Successfully delete article");
+        }
+        private async Task<string> GetUserId()
+        {
+            var principal = _httpContextAccessor.HttpContext.User;
+            var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
+            if (user != null)
+            {
+                return user.Id;
+            }
+            return null;
         }
 
 

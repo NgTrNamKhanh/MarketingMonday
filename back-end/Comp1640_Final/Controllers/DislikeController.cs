@@ -11,7 +11,7 @@ using System.Security.Permissions;
 
 namespace Comp1640_Final.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/dislike")]
     [ApiController]
     public class DislikeController : ControllerBase
     {
@@ -86,7 +86,7 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpPost("article")]
-        public async Task<ActionResult<Dislike>> PostArticleDislike([FromForm] ArticleInteractDTO dislikeDto)
+        public async Task<ActionResult<Dislike>> PostArticleDislike(ArticleInteractDTO dislikeDto)
         {
             var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId);
 
@@ -99,15 +99,15 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Dislike deleted successfully.");
             }
-            var existingLike = await _likeService.GetLikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId);
-            if (existingLike != null)
-            {
-                var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-                if (!deleteLikeResult)
-                {
-                    return BadRequest("Error deleting existing like.");
-                }
-            }
+            //var existingLike = await _likeService.GetLikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId);
+            //if (existingLike != null)
+            //{
+            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
+            //    if (!deleteLikeResult)
+            //    {
+            //        return BadRequest("Error deleting existing like.");
+            //    }
+            //}
             var dislike = _mapper.Map<Dislike>(dislikeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;
@@ -124,7 +124,7 @@ namespace Comp1640_Final.Controllers
 
         }
         [HttpPost("comment")]
-        public async Task<ActionResult<Dislike>> PostCommentDislike([FromForm] CommentInteractDTO likeDto)
+        public async Task<ActionResult<Dislike>> PostCommentDislike(CommentInteractDTO likeDto)
         {
             var existingDislike = await _dislikeService.GetDislikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
 
@@ -138,15 +138,15 @@ namespace Comp1640_Final.Controllers
                 return Ok("Existing dislike deleted successfully.");
             }
 
-            var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
-            if (existingLike != null)
-            {
-                var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-                if (!deleteLikeResult)
-                {
-                    return BadRequest("Error deleting existing like.");
-                }
-            }
+            //var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
+            //if (existingLike != null)
+            //{
+            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
+            //    if (!deleteLikeResult)
+            //    {
+            //        return BadRequest("Error deleting existing like.");
+            //    }
+            //}
             var dislike = _mapper.Map<Dislike>(likeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;

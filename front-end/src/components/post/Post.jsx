@@ -21,6 +21,7 @@ export default function Post({ post, isProfile}) {
     
         return new Date(dateString).toLocaleString(undefined, options);
     };
+    
     const [isSubmitting, setIsSubmitting] = useState(false); 
     console.log(post)
     const [currentUser, setCurrentUser] = useState(null);
@@ -31,15 +32,23 @@ export default function Post({ post, isProfile}) {
             setCurrentUser(user);
         }
     }, []);
-    const [likesCount, setLikesCount] = useState(post.likes)
+    const [likesCount, setLikesCount] = useState(post.likeCount)
     useEffect(() => {
-        setLikesCount(post.likes);
-    }, [post.likes]);
+        setLikesCount(post.likeCount);
+    }, [post.likeCount]);
 
-    const [isLiked, setIsLiked] = useState(false)
-    const handleLike = () => {
+    const [isLiked, setIsLiked] = useState(post.isLiked)
+    const handleLike =  () => {
         setLikesCount(isLiked? likesCount -1 : likesCount+1)
         setIsLiked(!isLiked)
+        try{
+                const like ={
+                    userId : currentUser.id,
+                    articleId: post.id
+                }
+                authHeader().post(apis.like+"article", like);
+        }catch(err){
+        }
         if(isDisliked){
             handleDislike()
         }
@@ -48,14 +57,22 @@ export default function Post({ post, isProfile}) {
     useEffect(() => {
         setCommentsCount(post.commmentCount);
     }, [post.commmentCount]);
-    const [dislikesCount, setDisLikesCount] = useState(post.dislikes)
+    const [dislikesCount, setDisLikesCount] = useState(post.dislikeCount)
     useEffect(() => {
-        setDisLikesCount(post.dislikes); 
-    }, [post.dislikes]);
-    const [isDisliked, setIsDisLiked] = useState(false)
-    const handleDislike = () => {
+        setDisLikesCount(post.dislikeCount); 
+    }, [post.dislikeCount]);
+    const [isDisliked, setIsDisLiked] = useState(post.isDisliked)
+    const handleDislike =  () => {
         setDisLikesCount(isDisliked? dislikesCount -1 : dislikesCount+1)
         setIsDisLiked(!isDisliked)
+        try{
+            const dislike ={
+                userId : currentUser.id,
+                articleId: post.id
+            }
+            authHeader().post(apis.dislike+"article", dislike);
+            }catch(err){
+            }
         if(isLiked){
             handleLike()
         }
@@ -113,17 +130,17 @@ export default function Post({ post, isProfile}) {
     };
     const CommentBlock = ({comment}) => {
         const [replies, setReplies] = useState([]);
-        const [loading, setLoading] = useState(true);
-
+        const [repLoading, setRepLoading] = useState(false);
         useEffect(() => {
             const fetchData = async () => {
+                setRepLoading(true)
                 try {
                     const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id }});
                     setReplies(response.data);
-                    setLoading(false);
+                    setRepLoading(false);
                 } catch (error) {
                     console.error("Error fetching comments:", error);
-                    setLoading(false);
+                    setRepLoading(false);
                 }
             };
 
@@ -131,20 +148,36 @@ export default function Post({ post, isProfile}) {
         }, [comment.id]);
 
         const [showReplies, setShowReplies] = useState(false);
-        const [commentLikesCount, setCommentLikesCount] = useState(comment.likes)
-        const [isCommentLiked, setIsCommentLiked] = useState(false)
+        const [commentLikesCount, setCommentLikesCount] = useState(comment.likesCount)
+        const [isCommentLiked, setIsCommentLiked] = useState(comment.isLiked)
         const handleCommentLike = () => {
             setCommentLikesCount(isCommentLiked? commentLikesCount -1 : commentLikesCount+1)
             setIsCommentLiked(!isCommentLiked)
+            try{
+                const like ={
+                    userId : currentUser.id,
+                    articleId: post.id
+                }
+                authHeader().post(apis.like+"comment", like);
+            }catch(err){
+            }
             if(isCommentDisliked){
                 handleCommnetDislike()
             }
         }
-        const [commentDislikesCount, setCommentDisLikesCount] = useState(comment.dislikes)
-        const [isCommentDisliked, setIsCommnetDisLiked] = useState(false)
+        const [commentDislikesCount, setCommentDisLikesCount] = useState(comment.dislikesCount)
+        const [isCommentDisliked, setIsCommnetDisLiked] = useState(comment.isDisliked)
         const handleCommnetDislike = () => {
             setCommentDisLikesCount(isCommentDisliked? commentDislikesCount -1 : commentDislikesCount+1)
             setIsCommnetDisLiked(!isCommentDisliked)
+            try{
+                const dislike ={
+                    userId : currentUser.id,
+                    articleId: post.id
+                }
+                authHeader().post(apis.dislike+"comment", dislike);
+            }catch(err){
+            }
             if(isCommentLiked){
                 handleCommentLike()
             }
@@ -203,7 +236,7 @@ export default function Post({ post, isProfile}) {
             )}
             <div className="commentReply">
                 {showReplies && comment.hasReplies && (
-                    <RenderComments comments= {replies} loading={loading}/>
+                    <RenderComments comments= {replies} loading={repLoading}/>
                 )}
                 {openCommentInput && (
                 <CommentForm handleComment={handleReply} />
@@ -228,11 +261,26 @@ export default function Post({ post, isProfile}) {
             </div>
         );
     };
-    
+    const [comments, setComments] = useState([]);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const fetchData = async () => {
+            console.log("re render")
+            setLoading(true)
+            try {
+                const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id }});
+                setComments(response.data);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching comments:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [post.id]);
+
     const Modal = ({post, closeModal}) =>{
-        const [comments, setComments] = useState([]);
-        const [loading, setLoading] = useState(false);
-        
         const handleComment =  async (event) =>{
             event.preventDefault();
             setIsSubmitting(true);
@@ -266,22 +314,7 @@ export default function Post({ post, isProfile}) {
     
         }
         
-        useEffect(() => {
-            const fetchData = async () => {
-                console.log("re render")
-                setLoading(true)
-                try {
-                    const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id }});
-                    setComments(response.data);
-                    setLoading(false);
-                } catch (error) {
-                    console.error("Error fetching comments:", error);
-                    setLoading(false);
-                }
-            };
-
-            fetchData();
-        }, [post.id]);
+        
         return(
             <div className="modal">
                     <div className="modalWrapper">
@@ -323,7 +356,7 @@ export default function Post({ post, isProfile}) {
                                     <RecommendRounded className={`disLikeIcon postIcon`} />
                                     <span className="postLikeCounter">{dislikesCount}</span>
                                 </div>
-                                <div className="postBottomRight" onClick={()=>{setIsModalOpen(!isModalOpen)}}>
+                                <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
                                     <span className="postCommentText">{post.commmentCount} comments</span>
                                 </div>
                             </div>
@@ -337,7 +370,7 @@ export default function Post({ post, isProfile}) {
                                 {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
                                     <span className='actionText'>Dislike</span>
                                 </div>
-                                <div className="action" onClick={()=>{setIsModalOpen(!isModalOpen)}}>
+                                <div className="action" onClick={()=>{setIsModalOpen(true)}}>
                                     <ChatBubbleOutline/>
                                     <span className='actionText'>Comment</span>
                                 </div>

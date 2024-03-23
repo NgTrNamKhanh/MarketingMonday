@@ -10,6 +10,8 @@ namespace Comp1640_Final.Services
         Task<ICollection<Dislike>> GetCommentDislikes(Guid commentId);
         Task<Dislike> GetDislikeByArticleAndUser(Guid articleId, string userId);
         Task<Dislike> GetDislikeByCommentAndUser(Guid commentId, string userId);
+        Task<bool> IsArticleDisLiked(string userId, Guid articleId);
+        Task<bool> IsCommentDisLiked(string userId, Guid commentId);
         Task<bool> PostDislike(Dislike dislike);
         Task<int> GetArticleDislikesCount(Guid articleId);
         Task<int> GetCommentDislikesCount(Guid commentId);
@@ -50,9 +52,17 @@ namespace Comp1640_Final.Services
         {
             return await _context.Dislikes.CountAsync(p => p.ArticleId == articleId);
         }
+        public async Task<bool> IsArticleDisLiked(string userId, Guid articleId)
+        {
+            return await _context.Dislikes.AnyAsync(p => p.ArticleId == articleId && p.UserId == userId);
+        }
         public async Task<int> GetCommentDislikesCount(Guid commentId)
         {
             return await _context.Dislikes.CountAsync(p => p.CommentId == commentId);
+        }
+        public async Task<bool> IsCommentDisLiked(string userId, Guid commentId)
+        {
+            return await _context.Dislikes.AnyAsync(p => p.CommentId == commentId && p.UserId == userId);
         }
 
         public async Task<bool> PostDislike(Dislike dislike)

@@ -13,6 +13,11 @@
         public List<byte[]> ImageBytes { get; set; }
 
         public int CommmentCount { get; set; }
+        public int LikeCount { get; set; }
+        public int DislikeCount { get; set; }
+
+        public bool IsLiked { get; set; }
+        public bool IsDisliked { get; set; }
 
         //public string MarketingCoordinatorId { get; set; }
     }
@@ -30,7 +35,10 @@
         public string CoordinatorComment { get; set; }
 
         public int CommmentCount { get; set; }
-
+        public int LikeCount { get; set; }
+        public int DislikeCount { get; set; }
+        public bool IsLiked { get; set; }
+        public bool IsDisliked { get; set; }
         public List<byte[]> ImageBytes { get; set; }
 
         //public string MarketingCoordinatorId { get; set; }

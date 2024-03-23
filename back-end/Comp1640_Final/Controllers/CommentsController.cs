@@ -23,8 +23,13 @@ namespace Comp1640_Final.Controllers
         private readonly ICommentService _commentService;
         private static IWebHostEnvironment _webHostEnvironment;
         private readonly IUserService _userService;
+        private readonly ILikeService _likeService;
+        private readonly IDislikeService _dislikeService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, ICommentService commentService, IWebHostEnvironment webHostEnvironment, IUserService userService)
+        public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, 
+            ICommentService commentService, IWebHostEnvironment webHostEnvironment, IUserService userService, ILikeService likeService, 
+            IDislikeService dislikeService, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
@@ -32,12 +37,16 @@ namespace Comp1640_Final.Controllers
             _commentService = commentService;
             _webHostEnvironment = webHostEnvironment;
             _userService = userService;
+            _likeService = likeService;
+            _dislikeService  = dislikeService;
+            _httpContextAccessor = httpContextAccessor;
 
         }
 
         [HttpGet("getComment")]
         public async Task<IActionResult> GetComments()
         {
+            var userId = await GetUserId();
             var comments = await _commentService.GetComments();
             if (comments == null)
             {
@@ -72,7 +81,10 @@ namespace Comp1640_Final.Controllers
                         };
                         commentResponse.UserComment = userComment;
                     }
-
+                    commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
+                    commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
                     commentResponses.Add(commentResponse);
                 }
 
@@ -83,6 +95,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("getParentComments")]
         public async Task<IActionResult> GetParentComments(Guid articleId)
         {
+            var userId = await GetUserId();
             var comments =  await _commentService.GetParentComments(articleId);
             if (comments == null)
             {
@@ -118,6 +131,10 @@ namespace Comp1640_Final.Controllers
                         };
                         commentResponse.UserComment = userComment;
                     }
+                    commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
+                    commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
 
                     commentResponses.Add(commentResponse);
                 }
@@ -129,6 +146,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("getReplies")]
         public async Task<IActionResult> GetReplies(Guid parentId)
         {
+            var userId = await GetUserId();
             var comments = await _commentService.GetReplies(parentId);
             if (comments == null)
             {
@@ -163,7 +181,10 @@ namespace Comp1640_Final.Controllers
                         };
                         commentResponse.UserComment = userComment;
                     }
-
+                    commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
+                    commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
                     commentResponses.Add(commentResponse);
                 }
 
@@ -281,6 +302,16 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("Failed");
             }
             return  Ok("Delete successful");
+        }
+        private async Task<string> GetUserId()
+        {
+            var principal = _httpContextAccessor.HttpContext.User;
+            var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
+            if (user != null)
+            {
+                return user.Id;
+            }
+            return null;
         }
     }
 }
