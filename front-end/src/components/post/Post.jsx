@@ -156,7 +156,7 @@ export default function Post({ post, isProfile}) {
             try{
                 const like ={
                     userId : currentUser.id,
-                    articleId: post.id
+                    commentId: comment.id
                 }
                 authHeader().post(apis.like+"comment", like);
             }catch(err){
@@ -173,7 +173,7 @@ export default function Post({ post, isProfile}) {
             try{
                 const dislike ={
                     userId : currentUser.id,
-                    articleId: post.id
+                    commentId: comment.id
                 }
                 authHeader().post(apis.dislike+"comment", dislike);
             }catch(err){

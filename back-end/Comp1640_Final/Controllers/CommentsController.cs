@@ -83,8 +83,8 @@ namespace Comp1640_Final.Controllers
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
-                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
-                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsCommentLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsCommentDisLiked(userId, comment.Id);
                     commentResponses.Add(commentResponse);
                 }
 
@@ -133,8 +133,8 @@ namespace Comp1640_Final.Controllers
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
-                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
-                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsCommentLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsCommentDisLiked(userId, comment.Id);
 
                     commentResponses.Add(commentResponse);
                 }
@@ -183,8 +183,8 @@ namespace Comp1640_Final.Controllers
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
-                    commentResponse.IsLiked = await _likeService.IsArticleLiked(userId, comment.Id);
-                    commentResponse.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, comment.Id);
+                    commentResponse.IsLiked = await _likeService.IsCommentLiked(userId, comment.Id);
+                    commentResponse.IsDisliked = await _dislikeService.IsCommentDisLiked(userId, comment.Id);
                     commentResponses.Add(commentResponse);
                 }
 
