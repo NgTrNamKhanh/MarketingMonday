@@ -44,9 +44,10 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("getComment")]
-        public async Task<IActionResult> GetComments()
+        public async Task<IActionResult> GetComments(string id)
         {
-            var userId = await GetUserId();
+            var userFindId = await _userManager.FindByIdAsync(id);
+            var userId = userFindId.Id;
             var comments = await _commentService.GetComments();
             if (comments == null)
             {
@@ -93,9 +94,10 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("getParentComments")]
-        public async Task<IActionResult> GetParentComments(Guid articleId)
+        public async Task<IActionResult> GetParentComments(Guid articleId, string id)
         {
-            var userId = await GetUserId();
+            var userFindId = await _userManager.FindByIdAsync(id);
+            var userId = userFindId.Id;
             var comments =  await _commentService.GetParentComments(articleId);
             if (comments == null)
             {
@@ -144,9 +146,10 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("getReplies")]
-        public async Task<IActionResult> GetReplies(Guid parentId)
+        public async Task<IActionResult> GetReplies(Guid parentId, string id)
         {
-            var userId = await GetUserId();
+            var userFindId = await _userManager.FindByIdAsync(id);
+            var userId = userFindId.Id;
             var comments = await _commentService.GetReplies(parentId);
             if (comments == null)
             {

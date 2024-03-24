@@ -50,10 +50,10 @@ namespace Comp1640_Final.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
-        public async Task<IActionResult> GetArticles()
+        public async Task<IActionResult> GetArticles(string id)
         {
-            var userId =  await GetUserId();
-
+            var userFindId =  await _userManager.FindByIdAsync(id);
+            var userId = userFindId.Id;
             var articles = _articleService.GetArticles();
             var articleDTOs = new List<SubmissionResponse>();
 
