@@ -4,6 +4,8 @@ import "./feed.css"
 import { useParams } from "react-router-dom";
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
+import authService from "../../services/auth.service";
+import { ScaleLoader } from "react-spinners";
 // const postsData = [
 //     {
 //         id: 1,
@@ -80,6 +82,14 @@ export default function Feed({userId}) {
     const isProfile = userId ? true : false;
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState()
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(false)
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [unapprovedSelectedFilter, setSelectedFilter] = useState("all");
     const handleUnapprovedFilterChange = (event) => {
@@ -110,45 +120,60 @@ export default function Feed({userId}) {
         }
         setFilteredPosts(filteredPosts);
     };
-    useEffect(()=>{
+    console.log(facultyId)
+    console.log(userId)
+    useEffect(() => {
         const fetchPosts = async () => {
-            if (facultyId) {
+            if (facultyId && currentUser) {
+                setLoading(true)
                 try {
                     setError(null)
-                    const response = await authHeader().get(apis.article + "approved/faculty/" + facultyId);
+                    const response = await authHeader().get(apis.article + "approved/faculty", { params: { facultyId: facultyId, userId: currentUser.id }});
                     setFilteredPosts(response.data)
                     setPosts(response.data)
-
-                }catch (error) {
-                    setError(error.response.data)
+                    setLoading(false)
+                } catch (error) {
+                    console.error("Error fetching post data:", error);
+                    if (error.response) {
+                        // Server responded with an error
+                        setError(error.response.data)
+                    } else if (error.request) {
+                        // Request was made but no response was received
+                        setError("No response received from server.")
+                    } else {
+                        // Something else went wrong
+                        setError("An error occurred while fetching data.")
+                    }
                     setPosts([])
                     setFilteredPosts([])
-                    console.error("Error fetching post data:", error);
+                    setLoading(false)
                 }
             }
         }
         fetchPosts();
-    },[facultyId])
+    }, [facultyId, currentUser])
+    
     useEffect(()=>{
         const fetchPosts = async () => {
             if (userId) {
+                setLoading(true)
                 try {
                     setError(null)
                     const response = await authHeader().get(apis.article + "profile", {params: {userId: userId}});
                     setPosts(response.data)
                     setFilteredPosts(response.data)
-
+                    setLoading(false)
                 }catch (error) {
                     setError(error.response.data)
                     setPosts([])
                     setFilteredPosts([])
                     console.error("Error fetching post data:", error);
+                    setLoading(false)
                 }
             }
         }
         fetchPosts();
     },[userId])
-    console.log(posts)
     const handleApprovedFilterChange = (event) => {
         setSelectedFilter("all");
         setApprovedSelectedFilter(event.target.value);
@@ -174,7 +199,6 @@ export default function Feed({userId}) {
         }
         setFilteredPosts(sortedPosts);
     };
-    console.log(filteredPosts)
     return (
         <div className="feed">
             <div className="feedWrapper">
@@ -187,25 +211,31 @@ export default function Feed({userId}) {
                     </select>
                 </div>
                 {userId && (
-                    <div className="postFilter">
-                        <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange}>
-                        <option value="all">All</option>
-                        <option value="approved">Approved</option>
-                        <option value="not commented">Not Commented</option>
-                        <option value="commented">Commented</option>
-                        <option value="reject">Reject</option>
-                        </select>
-                    </div>
+                        <div className="postFilter">
+                            <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange}>
+                            <option value="all">All</option>
+                            <option value="approved">Approved</option>
+                            <option value="not commented">Not Commented</option>
+                            <option value="commented">Commented</option>
+                            <option value="reject">Reject</option>
+                            </select>
+                        </div>
                 )}
-                {error ? (
-                    <div>{error}</div>
-                        ) : (
-                    filteredPosts.map(post => (
-                    <Post
-                        post = {post}
-                        isProfile = {isProfile}
-                    />
-                    ))
+                {loading? (
+                    <ScaleLoader/>
+                ):(
+                    <>
+                        {error ? (
+                            <div>{error}</div>
+                                ) : (
+                            filteredPosts.map(post => (
+                            <Post
+                                post = {post}
+                                isProfile = {isProfile}
+                            />
+                            ))
+                        )}
+                    </>
                 )}
             </div>
         </div>

@@ -135,7 +135,7 @@ export default function Post({ post, isProfile}) {
             const fetchData = async () => {
                 setRepLoading(true)
                 try {
-                    const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id }});
+                    const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id, userId: currentUser.id }});
                     setReplies(response.data);
                     setRepLoading(false);
                 } catch (error) {
@@ -268,7 +268,7 @@ export default function Post({ post, isProfile}) {
             console.log("re render")
             setLoading(true)
             try {
-                const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id }});
+                const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id, userId: currentUser.id }});
                 setComments(response.data);
                 setLoading(false);
             } catch (error) {

@@ -98,8 +98,7 @@ export default function  Submission ({ submission, reFetch }) {
             const url = apis.article+"addComment/"+submission.id+"?comment="+comment
             const res = await authHeader().put(url, {});
             if (res.status === 200) {
-                const updatedData = await reFetch();
-
+                await reFetch();
                 // localStorage.setItem("accounts", JSON.stringify(updatedData));
                 setIsSubmitting(false);
                 // setMessage("Account edited successfully.");

@@ -1,6 +1,7 @@
 ﻿using Comp1640_Final.Data;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -33,11 +34,13 @@ namespace Comp1640_Final.Services
     {
         private readonly ProjectDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AritcleService(ProjectDbContext context, IWebHostEnvironment webHostEnvironment)
+        public AritcleService(ProjectDbContext context, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
         public ICollection<Article> GetArticles()
         {
@@ -103,7 +106,7 @@ namespace Comp1640_Final.Services
         {
             try
             {
-                article.MarketingCoordinatorId = "cbb38434-191a-4a7a-986a-811073eaca2f";
+               
                 _context.Articles.Add(article);
                 await _context.SaveChangesAsync();
                 return true;

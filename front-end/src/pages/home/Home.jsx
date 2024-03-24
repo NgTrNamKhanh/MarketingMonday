@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 import Feed from "../../components/feed/Feed";
 import Rightbar from "../../components/rightbar/Rightbar";
@@ -22,14 +22,20 @@ import Unauthorized from "../errors/unauthorized/Unauthorized";
 
 export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
-
+    const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
-        const user = authService.getCurrentUser();
-        if (user) {
-            setCurrentUser(user);
-        }
+        const fetchCurrentUser = async () => {
+            const user = authService.getCurrentUser();
+            if (user) {
+                setCurrentUser(user);
+            }
+            setIsLoading(false);
+        };
+        fetchCurrentUser();
     }, []);
-
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
     return (
         <Router> 
             <div>
@@ -50,6 +56,26 @@ export default function Home() {
                         )}
                     <div className="mainContent">
                         <Routes>
+                            <Route
+                                path="/"
+                                element={
+                                    currentUser ? (
+                                        currentUser.roles.includes('Admin') ? (
+                                            <Navigate to="/dashboard" />
+                                        ) : currentUser.roles.includes('Manager') ? (
+                                            <Navigate to="/dashboard" />
+                                        ) : currentUser.roles.includes('Student') ? (
+                                            <Navigate to={`/feed/${currentUser.facultyId}`} />
+                                        ) : currentUser.roles.includes('Coordinator') ? (
+                                            <Navigate to="/submissions" />
+                                        ) : (
+                                            <Navigate to="/unauthorized" />
+                                        )
+                                    ) : (
+                                        <Navigate to="/login" replace />
+                                    )
+                                }
+                            />
                             <Route path="/feed/:facultyId" element=
                                 {<ProtectedRoute
                                     element={<Feed />}

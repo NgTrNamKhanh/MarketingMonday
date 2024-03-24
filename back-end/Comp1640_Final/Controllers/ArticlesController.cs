@@ -50,10 +50,8 @@ namespace Comp1640_Final.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
-        public async Task<IActionResult> GetArticles(string id)
+        public async Task<IActionResult> GetArticles(string userId)
         {
-            var userFindId =  await _userManager.FindByIdAsync(id);
-            var userId = userFindId.Id;
             var articles = _articleService.GetArticles();
             var articleDTOs = new List<SubmissionResponse>();
 
@@ -87,9 +85,8 @@ namespace Comp1640_Final.Controllers
             return Ok(articleDTOs);
         }
         [HttpGet("id/{articleId}")]
-        public async Task<IActionResult> GetArticleByID(Guid articleId)
+        public async Task<IActionResult> GetArticleByID(Guid articleId, string userId)
         {
-            var userId = await GetUserId();
             if (!_articleService.ArticleExists(articleId))
             {
                 return NotFound();
@@ -124,9 +121,8 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("title/{articleTitle}")]
-        public async Task<IActionResult> GetArticleByTitle(string articleTitle)
+        public async Task<IActionResult> GetArticleByTitle(string articleTitle, string userId)
         {
-            var userId = await GetUserId();
             var articles = await _articleService.GetArticlesByTitle(articleTitle);
 
             if (articles == null || !articles.Any())
@@ -162,9 +158,8 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("faculty/{facultyId}")]
-        public async Task<IActionResult> GetArticleByFacultyId(int facultyId)
+        public async Task<IActionResult> GetArticleByFacultyId(int facultyId, string userId)
         {
-            var userId = await GetUserId();
             var articles = await _articleService.GetArticlesByFacultyId(facultyId);
 
             if (articles == null || !articles.Any())
@@ -236,10 +231,9 @@ namespace Comp1640_Final.Controllers
             }
             return Ok(articleDTOs);
         }
-        [HttpGet("approved/faculty/{facultyId}")]
-        public async Task<IActionResult> GetApprovedAticles(int facultyId)
+        [HttpGet("approved/faculty")]
+        public async Task<IActionResult> GetApprovedAticles(int facultyId, string userId)
         {
-            var userId = await GetUserId();
             var articles = await _articleService.GetApprovedArticles(facultyId);
 
             if (articles == null || !articles.Any())
@@ -275,9 +269,8 @@ namespace Comp1640_Final.Controllers
             return Ok(articleDTOs);
         }
         [HttpGet("status/{publishStatusId}/faculty/{facultyId}")]
-        public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId)
+        public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId, string userId)
         {
-            var userId = await GetUserId();
             var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
 
             if (articles == null || !articles.Any())
@@ -315,9 +308,8 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpGet("publishStatus/{publishStatusId}")]
-        public async Task<IActionResult> GetArticleByPublishStatus(int publishStatusId)
+        public async Task<IActionResult> GetArticleByPublishStatus(int publishStatusId, string userId)
         {
-            var userId = await GetUserId();
             var articles = await _articleService.GetArticleByPublishStatus(publishStatusId);
 
             if (articles == null || !articles.Any())
@@ -593,7 +585,13 @@ namespace Comp1640_Final.Controllers
 
             article.Id = articleId;
             article.CoordinatorComment = comment;
-
+            var coordinator = _context.Users
+                   .Where(u => u.FacultyId == article.FacultyId)
+                   .Join(_context.UserRoles, u => u.Id, ur => ur.UserId, (u, ur) => new { User = u, UserRole = ur })
+                   .Join(_context.Roles, ur => ur.UserRole.RoleId, r => r.Id, (ur, r) => new { User = ur.User, Role = r })
+                   .FirstOrDefault(ur => ur.Role.Name == "Coordinator")
+                   ?.User;
+            article.MarketingCoordinatorId = coordinator.Id;
             if (!await _articleService.UpdateArticle(article))
             {
                 return BadRequest("Failed to update article.");
@@ -630,16 +628,16 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully delete article");
         }
-        private async Task<string> GetUserId()
-        {
-            var principal = _httpContextAccessor.HttpContext.User;
-            var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
-            if (user != null)
-            {
-                return user.Id;
-            }
-            return null;
-        }
+        //private async Task<string> GetUserId()
+        //{
+        //    var principal = _httpContextAccessor.HttpContext.User;
+        //    var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
+        //    if (user != null)
+        //    {
+        //        return user.Id;
+        //    }
+        //    return null;
+        //}
 
 
     }

@@ -167,6 +167,7 @@ export default function Article() {
             formData.append('Description', values.description);
             formData.append('Date', new Date().toISOString()); 
             formData.append('FacultyId', currentUser.facultyId);
+            formData.append('EventId',event.id );
             formData.append('StudentId', currentUser.id);
             selectedPhotos.forEach((photo, index) => {
                 formData.append(`ImageFiles`, photo, photo.name);

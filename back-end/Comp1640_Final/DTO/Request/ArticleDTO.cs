@@ -6,6 +6,7 @@
         public string Description { get; set; }
         public int FacultyId { get; set; }
         public string StudentId { get; set; }
+        public string EventId { get; set; }
         public List<IFormFile> ImageFiles { get; set; }
         public IFormFile? DocFiles { get; set; }
 
