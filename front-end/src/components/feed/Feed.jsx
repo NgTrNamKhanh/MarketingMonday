@@ -232,6 +232,7 @@ export default function Feed({userId}) {
                             <Post
                                 post = {post}
                                 isProfile = {isProfile}
+                                currentUser={currentUser}
                             />
                             ))
                         )}

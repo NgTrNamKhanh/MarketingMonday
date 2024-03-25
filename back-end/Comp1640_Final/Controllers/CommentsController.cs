@@ -250,7 +250,7 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut()]
         public async Task<ActionResult<Comment>> PutComment(Guid id, CommentDTO commentDto)
         {
             var comment = _mapper.Map<Comment>(commentDto);
@@ -267,7 +267,7 @@ namespace Comp1640_Final.Controllers
                 return Ok("Edit successful");
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete()]
         public async Task<ActionResult> DeleteComment(Guid id)
         {
             if (!_commentService.CommentExists(id))

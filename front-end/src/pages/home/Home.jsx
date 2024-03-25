@@ -21,8 +21,8 @@ import { ProtectedRoute } from "../../common/with-router";
 import Unauthorized from "../errors/unauthorized/Unauthorized";
 
 export default function Home() {
-    const [currentUser, setCurrentUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
         const fetchCurrentUser = async () => {
             const user = authService.getCurrentUser();

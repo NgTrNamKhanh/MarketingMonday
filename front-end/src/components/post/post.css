@@ -398,4 +398,30 @@
     cursor: pointer;
     margin-left: 10px; /* Adjust margin as needed */
 }
-
+.commentTopRight{
+    grid-row:1 ;
+    grid-column: 3;
+}
+.commentDropdownContent {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: calc(100% - 22%);
+    right: 50px !important;
+    border-radius: 5px;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 100px;
+    box-shadow: 0px 8px 8px 0px rgba(145, 145, 145, 0.2);
+}
+.commentDropdownContentItem{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.commentDropdownContentItem:hover {
+    background-color: #cbcbcb;
+}

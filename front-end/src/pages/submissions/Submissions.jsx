@@ -5,6 +5,8 @@ import { useParams } from 'react-router-dom';
 import authHeader from '../../services/auth.header';
 import apis from '../../services/apis.service';
 import useFetch from '../../hooks/useFetch'
+import authService from '../../services/auth.service';
+import { ScaleLoader } from 'react-spinners';
 const submissions = [
     {
         id: 1,
@@ -63,26 +65,41 @@ export default function Submissions () {
     const  [filteredSubmissions, setFilteredSubmissions] = useState([]);
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [error, setError] = useState()
-
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            setLoading(true)
+            const user = authService.getCurrentUser();
+            if (user) {
+                setCurrentUser(user);
+            }
+            setLoading(false)
+        };
+        fetchCurrentUser();
+    }, []);
     useEffect(()=>{
         const fetchSubmissions = async () => {
-            if (facultyId) {
+            if (facultyId && currentUser) {
+                setLoading(true)
                 try {
                     setError(null)
-                    const response = await authHeader().get(apis.article + "faculty/" + facultyId);
+                    const response = await authHeader().get(apis.article + "faculty/" + facultyId, {params:{userId: currentUser.id}});
                     setSubmissions(response.data)
                     setFilteredSubmissions(response.data);
+                    setLoading(false)
 
                 }catch (error) {
                     setSubmissions([])
                     setFilteredSubmissions([])
                     setError(error.response.data)
                     console.error(error.response.data);
+                    setLoading(false)
                 }
             }
         }
         fetchSubmissions();
-    },[facultyId])
+    },[facultyId,currentUser])
 
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
@@ -116,25 +133,30 @@ export default function Submissions () {
 
     return (
         <div className="submissions">
-            <div className="submissionsWrapper">
             <div className="postFilter">
-                <select value={selectedFilter} onChange={handleFilterChange}>
-                <option value="all">All</option>
-                <option value="approved">Approved</option>
-                <option value="not commented">Not Commented</option>
-                <option value="commented">Commented</option>
-                <option value="reject">Reject</option>
-                </select>
+                        <select value={selectedFilter} onChange={handleFilterChange}>
+                        <option value="all">All</option>
+                        <option value="approved">Approved</option>
+                        <option value="not commented">Not Commented</option>
+                        <option value="commented">Commented</option>
+                        <option value="reject">Reject</option>
+                        </select>
             </div>
             <h1>Submissions</h1>
-            {error ? (
-                <div>{error}</div>
-            ) : (
-                filteredSubmissions.map((submission) => (
-                    <Submission key={submission.id} submission={submission} />
-                ))
+            {loading ? (
+                <ScaleLoader/>
+            ):(
+                <div className="submissionsWrapper">
+                    
+                    {error ? (
+                        <div>{error}</div>
+                    ) : (
+                        filteredSubmissions.map((submission) => (
+                            <Submission key={submission.id} submission={submission} />
+                        ))
+                    )}
+                </div>
             )}
-            </div>
         </div>
     );
 };

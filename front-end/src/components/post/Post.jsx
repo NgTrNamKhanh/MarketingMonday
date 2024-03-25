@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ChatBubbleOutline, MoreVert, RecommendRounded, Send, ThumbDown, ThumbDownAlt, ThumbDownOffAlt, ThumbUp, ThumbUpOffAlt } from "@mui/icons-material";
 import "./post.css";
 import useFetch from '../../hooks/useFetch';
@@ -6,8 +6,10 @@ import apis from '../../services/apis.service';
 import {  ScaleLoader } from 'react-spinners';
 import authHeader from '../../services/auth.header';
 import authService from '../../services/auth.service';
+import DeleteConfirm from '../dialogs/deleteConfirm/DeleteConfirm';
+import EditComment from '../dialogs/editCmt/EditComment';
 
-export default function Post({ post, isProfile}) {
+export default function Post({ post, isProfile, currentUser}) {
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -21,18 +23,58 @@ export default function Post({ post, isProfile}) {
     
         return new Date(dateString).toLocaleString(undefined, options);
     };
-    
+    const [comments, setComments] = useState([]);
+    const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false); 
-    console.log(post)
-    const [currentUser, setCurrentUser] = useState(null);
-
-    useEffect(() => {
-        const user = authService.getCurrentUser();
-        if (user) {
-            setCurrentUser(user);
-        }
-    }, []);
+    const [optionsOpen, setOptionsOpen] = useState(false);
     const [likesCount, setLikesCount] = useState(post.likeCount)
+    const [editCmtOpen, setEditCmtCOpen] = useState(false);
+    const [selectedComment, setSelectedComment] = useState();
+    const handleCloseEditCmtCDialog = () => {
+        setEditCmtCOpen(false);
+    };
+    const handleOpenEditCmtCDialog = (e) => {
+        setSelectedComment(e)
+        setEditCmtCOpen(true);
+    };
+    const [deleteCmtOpen, setDeleteCmtCOpen] = useState(false);
+    const handleCloseDeleteCmtCDialog = () => {
+        setDeleteCmtCOpen(false);
+    };
+    const handleOpenDeleteCmtCDialog = (e) => {
+        setSelectedComment(e)
+        setDeleteCmtCOpen(true);
+    };
+    const [reportCmtOpen, setReportCmtCOpen] = useState(false);
+    const handleCloseReportCmtCDialog = () => {
+        setReportCmtCOpen(false);
+    };
+    const handleOpenReportCmtCDialog = () => {
+        setSelectedComment()
+        setReportCmtCOpen(true);
+    };
+    const optionsRef = useRef(null);
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (optionsRef.current && !optionsRef.current.contains(event.target)) {
+                setOptionsOpen(false);
+            }
+        }
+    
+        function handleScrollOutside(event) {
+            if (optionsRef.current && !optionsRef.current.contains(event.target)) {
+                setOptionsOpen(false);
+            }
+        }
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("scroll", handleScrollOutside);
+    
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("scroll", handleScrollOutside);
+        };
+    }, []);
     useEffect(() => {
         setLikesCount(post.likeCount);
     }, [post.likeCount]);
@@ -77,9 +119,11 @@ export default function Post({ post, isProfile}) {
             handleLike()
         }
     } 
+    const handleDeleteCmt = () =>{
+
+    }
 
     let pictureLayout;
-    console.log(post.imageBytes.length)
     if (post.imageBytes.length === 1) {
         pictureLayout = (
             <div className="postCenter">
@@ -212,38 +256,67 @@ export default function Post({ post, isProfile}) {
             }
     
         }
+        console.log(comment);
         return (
-        <div key={comment.id} className="comment" >
-            <img src={`data:image/jpeg;base64,${comment.userComment.userAvatar}`} className="commentProfileImg" alt="profile" />
-            <div className="commentTop">
-                <div className="commentTopLeft">
-                    <span className="commentUsername">{comment.userComment.userName}{comment.userComment.lastName}</span>
-                    <span className="commentDate">{formatDate(comment.createOn)}</span>
+            <div key={comment.id} className="comment" >
+                <img src={`data:image/jpeg;base64,${comment.userComment.userAvatar}`} className="commentProfileImg" alt="profile" />
+                <div className="commentTop">
+                    <div className="commentTopLeft">
+                        <span className="commentUsername">{comment.userComment.userName}{comment.userComment.lastName}</span>
+                        <span className="commentDate">{formatDate(comment.createOn)}</span>
+                    </div>
                 </div>
-            </div>
-            <p className="commentContent">{comment.content}</p>
-            <div className="commentActions">
-                <ThumbUp className={`commentIcon ${isCommentLiked ? 'liked' : ''}`} onClick={() => handleCommentLike()} />
-                <span>{commentLikesCount}</span>
-                <ThumbDown className={`commentIcon ${isCommentDisliked ? 'disliked' : ''}`} onClick={() => handleCommnetDislike()} />
-                <span>{commentDislikesCount}</span>
-                <span className='replyClick' onClick={()=>setOpenCommentInput(!openCommentInput)}>Reply</span>
-            </div>
-            {comment.hasReplies && (
-                <span onClick={toggleReplies} style={{ cursor: 'pointer' }} className="viewReplies ">
-                    {showReplies ? 'Hide Replies' : 'View Replies'}
-                </span>
-            )}
-            <div className="commentReply">
-                {showReplies && comment.hasReplies && (
-                    <RenderComments comments= {replies} loading={repLoading}/>
+                <p className="commentContent">{comment.content}</p>
+                <div className="commentActions">
+                    <ThumbUp 
+                    className={`commentIcon ${isCommentLiked ? 'liked' : ''}`} 
+                    onClick={currentUser.roles.includes("Student") || currentUser.roles.includes("Guest") ? handleCommentLike : null} 
+                    />
+                    <span>{commentLikesCount}</span>
+                    <ThumbDown 
+                        className={`commentIcon ${isCommentDisliked ? 'disliked' : ''}`} 
+                        onClick={currentUser.roles.includes("Student") || currentUser.roles.includes("Guest") ? handleCommnetDislike : null} 
+                    />
+                    <span>{commentDislikesCount}</span>
+                    {currentUser.roles.includes("Student","Guest") && (
+                        <span className='replyClick' onClick={()=>setOpenCommentInput(!openCommentInput)}>Reply</span>
+                    )}
+                </div>
+                {comment.hasReplies && (
+                    <span onClick={toggleReplies} style={{ cursor: 'pointer' }} className="viewReplies ">
+                        {showReplies ? 'Hide Replies' : 'View Replies'}
+                    </span>
                 )}
-                {openCommentInput && (
-                <CommentForm handleComment={handleReply} />
-                )}
+                <div className="commentReply">
+                    {showReplies && comment.hasReplies && (
+                        <RenderComments comments= {replies} loading={repLoading}/>
+                    )}
+                    {openCommentInput && (
+                    <CommentForm handleComment={handleReply} />
+                    )}
+                </div>
+                <div className="commentTopRight">
+                    <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
+                    {optionsOpen && (
+                        <div className="commentDropdownContent" ref={optionsRef}>
+                            <div className="commentDropdownContentItem" onClick={()=>handleCloseReportCmtCDialog(1)}>
+                                        <span>Report</span> 
+                            </div>
+                            {currentUser.id === comment.userComment.userId && (
+                                <>
+                                    <div className="commentDropdownContentItem" onClick={()=>handleOpenEditCmtCDialog(comment)}>
+                                            <span>Edit</span>
+                                    </div>
+                                    <div className="commentDropdownContentItem" onClick={()=>handleOpenDeleteCmtCDialog()}>
+                                                <span>Delete</span>
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    )}
+                    </div>
+                
             </div>
-            
-        </div>
         )
     }
     const RenderComments = ({ comments, loading}) => {
@@ -261,8 +334,7 @@ export default function Post({ post, isProfile}) {
             </div>
         );
     };
-    const [comments, setComments] = useState([]);
-    const [loading, setLoading] = useState(false);
+    
     useEffect(() => {
         const fetchData = async () => {
             if(currentUser){
@@ -364,29 +436,32 @@ export default function Post({ post, isProfile}) {
                                 </div>
                             </div>
                             <hr className="postHr"/>
-                            <div className="actionsSection">
-                                <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
-                                    {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
-                                    <span className='actionText'>Like</span>
+                            {currentUser.roles.includes("Student","Guest") && (
+                                <div className="actionsSection">
+                                    <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
+                                        {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
+                                        <span className='actionText'>Like</span>
+                                    </div>
+                                    <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
+                                    {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
+                                        <span className='actionText'>Dislike</span>
+                                    </div>
+                                    <div className="action" onClick={()=>{setIsModalOpen(true)}}>
+                                        <ChatBubbleOutline/>
+                                        <span className='actionText'>Comment</span>
+                                    </div>
                                 </div>
-                                <div  className={`action ${isDisliked ? 'disliked ' : ''} `} onClick={handleDislike}>
-                                {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
-                                    <span className='actionText'>Dislike</span>
-                                </div>
-                                <div className="action" onClick={()=>{setIsModalOpen(true)}}>
-                                    <ChatBubbleOutline/>
-                                    <span className='actionText'>Comment</span>
-                                </div>
-                            </div>
-                
+                            )}
                             <div className="commentsSection">
                                 <h3>Comments</h3>
                                 <RenderComments comments={comments} loading={loading}/>
                             </div>
                         </div>
-                        <div className="modalStickyBottom">
-                                <CommentForm handleComment={handleComment}/>
-                        </div>
+                        {currentUser.roles.includes("Student","Guest") && (
+                            <div className="modalStickyBottom">
+                                    <CommentForm handleComment={handleComment}/>
+                            </div>
+                        )}
                     </div>
             </div>
         )
@@ -448,7 +523,6 @@ export default function Post({ post, isProfile}) {
         }
         
     }, [post.coordinatorComment, post.publishStatusId]);
-    console.log(status)
     return (
         <div className="post">
             <div className="postWrapper">
@@ -495,7 +569,8 @@ export default function Post({ post, isProfile}) {
                             </div>
                         </div>
                         <hr className="postHr"/>
-                        <div className="actionsSection">
+                        {currentUser.roles.includes("Student","Guest") && (
+                            <div className="actionsSection">
                             <div className={`action ${isLiked ? 'liked' : ''}`} onClick={handleLike}>
                                 {isLiked ? <ThumbUp /> : <ThumbUpOffAlt />}
                                 <span className='actionText'>Like</span>
@@ -508,7 +583,8 @@ export default function Post({ post, isProfile}) {
                                 <ChatBubbleOutline/>
                                 <span className='actionText'>Comment</span>
                             </div>
-                        </div>
+                            </div>
+                        )}
                         </>
                     )
                 }
@@ -523,6 +599,16 @@ export default function Post({ post, isProfile}) {
                 )}
             </div>
             {isModalOpen && <Modal post={post} closeModal={closeModal} />}
+            <DeleteConfirm
+                open={deleteCmtOpen}
+                handleClose={handleCloseDeleteCmtCDialog}
+                handleConfirm={handleDeleteCmt}
+            />
+            <EditComment
+                open={editCmtOpen}
+                handleClose={handleCloseEditCmtCDialog}
+                comment = {selectedComment}
+            />
         </div>
     );
 }
