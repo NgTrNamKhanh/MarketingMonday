@@ -11,7 +11,8 @@ namespace Comp1640_Final.Services
         ICollection<Faculty> GetFaculties();
         ICollection<DashboardResponse> GetContributionsByYear();
         ICollection<DashboardResponse> GetContributorsByYear();
-    }
+		ICollection<Values> GetPercentageContributions();
+	}
 
     public class FacultyService : IFacultyService
     {
@@ -131,6 +132,43 @@ namespace Comp1640_Final.Services
 
             return dashboardResponses;
         }
-    }
+		public ICollection<Values> GetPercentageContributions()
+		{
+			var facultiesWithArticles = _context.Faculties
+				.Include(f => f.Articles)
+				.ToList();
 
-    }
+			var contributionsByFaculty = new Dictionary<string, int>();
+
+			// Count contributions for each faculty
+			foreach (var faculty in facultiesWithArticles)
+			{
+				var contributionsForFaculty = faculty.Articles.Count();
+				contributionsByFaculty[faculty.Name] = contributionsForFaculty;
+			}
+
+			// Calculate total contributions
+			var totalContributions = contributionsByFaculty.Values.Sum();
+
+			// Convert contributions to percentages
+			var percentagesByFaculty = contributionsByFaculty
+				.Select(kv => new
+				{
+					Faculty = kv.Key,
+					Percentage = totalContributions == 0 ? 0 : (double)kv.Value / totalContributions * 100
+				})
+				.ToDictionary(x => x.Faculty, x => x.Percentage);
+
+			// Convert percentages to Values objects
+			var values = percentagesByFaculty.Select(kv => new Values
+			{
+				Faculty = kv.Key,
+				value = kv.Value
+			}).ToList();
+
+			return values;
+		}
+
+	}
+
+}

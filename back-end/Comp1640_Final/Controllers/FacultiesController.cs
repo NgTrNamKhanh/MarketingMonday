@@ -38,6 +38,13 @@ namespace Comp1640_Final.Controllers
 			var contributors = _service.GetContributorsByYear();
 			return Ok(contributors);
 		}
+		[HttpGet("contributions/percentage")]
+		public async Task<IActionResult> GetPercentageContributions()
+		{
+			var contributions = _service.GetPercentageContributions();
+			return Ok(contributions);
+		}
+
 
 	}
 }

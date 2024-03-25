@@ -265,20 +265,23 @@ export default function Post({ post, isProfile}) {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
-            console.log("re render")
-            setLoading(true)
-            try {
-                const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id, userId: currentUser.id }});
-                setComments(response.data);
-                setLoading(false);
-            } catch (error) {
-                console.error("Error fetching comments:", error);
-                setLoading(false);
+            if(currentUser){
+                console.log("re render")
+                setLoading(true)
+                console.log(currentUser.id)
+                try {
+                    const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id, userId: currentUser.id }});
+                    setComments(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching comments:", error);
+                    setLoading(false);
+                }
             }
         };
 
         fetchData();
-    }, [post.id]);
+    }, [post.id, currentUser]);
 
     const Modal = ({post, closeModal}) =>{
         const handleComment =  async (event) =>{

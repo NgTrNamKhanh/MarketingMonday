@@ -32,26 +32,29 @@ const Dashboard = () => {
     // const {contributions, contributionsLoading, contributionsError, contributionsRefetch} = useFetch(apis.faculty+"contributions/by-year")
     const [contributorsByYear, setContributorsByYear] = useState(null)
     const [contributionsByYear, setContributionsByYear] = useState(null)
+    const [percentageByFaculty, setPercentageByFaculty] = useState(null)
     useEffect(() => {
         const fetchEvent = async () => {
                 try {
                     const contributionsResponse = await authHeader().get(apis.faculty + "contributions/by-year" );
                     const contributorsResponse = await authHeader().get(apis.faculty + "contributors/by-year" );
+                    const percentageResponse = await authHeader().get(apis.faculty + "contributions/percentage" );
                     setContributionsByYear(contributionsResponse.data)
                     setContributorsByYear(contributorsResponse.data);
+                    setPercentageByFaculty(percentageResponse.data)
                 } catch (error) {
                     console.error("Error fetching event data:", error);
                 }
         };
         fetchEvent();
     }, []);
-    console.log(contributorsByYear)
-        const percentageByFaculty = {
-        "Faculty A": 40,
-        "Faculty B": 30,
-        "Faculty C": 20,
-        "Faculty D": 10
-        };
+    console.log(percentageByFaculty)
+        // const percentageByFaculty = {
+        // "Faculty A": 40,
+        // "Faculty B": 30,
+        // "Faculty C": 20,
+        // "Faculty D": 10
+        // };
         
         // const contributorsByYear = {
         // "2022": {
@@ -86,14 +89,18 @@ const Dashboard = () => {
         }
         return color;
     };
-    const percentageData = {
-        labels: Object.keys(percentageByFaculty),
-        datasets: [{
-            data: Object.values(percentageByFaculty),
-            backgroundColor: Object.keys(percentageByFaculty).map(() => getRandomColor()),
-            borderWidth: 1
-        }]
-    };
+    let percentageData = null;
+    if(percentageByFaculty){
+        percentageData = {
+            labels: percentageByFaculty.map(item => item.faculty),
+            datasets: [{
+                data: Object.values(percentageByFaculty),
+                backgroundColor: Object.keys(percentageByFaculty).map(() => getRandomColor()),
+                borderWidth: 1
+            }]
+        };
+    }
+    console.log(percentageData)
     let contributionsResult = null;
     if (contributionsByYear) {
         contributionsResult = {
