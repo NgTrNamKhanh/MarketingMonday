@@ -255,7 +255,7 @@ namespace Comp1640_Final.Controllers
         {
             var comment = _mapper.Map<Comment>(commentDto);
             var parentComment = await _context.Comments.FindAsync(id);
-            comment.Id = id;
+            //comment.Id = id;
             comment.ParentCommentId = parentComment.ParentCommentId;
             var result = await _commentService.EditComment(comment);
             if (!result)
