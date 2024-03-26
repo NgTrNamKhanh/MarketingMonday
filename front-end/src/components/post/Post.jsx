@@ -365,15 +365,11 @@ export default function Post({ post, isProfile, currentUser}) {
                     userId: currentUser.id,
                     articleId: post.id
                 }
-                console.log("1")
                 const res = await authHeader().post(apis.comment+"createComment", comment);
-                console.log("2")
                 if (res.status === 200) {
-                    console.log("3")
+                    console.log(res)
                     setComments(prevComments => [...prevComments, res.data]);
-                    console.log("4")
                     setCommentsCount(prevCount => prevCount + 1)
-                    console.log("5")
                     // localStorage.setItem("accounts", JSON.stringify(updatedData));
                     setIsSubmitting(false);
                     console.log("6")

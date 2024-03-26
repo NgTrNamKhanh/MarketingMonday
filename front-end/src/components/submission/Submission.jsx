@@ -1,7 +1,7 @@
 import { MoreVert } from '@mui/icons-material';
 import './submission.css';
 import { useEffect, useRef, useState } from 'react';
-import TermsAndConditions from '../termsAndConditions/TermsAndConditions';
+import TermsAndConditions from '../dialogs/termsAndConditions/TermsAndConditions';
 import apis from '../../services/apis.service';
 import authHeader from '../../services/auth.header';
 const termsAndConditionsText = (

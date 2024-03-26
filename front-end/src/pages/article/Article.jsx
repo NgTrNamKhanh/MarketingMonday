@@ -1,7 +1,7 @@
 import { AttachFile, PermMedia } from "@mui/icons-material";
 import React, { useEffect, useState } from "react";
 import "./article.css";
-import TermsAndConditions from "../../components/termsAndConditions/TermsAndConditions";
+import TermsAndConditions from "../../components/dialogs/termsAndConditions/TermsAndConditions";
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
 import { Form, Formik } from "formik";

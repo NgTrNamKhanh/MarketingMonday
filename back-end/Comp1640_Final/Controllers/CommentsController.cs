@@ -72,13 +72,14 @@ namespace Comp1640_Final.Controllers
                             var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
                             userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                         }
-                        UserComment userComment = new UserComment
-                        {
-                            UserId = user.Id,
-                            UserAvatar = userImageBytes,
-                            UserName = user.FirstName + " " + user.LastName,
-                        };
-                        commentResponse.UserComment = userComment;
+						UserComment userComment = new UserComment
+						{
+							Id = user.Id,
+							UserAvatar = userImageBytes,
+							FirstName = user.FirstName,
+							LastName = user.LastName
+						};
+						commentResponse.UserComment = userComment;
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
@@ -121,13 +122,14 @@ namespace Comp1640_Final.Controllers
                             var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
                             userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
                         }
-                        UserComment userComment = new UserComment
-                        {
-                            UserId = user.Id,
-                            UserAvatar = userImageBytes,
-                            UserName = user.FirstName + " " + user.LastName,
-                        };
-                        commentResponse.UserComment = userComment;
+						UserComment userComment = new UserComment
+						{
+							Id = user.Id,
+							UserAvatar = userImageBytes,
+							FirstName = user.FirstName,
+							LastName = user.LastName
+						};
+						commentResponse.UserComment = userComment;
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
@@ -172,9 +174,10 @@ namespace Comp1640_Final.Controllers
                         }
                         UserComment userComment = new UserComment
                         {
-                            UserId = user.Id,
+                            Id = user.Id,
                             UserAvatar = userImageBytes,
-                            UserName = user.FirstName + " " + user.LastName,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName
                         };
                         commentResponse.UserComment = userComment;
                     }
@@ -219,9 +222,26 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
+                var user = await _userManager.FindByIdAsync(commentDto.UserId);
                 var commentResult = _context.Comments.Find(comment.Id);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
-                return Ok(commentResponse);
+				var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+				// If imageBytes is null, read the default image file
+				if (userImageBytes == null)
+				{
+					var defaultImageFileName = "default-avatar.jpg";
+					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+				}
+				UserComment userComment = new UserComment
+				{
+					Id = user.Id,
+					UserAvatar = userImageBytes,
+					FirstName = user.FirstName,
+					LastName = user.LastName
+				};
+				commentResponse.UserComment = userComment;
+				return Ok(commentResponse);
             }
         }
         [HttpPost("createReply")]
@@ -244,8 +264,25 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                var replyResult = _context.Comments.Find(reply.Id);
+				var user = await _userManager.FindByIdAsync(commentDto.UserId);
+				var replyResult = _context.Comments.Find(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
+				var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+																					// If imageBytes is null, read the default image file
+				if (userImageBytes == null)
+				{
+					var defaultImageFileName = "default-avatar.jpg";
+					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+				}
+				UserComment userComment = new UserComment
+				{
+					Id = user.Id,
+					UserAvatar = userImageBytes,
+					FirstName = user.FirstName,
+					LastName = user.LastName
+				};
+				replyResponse.UserComment = userComment;
                 return Ok(replyResponse);
             }
         }

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { Delete, EditOutlined, Visibility } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
 import AccountForm from "../../../components/forms/account/AccountForm";
-import DeleteConfirm from "../../../components/deleteConfirm/DeleteConfirm";
+import DeleteConfirm from "../../../components/dialogs/deleteConfirm/DeleteConfirm";
 import useFetch from "../../../hooks/useFetch";
 import apis from "../../../services/apis.service";
 import authService from "../../../services/auth.service";
