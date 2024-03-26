@@ -287,7 +287,7 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut()]
         public async Task<ActionResult<Comment>> PutComment(Guid id, string content)
         {
             var comment = await _context.Comments.FindAsync(id);
@@ -305,7 +305,26 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Edit successful");
+				var commentResult = _context.Comments.Find(id);
+                var user = await _userManager.FindByIdAsync(commentResult.UserId);
+                var commentResponse = _mapper.Map<CommentResponse>(commentResult);
+				var userImageBytes = await _userService.GetImagesByUserId(user.Id); 
+																					
+				if (userImageBytes == null)
+				{
+					var defaultImageFileName = "default-avatar.jpg";
+					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+				}
+				UserComment userComment = new UserComment
+				{
+					Id = user.Id,
+					UserAvatar = userImageBytes,
+					FirstName = user.FirstName,
+					LastName = user.LastName
+				};
+                commentResponse.UserComment = userComment;
+                return Ok(commentResponse);
             }
         }
         [HttpDelete()]
@@ -340,16 +359,6 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("Failed");
             }
             return  Ok("Delete successful");
-        }
-        private async Task<string> GetUserId()
-        {
-            var principal = _httpContextAccessor.HttpContext.User;
-            var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
-            if (user != null)
-            {
-                return user.Id;
-            }
-            return null;
         }
     }
 }

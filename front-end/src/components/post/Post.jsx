@@ -23,18 +23,37 @@ export default function Post({ post, isProfile, currentUser}) {
     
         return new Date(dateString).toLocaleString(undefined, options);
     };
+    useEffect(() => {
+        const fetchData = async () => {
+            if(currentUser){
+                console.log("re render")
+                setLoading(true)
+                console.log(currentUser.id)
+                try {
+                    const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id, userId: currentUser.id }});
+                    setComments(response.data);
+                    setLoading(false);
+                } catch (error) {
+                    console.error("Error fetching comments:", error);
+                    setLoading(false);
+                }
+            }
+        };
+
+        fetchData();
+    }, []);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false); 
-    const [optionsOpen, setOptionsOpen] = useState(false);
+
     const [likesCount, setLikesCount] = useState(post.likeCount)
     const [editCmtOpen, setEditCmtCOpen] = useState(false);
     const [selectedComment, setSelectedComment] = useState();
     const handleCloseEditCmtCDialog = () => {
         setEditCmtCOpen(false);
     };
-    const handleOpenEditCmtCDialog = (e) => {
-        setSelectedComment(e)
+    const handleOpenEditCmtCDialog = (hi) => {
+        setSelectedComment(hi);
         setEditCmtCOpen(true);
     };
     const [deleteCmtOpen, setDeleteCmtCOpen] = useState(false);
@@ -53,28 +72,7 @@ export default function Post({ post, isProfile, currentUser}) {
         setSelectedComment()
         setReportCmtCOpen(true);
     };
-    const optionsRef = useRef(null);
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-                setOptionsOpen(false);
-            }
-        }
     
-        function handleScrollOutside(event) {
-            if (optionsRef.current && !optionsRef.current.contains(event.target)) {
-                setOptionsOpen(false);
-            }
-        }
-    
-        document.addEventListener("mousedown", handleClickOutside);
-        document.addEventListener("scroll", handleScrollOutside);
-    
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-            document.removeEventListener("scroll", handleScrollOutside);
-        };
-    }, []);
     useEffect(() => {
         setLikesCount(post.likeCount);
     }, [post.likeCount]);
@@ -119,8 +117,16 @@ export default function Post({ post, isProfile, currentUser}) {
             handleLike()
         }
     } 
-    const handleDeleteCmt = () =>{
-
+    const handleDeleteCmt = async () =>{
+        console.log(selectedComment)
+        if (selectedComment) {
+            const url = apis.comment;
+            try {
+                await authHeader().delete(url, {params:{id: selectedComment.id}});
+            } catch (err) {
+                console.error(err);
+            }
+        }
     }
 
     let pictureLayout;
@@ -189,7 +195,7 @@ export default function Post({ post, isProfile, currentUser}) {
             };
 
             fetchData();
-        }, [comment.id]);
+        }, []);
 
         const [showReplies, setShowReplies] = useState(false);
         const [commentLikesCount, setCommentLikesCount] = useState(comment.likesCount)
@@ -256,7 +262,7 @@ export default function Post({ post, isProfile, currentUser}) {
             }
     
         }
-        console.log(comment);
+        const [optionsOpen, setOptionsOpen] = useState(false);
         return (
             <div key={comment.id} className="comment" >
                 <img src={`data:image/jpeg;base64,${comment.userComment.userAvatar}`} className="commentProfileImg" alt="profile" />
@@ -298,16 +304,16 @@ export default function Post({ post, isProfile, currentUser}) {
                 <div className="commentTopRight">
                     <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
                     {optionsOpen && (
-                        <div className="commentDropdownContent" ref={optionsRef}>
+                        <div className="commentDropdownContent" >
                             <div className="commentDropdownContentItem" onClick={()=>handleCloseReportCmtCDialog(1)}>
                                         <span>Report</span> 
                             </div>
-                            {currentUser.id === comment.userComment.userId && (
+                            {currentUser.id === comment.userComment.id && (
                                 <>
                                     <div className="commentDropdownContentItem" onClick={()=>handleOpenEditCmtCDialog(comment)}>
                                             <span>Edit</span>
                                     </div>
-                                    <div className="commentDropdownContentItem" onClick={()=>handleOpenDeleteCmtCDialog()}>
+                                    <div className="commentDropdownContentItem" onClick={()=>handleOpenDeleteCmtCDialog(comment)}>
                                                 <span>Delete</span>
                                     </div>
                                 </>
@@ -335,25 +341,7 @@ export default function Post({ post, isProfile, currentUser}) {
         );
     };
     
-    useEffect(() => {
-        const fetchData = async () => {
-            if(currentUser){
-                console.log("re render")
-                setLoading(true)
-                console.log(currentUser.id)
-                try {
-                    const response = await authHeader().get(apis.comment + "getParentComments", { params: { articleId: post.id, userId: currentUser.id }});
-                    setComments(response.data);
-                    setLoading(false);
-                } catch (error) {
-                    console.error("Error fetching comments:", error);
-                    setLoading(false);
-                }
-            }
-        };
-
-        fetchData();
-    }, [post.id, currentUser]);
+    
 
     const Modal = ({post, closeModal}) =>{
         const handleComment =  async (event) =>{
@@ -368,8 +356,8 @@ export default function Post({ post, isProfile, currentUser}) {
                 const res = await authHeader().post(apis.comment+"createComment", comment);
                 if (res.status === 200) {
                     console.log(res)
-                    setComments(prevComments => [...prevComments, res.data]);
-                    setCommentsCount(prevCount => prevCount + 1)
+                    setComments((prevComments) => [res.data,...prevComments ]);
+                    setCommentsCount((prevCount) => prevCount + 1)
                     // localStorage.setItem("accounts", JSON.stringify(updatedData));
                     setIsSubmitting(false);
                     console.log("6")
@@ -600,11 +588,15 @@ export default function Post({ post, isProfile, currentUser}) {
                 handleClose={handleCloseDeleteCmtCDialog}
                 handleConfirm={handleDeleteCmt}
             />
-            <EditComment
+            {editCmtOpen && (
+                <EditComment
                 open={editCmtOpen}
                 handleClose={handleCloseEditCmtCDialog}
                 comment = {selectedComment}
+                comments={comments}
+                setComments={setComments}
             />
+            )}
         </div>
     );
 }

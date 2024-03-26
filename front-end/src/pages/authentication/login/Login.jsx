@@ -104,7 +104,9 @@ const LoginBox = ({setCurrentUser}) => {
                             <input type="checkbox" name="tnd" id="tnd" className="checkBoxInput" onChange={handleCheckboxChange}/>
                             <label htmlFor="tnd">Agree to our <a href="">Terms of Use</a> and <a href="">Privacy Policy</a></label>
                         </div>
-                        <div className="error">{error}</div>
+                        {error && (
+                            <div className="error">{error}</div>
+                        )}
                         <button type="submit" className="button loginButton">
                             <span className="loginButtonText">Log In</span>
                         </button>

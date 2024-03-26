@@ -401,13 +401,14 @@
 .commentTopRight{
     grid-row:1 ;
     grid-column: 3;
+    position: relative;
 }
 .commentDropdownContent {
     display: flex;
     flex-direction: column;
     position: absolute;
     top: calc(100% - 22%);
-    right: 50px !important;
+    right: 20px !important;
     border-radius: 5px;
     right: 0;
     background-color: #f9f9f9;

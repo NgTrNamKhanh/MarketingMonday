@@ -55,8 +55,9 @@ namespace Comp1640_Final.Services
 
         public async Task<ICollection<Comment>> GetComments()
         {
-            return await _context.Comments.OrderBy(p => p.Id).ToListAsync();
+            return await _context.Comments.OrderByDescending(p => p.CreateOn).ToListAsync();
         }
+
         public async Task<int> GetCommentsCount(Guid articleId)
         {
             return await _context.Comments.CountAsync(p => p.ArticleId == articleId);
@@ -64,12 +65,12 @@ namespace Comp1640_Final.Services
 
         public async Task<ICollection<Comment>> GetParentComments(Guid articleId)
         {
-            return await _context.Comments.Where(p => p.ArticleId == articleId && p.ParentCommentId == null).ToListAsync();
+            return await _context.Comments.Where(p => p.ArticleId == articleId && p.ParentCommentId == null).OrderByDescending(p => p.CreateOn).ToListAsync();
         }
 
         public async Task<ICollection<Comment>> GetReplies(Guid parentId)
         {
-            return await _context.Comments.Where(p => p.ParentCommentId == parentId).ToListAsync();
+            return await _context.Comments.Where(p => p.ParentCommentId == parentId).OrderByDescending(p => p.CreateOn).ToListAsync();
         }
 
         public async Task<bool> PostComment(Comment cmt)
