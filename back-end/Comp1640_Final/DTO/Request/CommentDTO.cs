@@ -9,6 +9,14 @@
 
     }
 
+    public class EditCommentDTO
+    {
+        public Guid Id { get; set; }
+
+        public string Content { get; set; }
+
+    }
+
     //public class ReplyDTO
     //{
     //    public Guid Id { get; set; }

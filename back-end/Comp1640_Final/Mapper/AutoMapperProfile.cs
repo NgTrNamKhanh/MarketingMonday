@@ -25,6 +25,7 @@ namespace Comp1640_Final.Mapper
             CreateMap<Comment, CommentDTO>();
             CreateMap<CommentDTO, Comment>();
             CreateMap<Comment, CommentResponse>();
+            CreateMap<EditCommentDTO, Comment>();
             //CreateMap<Comment, ReplyDTO>();
             //CreateMap<ReplyDTO, Comment>();
 

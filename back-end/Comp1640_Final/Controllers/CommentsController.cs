@@ -287,13 +287,17 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-        [HttpPut()]
-        public async Task<ActionResult<Comment>> PutComment(Guid id, CommentDTO commentDto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Comment>> PutComment(Guid id, string content)
         {
-            var comment = _mapper.Map<Comment>(commentDto);
-            var parentComment = await _context.Comments.FindAsync(id);
-            //comment.Id = id;
-            comment.ParentCommentId = parentComment.ParentCommentId;
+            var comment = await _context.Comments.FindAsync(id);
+            if (comment == null)
+            {
+                return BadRequest("Not found any comment");
+            }
+            comment.Content = content;
+            //var parentComment = await _context.Comments.FindAsync(id);
+            //comment.ParentCommentId = parentComment.ParentCommentId;
             var result = await _commentService.EditComment(comment);
             if (!result)
             {

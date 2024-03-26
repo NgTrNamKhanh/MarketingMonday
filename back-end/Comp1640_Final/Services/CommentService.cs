@@ -8,6 +8,8 @@ namespace Comp1640_Final.Services
     public interface ICommentService
     {
         Task<ICollection<Comment>> GetComments();
+
+        Comment GetCommentById(Guid id);
         Task<ICollection<Comment>> GetParentComments(Guid articleId);
         Task<ICollection<Comment>> GetReplies(Guid parentId);
         Task<bool> PostComment(Comment cmt);
@@ -44,6 +46,11 @@ namespace Comp1640_Final.Services
         {
             _context.Comments.Update(cmt);
             return await Save();
+        }
+
+        public Comment GetCommentById(Guid id)
+        {
+            return _context.Comments.Where(p => p.Id == id).FirstOrDefault();
         }
 
         public async Task<ICollection<Comment>> GetComments()
