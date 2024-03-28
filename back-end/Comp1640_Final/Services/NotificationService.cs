@@ -8,6 +8,8 @@ namespace Comp1640_Final.Services
     public interface INotificationService
     {
         Task<bool> PostNotification(Notification notification);
+        Task<ICollection<Notification>> GetArticleNotifications(Guid articleId);
+        Task<ICollection<Notification>> GetCommentNotifications(Guid commentId);
 
         Task<bool> Save();
 
@@ -20,6 +22,17 @@ namespace Comp1640_Final.Services
         public NotificationService(ProjectDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<ICollection<Notification>> GetArticleNotifications(Guid articleId)
+        {
+            //return await _context.Notifications.Where(n => n.)
+            throw new NotImplementedException();
+        }
+
+        public Task<ICollection<Notification>> GetCommentNotifications(Guid commentId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<bool> PostNotification(Notification notification)
