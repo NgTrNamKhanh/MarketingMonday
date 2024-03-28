@@ -6,6 +6,7 @@ using Comp1640_Final.Hubs;
 using Comp1640_Final.Migrations;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,9 @@ namespace Comp1640_Final.Controllers
         private readonly ICommentService _commentService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly INotificationService _notificationService;
+        private readonly IUserService _userService;
+        private static IWebHostEnvironment _webHostEnvironment;
 
         public LikesController(ProjectDbContext context, 
             IMapper mapper,
@@ -34,7 +38,10 @@ namespace Comp1640_Final.Controllers
             IDislikeService dislikeService,
             ICommentService commentService,
             UserManager<ApplicationUser> userManager,
-            IHubContext<NotificationHub> hubContext)
+            IHubContext<NotificationHub> hubContext,
+            INotificationService notificationService,
+            IUserService userService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _mapper = mapper;
@@ -44,6 +51,9 @@ namespace Comp1640_Final.Controllers
             _commentService = commentService;
             _userManager = userManager;
             _hubContext = hubContext;
+            _notificationService = notificationService;
+            _userService = userService;
+            _webHostEnvironment = webHostEnvironment;
         }
         //[HttpGet("count/article/{articleId}")]
         //public async Task<IActionResult> GetArticleLikesCount(Guid articleId)
@@ -109,11 +119,6 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Existing like deleted successfully.");
             }
-            var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
-            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
-            await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification",
-    user.FirstName + " " + user.LastName + " liked your post");
-            //await NotifyUser(article.StudentId, user.FirstName + " " + user.LastName + " liked your post");
 
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
@@ -126,7 +131,37 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Successful");
+                //---------------- noti -----------------
+
+                var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
+                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
+                string message = user.FirstName + " " + user.LastName + " liked your post";
+                var notification = new Notification
+                {
+                    UserId = article.StudentId,
+                    Message = message,
+                };
+                await _notificationService.PostNotification(notification);
+                await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
+
+                var notiResponse = _mapper.Map<NotificationResponse>(notification);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = userImageBytes,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
+                //---------------- end noti -----------------
+                return Ok(notiResponse);
             }
         }
         [HttpPost("comment")]
@@ -143,12 +178,7 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Existing like deleted successfully.");
             }
-            var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
-            //var userComment = await _userManager.FindByIdAsync(comment.UserId); //tìm user của comment đó
-            var user =  await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
-            await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", 
-                user.FirstName + " " + user.LastName + " liked your post");
-            //await NotifyUser(comment.UserId, user.FirstName + " " + user.LastName + " liked your post");
+           
 
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
@@ -160,7 +190,40 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Successful");
+                //------------------ noti -------------------
+
+                var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
+                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+
+                string message = user.FirstName + " " + user.LastName + " liked your comment";
+                var notification = new Notification
+                {
+                    UserId = comment.UserId,
+                    Message = message,
+                };
+                await _notificationService.PostNotification(notification);
+
+                await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
+
+                var notiResponse = _mapper.Map<NotificationResponse>(notification);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = userImageBytes,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
+
+                //-------------------- end noti --------------------
+                return Ok(notiResponse);
             }
 
         }

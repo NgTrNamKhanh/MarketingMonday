@@ -36,6 +36,9 @@ namespace Comp1640_Final.Mapper
             CreateMap<CommentInteractDTO, Dislike>();
             CreateMap<Like,InteractResponse>();
             CreateMap<Dislike,InteractResponse>();
+
+            //Notification
+            CreateMap<Notification, NotificationResponse>();
         }
     }
 }
