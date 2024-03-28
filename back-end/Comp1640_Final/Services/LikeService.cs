@@ -1,5 +1,7 @@
 ﻿using Comp1640_Final.Data;
+using Comp1640_Final.Hubs;
 using Comp1640_Final.Models;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Services
@@ -18,15 +20,19 @@ namespace Comp1640_Final.Services
         Task<int> GetCommentLikesCount(Guid commentId);
         Task<bool> Save();
         Task<bool> DeleteLike(Like like);
+
+        //Task NotifyUser(string userId, string message);
     }
 
     public class LikeService : ILikeService
     {
         private readonly ProjectDbContext _context;
+        //private readonly IHubContext<NotificationHub> _hubContext;
 
         public LikeService(ProjectDbContext context)
         {
             _context = context;
+            //_hubContext = hubContext;
         }
 
         public async Task<bool> DeleteLike(Like like)
@@ -81,5 +87,10 @@ namespace Comp1640_Final.Services
             var saved = await _context.SaveChangesAsync();
             return saved > 0 ? true : false;
         }
+
+        //public async Task NotifyUser(string userId, string message)
+        //{
+        //    await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+        //}
     }
 }

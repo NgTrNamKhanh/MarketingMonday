@@ -2,10 +2,14 @@
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO.Request;
 using Comp1640_Final.DTO.Response;
+using Comp1640_Final.Hubs;
+using Comp1640_Final.Migrations;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Comp1640_Final.Controllers
@@ -20,13 +24,17 @@ namespace Comp1640_Final.Controllers
         private readonly IDislikeService _dislikeService;
         private readonly IAritcleService _aritcleService;
         private readonly ICommentService _commentService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public LikesController(ProjectDbContext context, 
             IMapper mapper,
             ILikeService likeService, 
             IAritcleService aritcleService,
             IDislikeService dislikeService,
-            ICommentService commentService)
+            ICommentService commentService,
+            UserManager<ApplicationUser> userManager,
+            IHubContext<NotificationHub> hubContext)
         {
             _context = context;
             _mapper = mapper;
@@ -34,6 +42,8 @@ namespace Comp1640_Final.Controllers
             _dislikeService = dislikeService;
             _aritcleService = aritcleService;
             _commentService = commentService;
+            _userManager = userManager;
+            _hubContext = hubContext;
         }
         //[HttpGet("count/article/{articleId}")]
         //public async Task<IActionResult> GetArticleLikesCount(Guid articleId)
@@ -99,15 +109,11 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Existing like deleted successfully.");
             }
-            //var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(likeDto.ArticleId, likeDto.UserId);
-            //if (existingDislike != null)
-            //{
-            //    var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
-            //    if (!deleteDislikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing dislike.");
-            //    }
-            //}
+            var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
+            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
+            await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification",
+    user.FirstName + " " + user.LastName + " liked your post");
+            //await NotifyUser(article.StudentId, user.FirstName + " " + user.LastName + " liked your post");
 
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
@@ -137,16 +143,13 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Existing like deleted successfully.");
             }
-            //var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(likeDto.CommentId, likeDto.UserId);
+            var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
+            //var userComment = await _userManager.FindByIdAsync(comment.UserId); //tìm user của comment đó
+            var user =  await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+            await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", 
+                user.FirstName + " " + user.LastName + " liked your post");
+            //await NotifyUser(comment.UserId, user.FirstName + " " + user.LastName + " liked your post");
 
-            //if (existingDislike != null)
-            //{
-            //    var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
-            //    if (!deleteDislikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing dislike.");
-            //    }
-            //}
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
             like.Date = DateTime.Now;
@@ -180,5 +183,11 @@ namespace Comp1640_Final.Controllers
                 return Ok("Successful");
             }
         }
+
+        //public async Task NotifyUser(string userId, string message)
+        //{
+        //    await _hubContext.Clients.User(userId).SendAsync("ReceiveNotification", message);
+        //}
+
     }
 }
