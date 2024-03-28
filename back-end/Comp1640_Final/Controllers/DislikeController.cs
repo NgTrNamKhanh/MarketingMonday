@@ -2,10 +2,14 @@
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO.Request;
 using Comp1640_Final.DTO.Response;
+using Comp1640_Final.Hubs;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Permissions;
 
@@ -21,13 +25,23 @@ namespace Comp1640_Final.Controllers
         private readonly IAritcleService _aritcleService;
         private readonly ILikeService _likeService;
         private readonly ICommentService _commentService;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly INotificationService _notificationService;
+        private readonly IUserService _userService;
+        private static IWebHostEnvironment _webHostEnvironment;
 
         public DislikeController(ProjectDbContext context, 
             IMapper mapper, 
             IDislikeService dislikeService,
             IAritcleService aritcleService, 
             ILikeService likeService,
-            ICommentService commentService)
+            ICommentService commentService,
+            UserManager<ApplicationUser> userManager,
+            IHubContext<NotificationHub> hubContext,
+            INotificationService notificationService,
+            IUserService userService,
+            IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _mapper = mapper;
@@ -35,6 +49,11 @@ namespace Comp1640_Final.Controllers
             _aritcleService = aritcleService;
             _likeService = likeService;
             _commentService = commentService;
+            _userManager = userManager;
+            _hubContext = hubContext;
+            _notificationService = notificationService;
+            _userService = userService;
+            _webHostEnvironment = webHostEnvironment;
         }
         //[HttpGet("count/article/{articleId}")]
         //public async Task<IActionResult> GetArticleDislikesCount(Guid articleId)
@@ -99,15 +118,6 @@ namespace Comp1640_Final.Controllers
                 }
                 return Ok("Dislike deleted successfully.");
             }
-            //var existingLike = await _likeService.GetLikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId);
-            //if (existingLike != null)
-            //{
-            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-            //    if (!deleteLikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing like.");
-            //    }
-            //}
             var dislike = _mapper.Map<Dislike>(dislikeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;
@@ -119,7 +129,37 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Successful");
+                //---------------- noti -----------------
+
+                var article = _aritcleService.GetArticleByID(dislikeDto.ArticleId); //tìm article được tương tác
+                var user = await _userManager.FindByIdAsync(dislikeDto.UserId); // tìm thằng tương tác với article đó
+                string message = user.FirstName + " " + user.LastName + " disliked your post";
+                var notification = new Notification
+                {
+                    UserId = article.StudentId,
+                    Message = message,
+                };
+                await _notificationService.PostNotification(notification);
+                await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
+
+                var notiResponse = _mapper.Map<NotificationResponse>(notification);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = userImageBytes,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
+                //---------------- end noti -----------------
+                return Ok(notiResponse);
             }
 
         }
@@ -138,15 +178,6 @@ namespace Comp1640_Final.Controllers
                 return Ok("Existing dislike deleted successfully.");
             }
 
-            //var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
-            //if (existingLike != null)
-            //{
-            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-            //    if (!deleteLikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing like.");
-            //    }
-            //}
             var dislike = _mapper.Map<Dislike>(likeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;
@@ -157,7 +188,40 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-                return Ok("Successful");
+                //------------------ noti -------------------
+
+                var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
+                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+
+                string message = user.FirstName + " " + user.LastName + " disliked your comment";
+                var notification = new Notification
+                {
+                    UserId = comment.UserId,
+                    Message = message,
+                };
+                await _notificationService.PostNotification(notification);
+
+                await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
+
+                var notiResponse = _mapper.Map<NotificationResponse>(notification);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = userImageBytes,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
+
+                //-------------------- end noti --------------------
+                return Ok(notiResponse);
             }
         }
         [HttpDelete("{id}")]
