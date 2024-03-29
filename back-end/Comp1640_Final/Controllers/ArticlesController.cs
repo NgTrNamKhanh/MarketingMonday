@@ -559,6 +559,43 @@ namespace Comp1640_Final.Controllers
                 }
             }
 
+            if (articleUpdate.ImageFiles.Count > 0)
+            {
+                try
+                {
+                    // Delete old images from Cloudinary
+                    if (!string.IsNullOrEmpty(article.CloudImagePath))
+                    {
+                        var oldImagePaths = article.CloudImagePath.Split(';');
+                        foreach (var oldImagePath in oldImagePaths)
+                        {
+                            // Delete old image from Cloudinary
+                            var publicId = _articleService.GetPublicIdFromImageUrl(oldImagePath);
+                            await _cloudinary.DeleteResourcesAsync(publicId);
+                        }
+                    }
+                    // Save new images to Cloudinary
+                    var uploadResults = new List<ImageUploadResult>();
+                    foreach (var file in articleUpdate.ImageFiles)
+                    {
+                        var uploadParams = new ImageUploadParams
+                        {
+                            File = new FileDescription(file.FileName, file.OpenReadStream())
+                        };
+                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                        uploadResults.Add(uploadResult);
+                    }
+
+                    // Update article with new image URLs
+                    var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
+                    articleMap.CloudImagePath = string.Join(";", imageUrls);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.ToString());
+                }
+            }
+
             if (article != null)
             {
                 _context.Entry(article).State = EntityState.Detached;
@@ -629,7 +666,7 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpDelete("{articleId}")]
-        public IActionResult DeleteArticle(Guid articleId)
+        public async Task<IActionResult> DeleteArticle(Guid articleId)
         {
             if (!_articleService.ArticleExists(articleId))
             {
@@ -647,6 +684,25 @@ namespace Comp1640_Final.Controllers
             if (Directory.Exists(docsDirectory))
             {
                 Directory.Delete(docsDirectory, true);
+            }
+
+            if (!string.IsNullOrEmpty(articleToDelete.CloudImagePath))
+            {
+                try
+                {
+                    var imageUrls = articleToDelete.CloudImagePath.Split(';');
+                    foreach (var imageUrl in imageUrls)
+                    {
+                        // Extract public ID from Cloudinary image URL
+                        var publicId = _articleService.GetPublicIdFromImageUrl(imageUrl);
+                        // Delete image from Cloudinary
+                        await _cloudinary.DeleteResourcesAsync(publicId);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
 
             if (!_articleService.DeleteArticle(articleToDelete))
