@@ -336,9 +336,40 @@ namespace Comp1640_Final.Controllers
             }
 
             var comment = await _context.Comments.FindAsync(id);
-            //var comments = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
-            var result = await _commentService.DeleteComment(comment);
+            var replies = await _commentService.GetReplies(id);
+            var result1 = new bool();
+            if (replies != null && replies.Count >0)
+            {
+                foreach (var reply in replies)
+                {
+                    result1 = await _commentService.DeleteComment(reply);
+                }
+                //var comments = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
 
+                if (!result1)
+                {
+                    return BadRequest("Failed");
+                }
+                else
+                {
+                    var result = await _commentService.DeleteComment(comment);
+                    if (!result)
+                    {
+                        return BadRequest("Failed");
+                    }
+                    return Ok("Delete successful");
+                }
+            }
+            else
+            {
+                var result2 = await _commentService.DeleteComment(comment);
+                if (!result2)
+                {
+                    return BadRequest("Failed");
+                }
+                return Ok("Delete successful");
+            }
+            
             //foreach (CommentDTO c in comments)
             //{
             //    if (c.ParentCommentId == id) 
@@ -354,11 +385,7 @@ namespace Comp1640_Final.Controllers
             //}
 
 
-            if (!result)
-            {
-                return BadRequest("Failed");
-            }
-            return  Ok("Delete successful");
+
         }
     }
 }
