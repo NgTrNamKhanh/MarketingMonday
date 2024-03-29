@@ -30,6 +30,7 @@
         public string StudentName { get; set; }
         public int PublishStatusId { get; set; }
         public string CloudImagePath { get; set; }
+        public string CloudDocPath { get; set; }
 
         public string CoordinatorComment { get; set; }
 

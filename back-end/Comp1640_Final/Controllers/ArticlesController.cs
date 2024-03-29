@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
+using Comp1640_Final.Migrations;
 
 namespace Comp1640_Final.Controllers
 {
@@ -411,6 +412,7 @@ namespace Comp1640_Final.Controllers
             articleMap.PublishStatusId = (int)EPublishStatus.Pending;
             articleMap.UploadDate = DateTime.Now;
 
+            #region save image and file
             if (articleAdd.ImageFiles.Count > 0)
             {
                 try
@@ -453,11 +455,17 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
+            #endregion save image and file
 
             if (articleAdd.ImageFiles.Count > 0)
             {
                 try
                 {
+                    if (!_articleService.IsValidImageFile(articleAdd.ImageFiles))
+                    {
+                        return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
+                    }
+
                     var uploadResults = new List<ImageUploadResult>();
                     foreach (var file in articleAdd.ImageFiles)
                     {
@@ -475,6 +483,31 @@ namespace Comp1640_Final.Controllers
                 catch (Exception ex)
                 {
                     return BadRequest(ex.Message);
+                }
+            }
+
+            if (articleAdd.DocFiles.Length > 0)
+            {
+                try
+                {
+                    if (!_articleService.IsValidDocFile(articleAdd.DocFiles))
+                    {
+                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
+                    }
+
+                    // Save new files to Cloudinary
+                    var uploadParams = new RawUploadParams
+                    {
+                        File = new FileDescription(articleAdd.DocFiles.FileName, articleAdd.DocFiles.OpenReadStream())
+                    };
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                    // Update article with new file URLs
+                    articleMap.CloudDocPath = uploadResult.Url.ToString();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.ToString());
                 }
             }
 
@@ -503,6 +536,7 @@ namespace Comp1640_Final.Controllers
             articleMap.UploadDate = DateTime.Now;
             var article = _articleService.GetArticleByID(articleMap.Id);
 
+            #region save image and file
             if (articleUpdate.ImageFiles.Count > 0)
             {
                 try
@@ -558,11 +592,17 @@ namespace Comp1640_Final.Controllers
                     return BadRequest(ex.ToString());
                 }
             }
+            #endregion save image and file
 
             if (articleUpdate.ImageFiles.Count > 0)
             {
                 try
                 {
+                    if (!_articleService.IsValidImageFile(articleUpdate.ImageFiles))
+                    {
+                        return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
+                    }
+
                     // Delete old images from Cloudinary
                     if (!string.IsNullOrEmpty(article.CloudImagePath))
                     {
@@ -589,6 +629,38 @@ namespace Comp1640_Final.Controllers
                     // Update article with new image URLs
                     var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
                     articleMap.CloudImagePath = string.Join(";", imageUrls);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.ToString());
+                }
+            }
+
+            if (articleUpdate.DocFiles.Length > 0)
+            {
+                try
+                {
+                    if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
+                    {
+                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
+                    }
+
+                    // Delete old images from Cloudinary
+                    if (!string.IsNullOrEmpty(article.CloudDocPath))
+                    {
+                        var publicDocId = _articleService.GetPublicIdFromDocUrl(article.CloudDocPath);
+                        await _cloudinary.DeleteResourcesAsync(publicDocId);
+                    }
+
+                    // Save new files to Cloudinary
+                    var uploadParams = new RawUploadParams
+                    {
+                        File = new FileDescription(articleUpdate.DocFiles.FileName, articleUpdate.DocFiles.OpenReadStream())
+                    };
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                    // Update article with new file URLs
+                    articleMap.CloudDocPath = uploadResult.Url.ToString();
                 }
                 catch (Exception ex)
                 {
@@ -698,6 +770,18 @@ namespace Comp1640_Final.Controllers
                         // Delete image from Cloudinary
                         await _cloudinary.DeleteResourcesAsync(publicId);
                     }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            if (!string.IsNullOrEmpty(articleToDelete.CloudDocPath))
+            {
+                try
+                {
+                    var publicId = _articleService.GetPublicIdFromDocUrl(articleToDelete.CloudDocPath);
+                    await _cloudinary.DeleteResourcesAsync(publicId);
                 }
                 catch (Exception ex)
                 {

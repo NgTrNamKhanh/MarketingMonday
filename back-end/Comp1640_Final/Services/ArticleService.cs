@@ -29,6 +29,7 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<byte[]>> GetImagesByArticleId(Guid articleId);
         bool Save();
         string GetPublicIdFromImageUrl(string imageUrl);
+        string GetPublicIdFromDocUrl(string docUrl);
 
     }
     public class AritcleService : IAritcleService
@@ -262,5 +263,14 @@ namespace Comp1640_Final.Services
             return publicId;
         }
 
+        public string GetPublicIdFromDocUrl(string docUrl)
+        {
+            // Example: https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}
+            // Extract public ID from the URL
+            var segments = docUrl.Split('/');
+            var publicIdWithExtension = segments[segments.Length - 1]; // Get the last segment (filename with extension)
+            var publicId = publicIdWithExtension.Substring(0, publicIdWithExtension.LastIndexOf('.')); // Remove the file extension
+            return publicId;
+        }
     }
 }

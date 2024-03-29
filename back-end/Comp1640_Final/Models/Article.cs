@@ -18,6 +18,7 @@ namespace Comp1640_Final.Models
         public List<IFormFile> ImageFiles {  get; set; } 
         public string? ImagePath { get; set; }
         public string? CloudImagePath { get; set; }
+        public string? CloudDocPath { get; set; }
 
         [NotMapped]
         public IFormFile DocFiles { get; set; }
