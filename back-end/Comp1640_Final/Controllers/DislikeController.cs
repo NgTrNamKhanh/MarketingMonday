@@ -137,6 +137,7 @@ namespace Comp1640_Final.Controllers
                 var notification = new Notification
                 {
                     UserId = article.StudentId,
+                    UserInteractionId = dislikeDto.UserId,
                     Message = message,
                 };
                 await _notificationService.PostNotification(notification);
@@ -197,6 +198,7 @@ namespace Comp1640_Final.Controllers
                 var notification = new Notification
                 {
                     UserId = comment.UserId,
+                    UserInteractionId = likeDto.UserId,
                     Message = message,
                 };
                 await _notificationService.PostNotification(notification);

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Comp1640_Final.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20240328094438_notification")]
+    [Migration("20240329085954_notification")]
     partial class notification
     {
         /// <inheritdoc />
@@ -324,9 +324,15 @@ namespace Comp1640_Final.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("UserInteractionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserInteractionId");
 
                     b.ToTable("Notifications");
                 });
@@ -605,7 +611,15 @@ namespace Comp1640_Final.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Comp1640_Final.Models.ApplicationUser", "UserInteraction")
+                        .WithMany()
+                        .HasForeignKey("UserInteractionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("User");
+
+                    b.Navigation("UserInteraction");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

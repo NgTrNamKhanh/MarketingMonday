@@ -58,30 +58,30 @@ namespace Comp1640_Final.Controllers
             {
                 return BadRequest("Not found any notification");
             }
-            var notiResponses = _mapper.Map<List<NotificationResponse>>(notifications);
+            var notiResponses = new List<NotificationResponse>();
 
-            //foreach (var notification in notifications)
-            //{
-            //    var notiResponse = _mapper.Map<NotificationResponse>(notification);
-            //    var user = await _userManager.FindByIdAsync(userId);
-            //    var userImageBytes = await _userService.GetImagesByUserId(userId);
+            foreach (var notification in notifications)
+            {
+                var notiResponse = _mapper.Map<NotificationResponse>(notification);
+                var user = await _userManager.FindByIdAsync(notification.UserInteractionId);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
 
-            //    if (userImageBytes == null)
-            //    {
-            //        var defaultImageFileName = "default-avatar.jpg";
-            //        var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-            //        userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-            //        UserNoti userNoti = new UserNoti
-            //        {
-            //            Id = user.Id,
-            //            UserAvatar = userImageBytes,
-            //            FirstName = user.FirstName,
-            //            LastName = user.LastName
-            //        };
-            //        notiResponse.UserNoti = userNoti;
-            //        notiResponses.Add(notiResponse);
-            //    }
-            //}
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    UserNoti userNoti = new UserNoti
+                    {
+                        Id = user.Id,
+                        UserAvatar = userImageBytes,
+                        FirstName = user.FirstName,
+                        LastName = user.LastName
+                    };
+                    notiResponse.UserNoti = userNoti;
+                    notiResponses.Add(notiResponse);
+                }
+            }
             return Ok(notiResponses);
         }
 

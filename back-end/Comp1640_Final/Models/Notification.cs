@@ -12,6 +12,9 @@ namespace Comp1640_Final.Models
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 
+        public string UserInteractionId { get; set; }
+        [ForeignKey("UserInteractionId")]
+        public ApplicationUser UserInteraction { get; set; }
         public string Message { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

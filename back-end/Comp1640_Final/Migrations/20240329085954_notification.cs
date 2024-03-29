@@ -18,6 +18,7 @@ namespace Comp1640_Final.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    UserInteractionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -30,12 +31,23 @@ namespace Comp1640_Final.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Notifications_AspNetUsers_UserInteractionId",
+                        column: x => x.UserInteractionId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notifications_UserId",
                 table: "Notifications",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Notifications_UserInteractionId",
+                table: "Notifications",
+                column: "UserInteractionId");
         }
 
         /// <inheritdoc />
