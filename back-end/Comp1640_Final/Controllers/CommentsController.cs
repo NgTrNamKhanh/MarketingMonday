@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 
 namespace Comp1640_Final.Controllers
@@ -327,65 +328,93 @@ namespace Comp1640_Final.Controllers
                 return Ok(commentResponse);
             }
         }
-        [HttpDelete()]
-        public async Task<ActionResult> DeleteComment(Guid id)
-        {
-            if (!_commentService.CommentExists(id))
-            {
-                return NotFound();
-            }
 
-            var comment = await _context.Comments.FindAsync(id);
-            var replies = await _commentService.GetReplies(id);
-            var result1 = new bool();
-            if (replies != null && replies.Count >0)
+        //public async Task<ActionResult> DeleteComment(Guid id)
+        //{
+        //    if (!_commentService.CommentExists(id))
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var comment = await _context.Comments.FindAsync(id);
+        //    var replies = await _commentService.GetReplies(id);
+        //    var result1 = new bool();
+        //    if (replies != null && replies.Count >0)
+        //    {
+        //        foreach (var reply in replies)
+        //        {
+        //            result1 = await _commentService.DeleteComment(reply);
+        //        }
+        //        //var comments = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
+
+        //        if (!result1)
+        //        {
+        //            return BadRequest("Failed");
+        //        }
+        //        else
+        //        {
+        //            var result = await _commentService.DeleteComment(comment);
+        //            if (!result)
+        //            {
+        //                return BadRequest("Failed");
+        //            }
+        //            return Ok("Delete successful");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        var result2 = await _commentService.DeleteComment(comment);
+        //        if (!result2)
+        //        {
+        //            return BadRequest("Failed");
+        //        }
+        //        return Ok("Delete successful");
+        //    }
+
+        //}
+
+        [HttpDelete()]
+        public async Task<ActionResult> DeleteComment(Guid commentId)
+        {
+            //hàm đệ quy để xoá comment và tất cả các reply
+            async Task DeleteCommentAndReplies(Guid id)
             {
+                var replies = await _commentService.GetReplies(id);
+
                 foreach (var reply in replies)
                 {
-                    result1 = await _commentService.DeleteComment(reply);
-                }
-                //var comments = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
-
-                if (!result1)
-                {
-                    return BadRequest("Failed");
-                }
-                else
-                {
-                    var result = await _commentService.DeleteComment(comment);
-                    if (!result)
-                    {
-                        return BadRequest("Failed");
-                    }
-                    return Ok("Delete successful");
+                    await DeleteCommentAndReplies(reply.Id); //gọi đệ quy
+                    //delete likes và dislike của reply
+                    var likesOfReply = await _likeService.GetCommentLikes(reply.Id);
+                    var dislikesOfReply = await _dislikeService.GetCommentDislikes(reply.Id);
+                    _context.Likes.RemoveRange(likesOfReply); 
+                    _context.Dislikes.RemoveRange(dislikesOfReply);
+                    //delete reply
+                    _context.Comments.Remove(reply); 
                 }
             }
-            else
+
+            //delete likes và dislike của comment gốc
+            var likesOfComment = await _likeService.GetCommentLikes(commentId);
+            var dislikesOfComment = await _dislikeService.GetCommentDislikes(commentId);
+            _context.Likes.RemoveRange(likesOfComment);
+            _context.Dislikes.RemoveRange(dislikesOfComment);
+
+            //xoá comment gốc
+            var commentToDelete = _commentService.GetCommentById(commentId);
+            if (commentToDelete != null)
             {
-                var result2 = await _commentService.DeleteComment(comment);
-                if (!result2)
-                {
-                    return BadRequest("Failed");
-                }
-                return Ok("Delete successful");
+                await DeleteCommentAndReplies(commentId); //xoá tất cả replies, likes và dislikes liên quan
+                _context.Comments.Remove(commentToDelete); //xoá comment gốc
             }
-            
-            //foreach (CommentDTO c in comments)
-            //{
-            //    if (c.ParentCommentId == id) 
-            //    {
-            //        var reply = await _context.Comments.FindAsync(c.Id);
-            //        var result1 = await _commentService.DeleteComment(reply);
-            //        if (!result1 && !result)
-            //        {
-            //            return BadRequest("Failed");
-            //        }
-            //        return Ok("Successful");
-            //    }
-            //}
 
-
-
+            var result = await _commentService.Save(); //save vào db
+            if (!result)
+            {
+                return BadRequest("Failed");
+            }
+            return Ok("Delete successful");
         }
+
     }
 }
