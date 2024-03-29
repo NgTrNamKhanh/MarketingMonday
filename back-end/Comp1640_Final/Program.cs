@@ -12,6 +12,10 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using dotenv.net;
+using Comp1640_Final.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +24,14 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ProjectDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+var configuration = builder.Configuration;
+var cloudinaryAccount = configuration.GetSection("Cloudinary").Get<CloudinarySettings>();
+var cloudinary = new Cloudinary(new CloudinaryDotNet.Account(
+    cloudinaryAccount.CloudName,
+    cloudinaryAccount.ApiKey,
+    cloudinaryAccount.ApiSecret));
+builder.Services.AddSingleton(cloudinary);
 
 //builder.Services.AddTransient<IEmailSender, EmailSender>();
 

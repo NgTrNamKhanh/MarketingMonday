@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO.Request;
 using Comp1640_Final.DTO.Response;
@@ -26,6 +28,7 @@ namespace Comp1640_Final.Controllers
         private readonly ILikeService _likeService;
         private readonly IDislikeService _dislikeService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly Cloudinary _cloudinary;
 
         public ArticlesController(IAritcleService articleService,
             IMapper mapper,
@@ -36,6 +39,7 @@ namespace Comp1640_Final.Controllers
             ICommentService commentService,
             ILikeService likeService,
             IDislikeService dislikeService,
+            Cloudinary cloudinary,
             IHttpContextAccessor httpContextAccessor)
         {
             _articleService = articleService;
@@ -47,6 +51,7 @@ namespace Comp1640_Final.Controllers
             _commentService = commentService;
             _likeService = likeService;
             _dislikeService = dislikeService;
+            _cloudinary = cloudinary;
             _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
@@ -431,7 +436,6 @@ namespace Comp1640_Final.Controllers
                 }
             }
 
-
             if (articleAdd.DocFiles.Length > 0)
             {
                 try
@@ -447,6 +451,30 @@ namespace Comp1640_Final.Controllers
                 catch (Exception ex)
                 {
                     return BadRequest(ex.ToString());
+                }
+            }
+
+            if (articleAdd.ImageFiles.Count > 0)
+            {
+                try
+                {
+                    var uploadResults = new List<ImageUploadResult>();
+                    foreach (var file in articleAdd.ImageFiles)
+                    {
+                        var uploadParams = new ImageUploadParams
+                        {
+                            File = new FileDescription(file.FileName, file.OpenReadStream())
+                        };
+                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                        uploadResults.Add(uploadResult);
+                    }
+
+                    var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
+                    articleMap.CloudImagePath = string.Join(";", imageUrls);
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
                 }
             }
 
