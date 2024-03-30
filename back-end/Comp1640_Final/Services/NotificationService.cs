@@ -9,7 +9,8 @@ namespace Comp1640_Final.Services
     {
         Task<bool> PostNotification(Notification notification);
         Task<ICollection<Notification>> GetNotifications(string userId);
-
+        Task<Notification> GetNotiByUserAndMessage(string userId, string message);
+        Task<bool> DeleteNoti(Notification notification);
         Task<bool> Save();
 
     }
@@ -21,6 +22,17 @@ namespace Comp1640_Final.Services
         public NotificationService(ProjectDbContext context)
         {
             _context = context;
+        }
+
+        public async Task<bool> DeleteNoti(Notification notification)
+        {
+            _context.Remove(notification);
+            return await Save();
+        }
+
+        public async Task<Notification> GetNotiByUserAndMessage(string userId, string message)
+        {
+            return await _context.Notifications.Where(n => n.UserId == userId).Where(n => n.Message == message).FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Notification>> GetNotifications(string userId)

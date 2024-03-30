@@ -109,17 +109,39 @@ namespace Comp1640_Final.Controllers
         public async Task<ActionResult<Like>> PostArticleLike( ArticleInteractDTO likeDto)
         {
             var existingLike = await _likeService.GetLikeByArticleAndUser(likeDto.ArticleId, likeDto.UserId);
+            //for noti
+            var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
+            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
 
             if (existingLike != null)
             {
                 var deleteLikeResult = await _likeService.DeleteLike(existingLike);
+                string message = user.FirstName + " " + user.LastName + " liked your post: " + article.Title;
+                var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                    return Ok("Successful");
+                }
                 if (!deleteLikeResult)
                 {
                     return BadRequest("Error deleting existing like.");
                 }
                 return Ok("Existing like deleted successfully.");
             }
-
+            //var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(likeDto.ArticleId, likeDto.UserId);
+            //if (existingDislike != null)
+            //{
+            //    var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
+            //    if (!deleteDislikeResult)
+            //    {
+            //        return BadRequest("Error deleting existing dislike.");
+            //    }
+            //}
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
             like.Date = DateTime.Now;
@@ -133,9 +155,8 @@ namespace Comp1640_Final.Controllers
             {
                 //---------------- noti -----------------
 
-                var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
-                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
-                string message = user.FirstName + " " + user.LastName + " liked your post";
+
+                string message = user.FirstName + " " + user.LastName + " liked your post: " + article.Title;
                 var notification = new Notification
                 {
                     UserId = article.StudentId,
@@ -169,18 +190,39 @@ namespace Comp1640_Final.Controllers
         public async Task<ActionResult<Like>> PostCommentLike(CommentInteractDTO likeDto)
         {
             var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
+            //for notification
+            var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
+            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
 
             if (existingLike != null)
             {
                 var deleteLikeResult = await _likeService.DeleteLike(existingLike);
+                string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content;
+                var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                    return Ok("Successful");
+                }
                 if (!deleteLikeResult)
                 {
                     return BadRequest("Error deleting existing like.");
                 }
                 return Ok("Existing like deleted successfully.");
             }
-           
-
+            //var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(likeDto.CommentId, likeDto.UserId);
+            //if (existingDislike != null)
+            //{
+            //    var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
+            //    if (!deleteDislikeResult)
+            //    {
+            //        return BadRequest("Error deleting existing dislike.");
+            //    }
+            //}
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
             like.Date = DateTime.Now;
@@ -193,10 +235,7 @@ namespace Comp1640_Final.Controllers
             {
                 //------------------ noti -------------------
 
-                var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
-                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
-
-                string message = user.FirstName + " " + user.LastName + " liked your comment";
+                string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content ;
                 var notification = new Notification
                 {
                     UserId = comment.UserId,
