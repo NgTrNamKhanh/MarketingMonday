@@ -51,7 +51,7 @@ namespace Comp1640_Final.Models
 
         public string Email { get; set; }
 
-        public string Password { get; set; }
+        public string? Password { get; set; }
 
         public string Role { get; set; }
         public int FacultyId { get; set; }

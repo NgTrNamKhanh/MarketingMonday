@@ -109,6 +109,7 @@ namespace Comp1640_Final.Controllers
                     return BadRequest("Failed to reset password");
                 }
             }
+
             user.Email = account.Email;
             user.PhoneNumber = account.PhoneNumber;
             user.UserName = account.Email;

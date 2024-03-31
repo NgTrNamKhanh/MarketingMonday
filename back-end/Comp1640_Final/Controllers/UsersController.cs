@@ -104,5 +104,19 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully changed");
         }
+
+        [HttpPut("changePassword")]
+        public async Task<IActionResult> PutAccount(string email, string password)
+        {
+            //name = account.Email;
+            var user = await _userManager.FindByEmailAsync(email);
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, password);
+            if (result.Succeeded)
+            {
+                return Ok("Successful");
+            }
+            return BadRequest("Failed");
+        }
     }
 }
