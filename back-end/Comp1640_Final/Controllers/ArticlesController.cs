@@ -83,6 +83,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -118,6 +120,8 @@ namespace Comp1640_Final.Controllers
             articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
             articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
             articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+            articleDTO.ViewCount = article.ViewCount;
+            articleDTO.IsViewed = article.ViewCount >= 1;
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -155,6 +159,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -194,6 +200,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -231,6 +239,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -267,6 +277,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
@@ -305,6 +317,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -344,6 +358,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -796,6 +812,33 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully delete article");
         }
+
+        [HttpPost("countView/{articleId}")]
+        public async Task<IActionResult> CountArticleView(Guid articleId)
+        {
+            var article = _articleService.GetArticleByID(articleId);
+
+            if (article == null)
+            {
+                return NotFound(); 
+            }
+
+            try
+            {
+                // Increment the view count of the article
+                article.ViewCount++;
+
+                // Update the article in the database with the incremented view count
+                await _articleService.UpdateArticle(article);
+
+                return Ok("Article view count incremented successfully.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the view count of the article: {ex.Message}");
+            }
+        }
+
         //private async Task<string> GetUserId()
         //{
         //    var principal = _httpContextAccessor.HttpContext.User;

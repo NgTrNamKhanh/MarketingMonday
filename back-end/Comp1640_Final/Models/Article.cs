@@ -13,6 +13,7 @@ namespace Comp1640_Final.Models
         public string? CoordinatorComment { get; set; }
         public DateTime UploadDate { get; set; }
         public int PublishStatusId { get; set; }
+        public int ViewCount { get; set; }
 
         [NotMapped]
         public List<IFormFile> ImageFiles {  get; set; } 
