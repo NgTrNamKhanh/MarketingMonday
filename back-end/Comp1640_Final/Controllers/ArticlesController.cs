@@ -94,6 +94,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -129,6 +131,8 @@ namespace Comp1640_Final.Controllers
             articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
             articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
             articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+            articleDTO.ViewCount = article.ViewCount;
+            articleDTO.IsViewed = article.ViewCount >= 1;
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
@@ -166,6 +170,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -205,6 +211,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -242,6 +250,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
@@ -278,6 +288,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
@@ -316,6 +328,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
@@ -355,6 +369,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
                 articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.ImageBytes = imageBytes.ToList();
@@ -806,151 +822,6 @@ namespace Comp1640_Final.Controllers
             }
 
             return Ok("Successfully delete article");
-        }
-        [HttpPost("download")]
-        public async Task<IActionResult> DownloadSubmission([FromBody] DownloadArticleDTO downloadArticle)
-        {
-            // Create a memory stream to hold the generated Word document
-            using (MemoryStream stream = new MemoryStream())
-            {
-                // Create a WordprocessingDocument
-                using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
-                {
-                    // Add a main document part
-                    MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
-
-                    // Create the Document tree
-                    mainPart.Document = new Document();
-                    Body body = mainPart.Document.AppendChild(new Body());
-
-                    // Add student name to the Word document
-                    Paragraph studentNameParagraph = body.AppendChild(new Paragraph());
-                    Run studentNameRun = studentNameParagraph.AppendChild(new Run());
-                    studentNameRun.AppendChild(new Text(downloadArticle.StudentName));
-
-                    // Add content to the Word document
-                    Paragraph titleParagraph = body.AppendChild(new Paragraph());
-                    Run titleRun = titleParagraph.AppendChild(new Run());
-                    titleRun.AppendChild(new Text(downloadArticle.Title));
-
-                    Paragraph descriptionParagraph = body.AppendChild(new Paragraph());
-                    Run descriptionRun = descriptionParagraph.AppendChild(new Run());
-                    descriptionRun.AppendChild(new Text(downloadArticle.Description));
-
-                    // Add images to the Word document
-                    foreach (var imageBytes in downloadArticle.ImageFiles)
-                    {
-                        ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
-                        using (MemoryStream imageStream = new MemoryStream(imageBytes))
-                        {
-                            imagePart.FeedData(imageStream);
-                        }
-
-                        AddImageToBody(mainPart.GetIdOfPart(imagePart), body);
-                    }
-
-                    // Save changes to the Word document
-                    wordDocument.Save();
-                }
-
-                // Reset the stream position to start
-                stream.Position = 0;
-
-                // Create a memory stream for the ZIP file
-                using (MemoryStream zipStream = new MemoryStream())
-                {
-                    // Create a ZIP archive
-                    using (ZipArchive zipArchive = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
-                    {
-                        // Add the Word document to the ZIP archive
-                        ZipArchiveEntry entry = zipArchive.CreateEntry("submission.docx");
-                        using (Stream entryStream = entry.Open())
-                        {
-                            stream.CopyTo(entryStream);
-                        }
-
-                        // Add other files to the ZIP archive if needed
-                        // For example, if you have additional files to include, you can add them here
-                        // zipArchive.CreateEntry("filename.txt").Open().Write(...);
-                    }
-
-                    // Reset the stream position to start
-                    zipStream.Position = 0;
-
-                    // Return the ZIP file as a file download
-                    return File(zipStream.ToArray(), "application/zip", "submission.zip");
-                }
-            }
-        }
-
-        private void AddImageToBody(string relationshipId, Body body)
-        {
-            // Define the reference of the image.
-            var element =
-                new Drawing(
-                    new DW.Inline(
-                        new DW.Extent() { Cx = 990000L, Cy = 792000L },
-                        new DW.EffectExtent()
-                        {
-                            LeftEdge = 0L,
-                            TopEdge = 0L,
-                            RightEdge = 0L,
-                            BottomEdge = 0L
-                        },
-                        new DW.DocProperties()
-                        {
-                            Id = (UInt32Value)1U,
-                            Name = "Picture 1"
-                        },
-                        new DW.NonVisualGraphicFrameDrawingProperties(
-                            new A.GraphicFrameLocks() { NoChangeAspect = true }),
-                        new A.Graphic(
-                            new A.GraphicData(
-                                new PIC.Picture(
-                                    new PIC.NonVisualPictureProperties(
-                                        new PIC.NonVisualDrawingProperties()
-                                        {
-                                            Id = (UInt32Value)0U,
-                                            Name = "New Bitmap Image.jpg"
-                                        },
-                                        new PIC.NonVisualPictureDrawingProperties()),
-                                    new PIC.BlipFill(
-                                        new A.Blip(
-                                            new A.BlipExtensionList(
-                                                new A.BlipExtension()
-                                                {
-                                                    Uri =
-                                                        "{28A0092B-C50C-407E-A947-70E740481C1C}"
-                                                })
-                                        )
-                                        {
-                                            Embed = relationshipId,
-                                            CompressionState =
-                                                A.BlipCompressionValues.Print
-                                        },
-                                        new A.Stretch(
-                                            new A.FillRectangle())),
-                                    new PIC.ShapeProperties(
-                                        new A.Transform2D(
-                                            new A.Offset() { X = 0L, Y = 0L },
-                                            new A.Extents() { Cx = 990000L, Cy = 792000L }),
-                                        new A.PresetGeometry(
-                                            new A.AdjustValueList()
-                                        )
-                                        { Preset = A.ShapeTypeValues.Rectangle }))
-                            )
-                            { Uri = "http://schemas.openxmlformats.org/drawingml/2006/picture" })
-                    )
-                    {
-                        DistanceFromTop = (UInt32Value)0U,
-                        DistanceFromBottom = (UInt32Value)0U,
-                        DistanceFromLeft = (UInt32Value)0U,
-                        DistanceFromRight = (UInt32Value)0U,
-                        EditId = "50D07946"
-                    });
-
-            // Append the reference to body, the element should be in a Run.
-            body.AppendChild(new Paragraph(new Run(element)));
         }
         //private async Task<string> GetUserId()
         //{
