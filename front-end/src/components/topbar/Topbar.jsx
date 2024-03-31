@@ -4,11 +4,17 @@ import "./topbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 import Notification from "../notification/Notification";
+import authHeader from "../../services/auth.header";
+import apis from "../../services/apis.service";
+import { ScaleLoader } from "react-spinners";
 
 export default function Topbar({user, setCurrentUser}) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [notificationOpen, setNotificationOpen] = useState(false);
     const [closedByInteraction, setClosedByInteraction] = useState(true);
+    const [notifications, setNotifications] = useState([]);
+    const [loading ,setLoading] = useState()
+    
 
     const navigator = useNavigate();
     const handleDropdownToggle = () => {
@@ -29,6 +35,26 @@ export default function Topbar({user, setCurrentUser}) {
         navigator("/login");
         localStorage.clear();
     }
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            if (user) {
+                try {
+                    const response = await authHeader().get(apis.notification, {params:{userId: user.id}});
+                    if (Array.isArray(response.data)) {
+                        setNotifications(response.data);
+                    } else {
+                        console.error("Unexpected data format for notifications:", response.data);
+                    }
+                } catch (error) {
+                    console.error("Error fetching notifications:", error);
+                }
+            }
+            setLoading(false);
+        };
+        fetchData();
+    }, [user]);
+    
     const optionsRef = useRef(null);
     useEffect(() => {
         function handleClickOutside(event) {
@@ -83,14 +109,18 @@ export default function Topbar({user, setCurrentUser}) {
                                         <span>See all Notifications</span> 
                                     </div>
                                 </Link>
-                                <div className="notificationsWrapper" style={{ fontWeight: "smaller" }}>
-                                    <Notification />
-                                    <Notification />
-                                    <Notification />
-                                    <Notification />
-                                    <Notification />
-                                    <Notification />
-                                </div>
+                                {loading && !notifications ? (
+                                    <ScaleLoader/>
+                                ):(
+                                    <div className="notificationsWrapper" style={{ fontWeight: "smaller" }}>
+                                        {notifications.map(notification => (
+                                            <Notification
+                                                notification = {notification}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
+                                
                             </div>
                         )}
                     <a onClick={handleDropdownToggle}>

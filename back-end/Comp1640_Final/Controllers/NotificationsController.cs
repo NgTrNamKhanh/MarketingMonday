@@ -50,7 +50,7 @@ namespace Comp1640_Final.Controllers
             _notificationService = notificationService;
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet()]
         public async Task<IActionResult> GetNotifications(string userId)
         {
             var notifications = await _notificationService.GetNotifications(userId);

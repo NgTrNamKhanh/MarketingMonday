@@ -8,8 +8,27 @@ import authHeader from '../../services/auth.header';
 import authService from '../../services/auth.service';
 import DeleteConfirm from '../dialogs/deleteConfirm/DeleteConfirm';
 import EditComment from '../dialogs/editCmt/EditComment';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 export default function Post({ post, isProfile, currentUser}) {
+    const [message, setMessage] = useState()
+    const [connection, setConnection] = useState()
+    useEffect(() => {
+        const connect = async ()=>{
+            const connection = new HubConnectionBuilder()
+            .withUrl(apis.normal+"notificationHub")
+            .build();
+            connection.on("ReceiveNotification", (message)=>{
+                console.log(message)
+                setMessage(message)
+            })
+
+            await connection.start();
+            setConnection(connection)
+        }
+        connect()
+    }, []);
+
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',

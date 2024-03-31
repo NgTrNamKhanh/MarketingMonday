@@ -200,7 +200,41 @@ export default function  Submission ({ submission, reFetch }) {
                 return 'orange';
         }
     }
+    const [isDownloading, setIsDownloading] = useState(false);
+    const handleDownload = async () => {
+        setIsDownloading(true);
+        const downloadData = {
+            studentName: submission.studentName,
+            title: submission.title,
+            description: submission.description,
+            imageFiles: submission.imageBytes
+        }
+        try {
+            const response = await authHeader().post(apis.article+"download", downloadData, {
+                responseType: 'blob' // Ensure the response type is set to 'blob' to handle binary data
+            });
 
+            // Create a blob URL from the response data
+            const blob = new Blob([response.data], { type: 'application/zip' });
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a temporary link element to trigger the download
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'submission.zip');
+            document.body.appendChild(link);
+            link.click();
+
+            // Clean up
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error('Error downloading submission:', error);
+            // Handle error
+        } finally {
+            setIsDownloading(false);
+        }
+    };
     return (
         <div className="submission">
             <div className="submissionWrapper">
@@ -243,6 +277,9 @@ export default function  Submission ({ submission, reFetch }) {
                                         <span>Put On Hold</span> 
                             </div>
                             {/* </Link> */}
+                            <div className="submissionDropdownContentItem" onClick={()=>handleDownload()}>
+                                        <span>Download</span> 
+                            </div>
                         </div>
                     )}
                     </div>

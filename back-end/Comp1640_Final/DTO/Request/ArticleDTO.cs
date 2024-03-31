@@ -23,7 +23,14 @@
         public List<IFormFile> ImageFiles { get; set; }
         public IFormFile DocFiles { get; set; }
     }
-
+    public class DownloadArticleDTO
+    {
+        public string StudentName { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public List<byte[]> ImageFiles { get; set; }
+        //public IFormFile DocFiles { get; set; }
+    }
     //public class SubmissionDTO
     //{
     //    public Guid Id { get; set; }

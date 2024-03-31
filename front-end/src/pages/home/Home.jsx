@@ -19,8 +19,29 @@ import Article from "../article/Article";
 import './home.css'
 import { ProtectedRoute } from "../../common/with-router";
 import Unauthorized from "../errors/unauthorized/Unauthorized";
-
+import Notification from "../../services/notification.service";
+import { ToastContainer, toast } from "react-toastify";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import apis from "../../services/apis.service";
 export default function Home() {
+    const [message, setMessage] = useState()
+    const [connection, setConnection] = useState()
+    useEffect(() => {
+        const connect = async ()=>{
+            const connection = new HubConnectionBuilder()
+            .withUrl(apis.normal+"notificationHub")
+            .build();
+            connection.on("ReceiveNotification", (message)=>{
+                setMessage(message)
+            })
+
+            await connection.start();
+            setConnection(connection)
+        }
+        connect()
+    }, []);
+    
+    console.log(message)
     const [isLoading, setIsLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
@@ -40,6 +61,7 @@ export default function Home() {
         <Router> 
             <div>
             {currentUser && <Topbar  setCurrentUser={setCurrentUser} user={currentUser}/>}
+            <ToastContainer />
                 <div className="homeContainer">
                     {currentUser && (
                             <>
@@ -61,7 +83,7 @@ export default function Home() {
                                 element={
                                     currentUser ? (
                                         currentUser.roles.includes('Admin') ? (
-                                            <Navigate to="/dashboard" />
+                                            <Navigate to="/accounts" />
                                         ) : currentUser.roles.includes('Manager') ? (
                                             <Navigate to="/dashboard" />
                                         ) : currentUser.roles.includes('Student') ? (
@@ -88,7 +110,7 @@ export default function Home() {
                             <Route path="/dashboard" element=
                                 {<ProtectedRoute
                                     element={<Dashboard />}
-                                    requiredRoles={['Admin', 'Manager']}
+                                    requiredRoles={['Manager']}
                                 />}  
                             />
                             <Route path="/submission" element=

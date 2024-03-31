@@ -1,44 +1,80 @@
-.profile{
-    display: flex;
-}
-.profileRight{
-    flex: 9;
-}
-.profileCover{
-    height: 320px;
-    position: relative;
-}
-.profileCoverImg{
-    width: 100%;
-    height: 250px;
-    object-fit: cover;
-}
-.profileUserImg{
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    position: absolute;
-    left: 0;
-    right: 0;
-    margin: auto;
-    top: 150px;
-    border: 3px solid white;
-}
-.profileInfo{
+/* profile.css */
+
+.profile {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    padding: 20px;
 }
-.profileInfoName{
-    font-size: 24px;
 
+.profileInformation {
+    width: 100%;
+    display: flex; 
+    justify-content: start;
+    margin-bottom: 20px;
+    margin-left: 100px;
 }
-.profileInfoDesc{
-    font-weight: 300px;
-    
+
+.profileLeft {
+    position: relative;
 }
-.profileRightBottom{
+
+.profileCover {
+    width: 200px; 
+    height: 200px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.profileUserImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profileRight {
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+    justify-content: start;
+    margin-top: 20px;
+    margin-left: 40px;
+}
+
+.profileInfoName {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.profileSubmissions {
+    width: 100%;
+}
+.profileDropdownContent{
+    display: flex;
+    flex-direction: column;
+    position:absolute;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    overflow-y: scroll;
+    max-height: calc(100vh - 50px);
+}
+.profileDropdownContentItem{
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+}
+.dropdownContentItemLink {
+    color: black;
+    margin: 10px 10px;
+    padding: 5px 10px;
+    border-radius: 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdownContentItemLink:hover {
+    background-color: #cbcbcb;
 }

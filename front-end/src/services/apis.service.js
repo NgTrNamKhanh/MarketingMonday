@@ -12,6 +12,7 @@ const apis = {
     comment: "https://localhost:7218/api/comment/",
     like: "https://localhost:7218/api/like/",
     dislike: "https://localhost:7218/api/dislike/",
+    notification: "https://localhost:7218/api/notification/",
 };
 
 export default apis;

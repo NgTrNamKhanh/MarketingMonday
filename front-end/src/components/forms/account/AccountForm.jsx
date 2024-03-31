@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import * as yup from "yup";
 import apis from "../../../services/apis.service";
 import authHeader from "../../../services/auth.header";
+import "./account.css"
 // import authHeader from "../../services/auth-header";
 const initialValues = {
     firstName: "",
@@ -54,8 +55,13 @@ const AccountForm = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
     const isNonMobile = useMediaQuery("(min-width:60vh)");
-
-
+    // const [selectedImage, setSelectedImage] = useState(null);
+    // const handleImageChange = (e) => {
+    //     setSelectedImage(e.target.files[0]);
+    // };
+    // const handleRemovePhoto = () =>{
+    //     setSelectedImage(null)
+    // }
     const userSchema = yup.object().shape({
         firstName: yup.string().required("required"),
         lastName: yup.string().required("required"),
@@ -71,24 +77,23 @@ const AccountForm = ({
     });
 
     const handleSubmit = async (values) => {
-        console.log(role)
-        const accountSubmit = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            email: values.email,
-            phoneNumber: values.phoneNumber,
-            password: values.password,
-            role: role,
-            facultyId: faculty
-        };
-        console.log(accountSubmit);
+        const FormData = require('form-data');
+        const formData = new FormData();
+        formData.append('FirstName', values.firstName);
+        formData.append('LastName', values.lastName);
+        formData.append('Email', values.email);
+        formData.append('PhoneNumber', values.phoneNumber); 
+        formData.append('Password', values.password);
+        formData.append('FacultyId', faculty );
+        formData.append('Role', role);
+        // if(selectedImage){
+        //     formData.append("AvatarImageFile", selectedImage);
+        // }
         try {
-            
             setIsSubmitting(true);
-            
             if(!isEdit){
                 const url = apis.admin+"createAccount";
-                const res = await authHeader().post(url, accountSubmit, {});
+                const res = await authHeader().post(url, formData, {});
                 if (res.status === 200) {
                     const updatedData = await reFetch();
                     localStorage.setItem("accounts", JSON.stringify(updatedData));
@@ -101,7 +106,7 @@ const AccountForm = ({
                 }
             }else{
                 const url = apis.admin+"account"
-                const res = await authHeader().put(url, accountSubmit, {
+                const res = await authHeader().put(url, formData, {
                     params: { userId: account.id },
                     // headers: authHeader(),
                     withCredentials: true,
@@ -155,6 +160,28 @@ const AccountForm = ({
                     "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
                     }}
                 >
+                    {/* <div className="photoInput">
+                        <h2 className="photoInputLabel">Avatar</h2>
+                        {selectedImage && (
+                            <div className="photoInputContainer">
+                                <img src={URL.createObjectURL(selectedImage)} className="photoInputImg"/>
+                                <a href={URL.createObjectURL(selectedImage)} className="photoInputLink" target="_blank" rel="noopener noreferrer">{selectedImage.name}</a>
+                                <button className="removeButton" onClick={() => handleRemovePhoto()}>X</button>
+                            </div>
+                        )}
+                        {!selectedImage && (
+                            <div className="avatar-upload-form">
+                            <input
+                            type="file"
+                            className="avatar-input"
+                            accept="image/*"
+                            onBlur={handleBlur}
+                            onChange={handleImageChange}
+                            sx={{ gridColumn: "span 2" }}
+                            />
+                        </div>
+                        )}
+                    </div> */}
                     <TextField
                     fullWidth
                     variant="filled"

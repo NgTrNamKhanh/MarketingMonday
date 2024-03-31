@@ -1,16 +1,18 @@
 ﻿using AutoMapper;
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO;
+using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace Comp1640_Final.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -94,15 +96,15 @@ namespace Comp1640_Final.Controllers
 
                 // Set the user's avatar image path to the new one
                 user.AvatarImagePath = imagePath;
-
+                
                 await _userManager.UpdateAsync(user);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Failed to change avatar: {ex.Message}");
             }
-
-            return Ok("Successfully changed");
+            var imageBytes = await _userService.GetImagesByUserId(userId);
+            return Ok(imageBytes);
         }
 
         [HttpPut("changePassword")]

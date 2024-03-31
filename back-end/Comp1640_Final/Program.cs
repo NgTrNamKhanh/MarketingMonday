@@ -108,7 +108,7 @@ using (var scope = app.Services.CreateScope())
 
 
 
-app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<NotificationHub>("api/notificationHub");
 //app.UseEndpoints(endpoints =>
 //{
 //    endpoints.MapHub<NotificationHub>("/notificationHub");

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import authService from "../../../services/auth.service";
 import "../authentication.css";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { ScaleLoader } from "react-spinners";
 
 const LoginBox = ({setCurrentUser}) => {
     const navigator = useNavigate();
@@ -12,16 +13,18 @@ const LoginBox = ({setCurrentUser}) => {
     const [error, setError] = useState("");
     const [checked, setChecked] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     // Handle form submission
     const handleSubmit = async (event) => {
-
+        setIsSubmitting(true)
         event.preventDefault();
         if (!checked) {
             setError("Please agree to out terms and conditions")
+            setIsSubmitting(false)
         }else{
             if (!email || !password) {
                 setError("Please fill in all fields");
-                return;
+                setIsSubmitting(false)
             }else {
                 try {
                     const userData = await authService.login(email, password);
@@ -38,9 +41,11 @@ const LoginBox = ({setCurrentUser}) => {
                     }else if (userData.roles.includes('Guest')){
                         navigator(`/feed/${userData.facultyId}`);
                     }
+                    setIsSubmitting(false)
                 } catch (error) {
                     console.log(error)
                     setError(error.response.data);
+                    setIsSubmitting(false)
                 }
             }
         }
@@ -107,8 +112,8 @@ const LoginBox = ({setCurrentUser}) => {
                         {error && (
                             <div className="error">{error}</div>
                         )}
-                        <button type="submit" className="button loginButton">
-                            <span className="loginButtonText">Log In</span>
+                        <button type="submit" className="button loginButton" disabled={isSubmitting}>
+                            <span className="loginButtonText">{isSubmitting? <ScaleLoader/> : 'Log In'}</span>
                         </button>
                     </form>
                 </div>
