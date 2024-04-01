@@ -37,7 +37,7 @@ namespace Comp1640_Final.Services
 
         public async Task<ICollection<Notification>> GetNotifications(string userId)
         {
-            return await _context.Notifications.Where(n => n.UserId == userId).OrderBy(n => n.CreatedAt).ToListAsync();
+            return await _context.Notifications.Where(n => n.UserId == userId).ToListAsync();
         }
 
         public async Task<bool> PostNotification(Notification notification)

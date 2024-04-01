@@ -71,16 +71,17 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "default-avatar.jpg";
                     var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
                     userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-                    UserNoti userNoti = new UserNoti
-                    {
-                        Id = user.Id,
-                        UserAvatar = userImageBytes,
-                        FirstName = user.FirstName,
-                        LastName = user.LastName
-                    };
-                    notiResponse.UserNoti = userNoti;
-                    notiResponses.Add(notiResponse);
+                    
                 }
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = userImageBytes,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
+                notiResponses.Add(notiResponse);
             }
             return Ok(notiResponses);
         }
