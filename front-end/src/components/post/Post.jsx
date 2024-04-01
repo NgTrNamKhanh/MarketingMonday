@@ -11,6 +11,7 @@ import EditComment from '../dialogs/editCmt/EditComment';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 
 export default function Post({ post, isProfile, currentUser}) {
+    console.log(post)
     const [message, setMessage] = useState()
     const [connection, setConnection] = useState()
     useEffect(() => {
@@ -141,7 +142,10 @@ export default function Post({ post, isProfile, currentUser}) {
         if (selectedComment) {
             const url = apis.comment;
             try {
-                await authHeader().delete(url, {params:{id: selectedComment.id}});
+                await authHeader().delete(url, {params:{commentId: selectedComment.id}});
+                setCommentsCount(commentsCount-1)
+                setComments(prevComments => prevComments.filter(comment => comment.id !== selectedComment.id));
+                handleCloseDeleteCmtCDialog()
             } catch (err) {
                 console.error(err);
             }
@@ -190,6 +194,9 @@ export default function Post({ post, isProfile, currentUser}) {
 
     // Open modal
     const openModal = () => {
+        if(!post.isViewed){
+            authHeader().post(apis.article+"countView/"+post.id)
+        }
         setIsModalOpen(true);
     };
 
@@ -567,7 +574,7 @@ export default function Post({ post, isProfile, currentUser}) {
                                 <RecommendRounded className={`disLikeIcon postIcon`} />
                                 <span className="postLikeCounter">{dislikesCount}</span>
                             </div>
-                            <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
+                            <div className="postBottomRight" onClick={openModal}>
                                 <span className="postCommentText">{commentsCount} comments</span>
                             </div>
                         </div>
@@ -582,7 +589,7 @@ export default function Post({ post, isProfile, currentUser}) {
                             {isDisliked ? <ThumbDownAlt /> : <ThumbDownOffAlt />}
                                 <span className='actionText'>Dislike</span>
                             </div>
-                            <div className="action" onClick={()=>{setIsModalOpen(true)}}>
+                            <div className="action" onClick={openModal}>
                                 <ChatBubbleOutline/>
                                 <span className='actionText'>Comment</span>
                             </div>

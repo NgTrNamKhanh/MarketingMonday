@@ -65,7 +65,7 @@ namespace Comp1640_Final.Services
         public async Task<IEnumerable<Article>> GetApprovedArticles(int facultyID)
         {
             return await _context.Articles
-                .Where(p => p.CoordinatorStatus == true && p.PublishStatusId == (int)EPublishStatus.Approval
+                .Where(p =>  p.PublishStatusId == (int)EPublishStatus.Approval
                                           && p.FacultyId == facultyID)
                 .ToListAsync();
         }
