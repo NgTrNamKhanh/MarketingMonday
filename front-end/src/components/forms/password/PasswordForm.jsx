@@ -5,10 +5,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    FormControl,
-    InputLabel,
-    MenuItem,
-    Select,
+
     TextField,
     Typography,
     colors,
@@ -19,8 +16,7 @@ import { useEffect, useState } from "react";
 import * as yup from "yup";
 import apis from "../../../services/apis.service";
 import authHeader from "../../../services/auth.header";
-import "./account.css"
-// import authHeader from "../../services/auth-header";
+import "./passwordForm.css"
 const initialValues = {
     password: "",
     confirm_password: "",
@@ -49,10 +45,11 @@ const PasswordForm = ({
         try {
             setIsSubmitting(true);
                 const url = apis.user+"changePassword"
-                const res = await authHeader().put(url, {
-                    params: { email: email , password: values.password},
-                    withCredentials: true,
+                const res = await authHeader().put(`${url}?email=${email}&password=${values.password}`, null, {
+                    withCredentials: true
                 });
+                
+                
                 if (res.status === 200) {
                     setIsSubmitting(false);
                     setMessage("Account edited successfully.");
@@ -130,7 +127,6 @@ const PasswordForm = ({
                         sx={{ gridColumn: "span 2" }}
                     />
                 </Box>
-
                 <DialogActions>
                     <Typography
                     sx={{ color: colors.deepOrange[700], fontSize: "1.6vh" }}

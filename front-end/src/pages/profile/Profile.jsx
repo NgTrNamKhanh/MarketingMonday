@@ -5,6 +5,7 @@ import authService from "../../services/auth.service";
 import { ScaleLoader } from "react-spinners";
 import { Modal } from "@mui/material";
 import AvatarForm from "../../components/forms/avatar/AvatarForm";
+import PasswordForm from "../../components/forms/password/PasswordForm";
 
 export default function Profile() {
     const [currentUser, setCurrentUser] = useState(null);
@@ -58,8 +59,9 @@ export default function Profile() {
                     <span>{currentUser.email}</span>
                     <span>{currentUser.phoneNumber}</span>
                     <span>{getFacultyName(currentUser.facultyId)}</span>
+                    <button onClick={()=>handleOpenChangePassword()}>Change password</button>
                 </div>
-                <button onClick={()=>handleOpenChangePassword()}>Change password</button>
+                
             </div>
             <div className="profileSubmissions">
                 <Feed userId = {currentUser.id}/>
@@ -71,8 +73,8 @@ export default function Profile() {
                 />
             )}
             {changePasswordOpen && (
-                <AvatarForm
-                    userId={currentUser.id}
+                <PasswordForm
+                    email={currentUser.email}
                     handleClose={handleCloseChangePassword}
                 />
             )}
