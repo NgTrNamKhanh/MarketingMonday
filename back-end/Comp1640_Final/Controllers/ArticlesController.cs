@@ -276,7 +276,7 @@ namespace Comp1640_Final.Controllers
                 var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
 
-                // If imageBytes is null, read the default image file
+                // If imageBytes is null, read the default image file/+++
                 if (userImageBytes == null)
                 {
                     var defaultImageFileName = "default-avatar.jpg";
@@ -301,6 +301,47 @@ namespace Comp1640_Final.Controllers
         public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId, string userId)
         {
             var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
+
+            if (articles == null || !articles.Any())
+                return BadRequest("There is no submission here");
+
+            var articleDTOs = new List<SubmissionResponse>();
+
+            foreach (var article in articles)
+            {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
+                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (userImageBytes == null)
+                {
+                    var defaultImageFileName = "default-avatar.jpg";
+                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
+                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                }
+                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.ImageBytes = imageBytes.ToList();
+                articleDTOs.Add(articleDTO);
+            }
+
+            return Ok(articleDTOs);
+        }
+
+        [HttpGet("coordinatorStatus/{CoordinatorStatus}/faculty/{facultyId}")]
+        public async Task<IActionResult> GetArticleByCoordinatorStatusAndFacultyId(bool CoordinatorStatus, int facultyId, string userId)
+        {
+            var articles = await _articleService.GetArticleByCoordinatorStatusAndFacultyId(CoordinatorStatus, facultyId);
 
             if (articles == null || !articles.Any())
                 return BadRequest("There is no submission here");
@@ -708,7 +749,7 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully updated");
         }
 
-        [HttpPut("updateStatus/{articleId}")]
+        [HttpPut("updatePublishStatus/{articleId}")]
         public async Task<ActionResult<Article>> UpdateStatusArticle(Guid articleId, int publicStatus)
         {
             if (publicStatus < 0 || publicStatus > 3 || publicStatus == null)
@@ -732,6 +773,55 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully change article status");
         }
+
+        [HttpPut("updateCoordinatorStatus/{articleId}")]
+        public async Task<ActionResult<Article>> UpdateCoordinatorStatusArticle(Guid articleId)
+        {
+            if (!_articleService.ArticleExists(articleId))
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var article = _articleService.GetArticleByID(articleId);
+
+            article.Id = articleId;
+
+            article.CoordinatorStatus = !article.CoordinatorStatus;
+
+            if (!await _articleService.UpdateArticle(article))
+            {
+                return BadRequest("Failed to update article coordinator status.");
+            }
+
+            return Ok("Successfully change article status");
+        }
+
+        [HttpPut("updateListCoordinatorStatus")]
+        public async Task<ActionResult> UpdateListCoordinatorStatusArticle([FromBody] List<Guid> articleIds)
+        {
+            if (articleIds == null || articleIds.Count == 0)
+                return BadRequest("No article IDs provided.");
+
+            foreach (var articleId in articleIds)
+            {
+                if (!_articleService.ArticleExists(articleId))
+                    return NotFound($"Article with ID {articleId} not found.");
+
+                var article = _articleService.GetArticleByID(articleId);
+
+                // Toggle the coordinator status for each article
+                article.CoordinatorStatus = true;
+
+                if (!await _articleService.UpdateArticle(article))
+                {
+                    return BadRequest($"Failed to update coordinator status for article with ID {articleId}.");
+                }
+            }
+
+            return Ok("Successfully changed coordinator status for all articles.");
+        }
+
 
         [HttpPut("addComment/{articleId}")]
         public async Task<ActionResult<Article>> AddCommentArticle(Guid articleId, string comment)

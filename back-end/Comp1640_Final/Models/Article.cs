@@ -14,6 +14,7 @@ namespace Comp1640_Final.Models
         public DateTime UploadDate { get; set; }
         public int PublishStatusId { get; set; }
         public int ViewCount { get; set; }
+        public bool CoordinatorStatus { get; set; }
 
         [NotMapped]
         public List<IFormFile> ImageFiles {  get; set; } 
