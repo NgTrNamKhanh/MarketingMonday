@@ -23,7 +23,7 @@ namespace Comp1640_Final.Controllers
         private readonly IMapper _mapper;
         private readonly ILikeService _likeService;
         private readonly IDislikeService _dislikeService;
-        private readonly IAritcleService _aritcleService;
+        private readonly IArticleService _aritcleService;
         private readonly ICommentService _commentService;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IHubContext<NotificationHub> _hubContext;
@@ -34,7 +34,7 @@ namespace Comp1640_Final.Controllers
         public LikesController(ProjectDbContext context, 
             IMapper mapper,
             ILikeService likeService, 
-            IAritcleService aritcleService,
+            IArticleService aritcleService,
             IDislikeService dislikeService,
             ICommentService commentService,
             UserManager<ApplicationUser> userManager,
@@ -167,17 +167,18 @@ namespace Comp1640_Final.Controllers
                 await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
-                if (userImageBytes == null)
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
                 UserNoti userNoti = new UserNoti
                 {
                     Id = user.Id,
-                    UserAvatar = userImageBytes,
+                    UserAvatar = cloudUserImage,
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
@@ -247,17 +248,18 @@ namespace Comp1640_Final.Controllers
                 await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
-                if (userImageBytes == null)
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
                 UserNoti userNoti = new UserNoti
                 {
                     Id = user.Id,
-                    UserAvatar = userImageBytes,
+                    UserAvatar = cloudUserImage,
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };

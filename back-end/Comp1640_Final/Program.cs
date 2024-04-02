@@ -64,7 +64,7 @@ builder.Services.AddAuthorization();
 
 
 builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddScoped<IAritcleService, AritcleService>();
+builder.Services.AddScoped<IArticleService, AritcleService>();
 builder.Services.AddScoped<IFacultyService, FacultyService>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();

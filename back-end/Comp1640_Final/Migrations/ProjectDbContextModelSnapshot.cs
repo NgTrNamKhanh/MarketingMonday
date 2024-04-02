@@ -33,6 +33,9 @@ namespace Comp1640_Final.Migrations
                     b.Property<string>("AvatarImagePath")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("CloudAvatarImagePath")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -125,17 +128,11 @@ namespace Comp1640_Final.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DocPath")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("EventId")
                         .HasColumnType("int");
 
                     b.Property<int>("FacultyId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("MarketingCoordinatorId")
                         .HasColumnType("nvarchar(450)");

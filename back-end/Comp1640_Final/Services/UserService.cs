@@ -9,7 +9,8 @@ namespace Comp1640_Final.Services
     {
         bool IsValidImageFile(IFormFile imageFile);
         Task<string> SaveImage(IFormFile imageFile, string subFolderName);
-        Task<byte[]> GetImagesByUserId(string userId);
+        string GetPublicIdFromImageUrl(string imageUrl);
+        Task<string> GetCloudinaryAvatarImagePath(string userId);
 
     }
     public class UserService : IUserService
@@ -72,7 +73,7 @@ namespace Comp1640_Final.Services
             return "\\UserAvatars\\" + subfolderName + "\\" + fileName;
         }
 
-        public async Task<byte[]> GetImagesByUserId(string userId)
+        public async Task<string> GetCloudinaryAvatarImagePath(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -81,25 +82,24 @@ namespace Comp1640_Final.Services
                 return null; // Or handle as needed
             }
 
-            var imagePath = user.AvatarImagePath;
+            var imagePath = user.CloudAvatarImagePath;
 
             if (string.IsNullOrEmpty(imagePath))
             {
                 return null; // Or handle as needed if the image path is empty
             }
 
-            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath?.TrimStart('\\'));
+            return imagePath;
+        }
 
-            if (System.IO.File.Exists(filePath))
-            {
-                var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                return imageBytes;
-            }
-            else
-            {
-                // Optionally log or handle the case where the image file is not found
-                return null;
-            }
+        public string GetPublicIdFromImageUrl(string imageUrl)
+        {
+            // Example: https://res.cloudinary.com/{cloud_name}/image/upload/{public_id}.{format}
+            // Extract public ID from the URL
+            var segments = imageUrl.Split('/');
+            var fileName = segments[segments.Length - 1]; // Get the last segment (filename)
+            var publicId = fileName.Substring(0, fileName.LastIndexOf('.')); // Remove the file extension
+            return publicId;
         }
     }
 }

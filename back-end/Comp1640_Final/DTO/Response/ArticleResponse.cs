@@ -7,11 +7,9 @@
         public string Description { get; set; }
         public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
-        public byte[] StudentAvatar { get; set; }
+        public string StudentAvatar { get; set; }
         public string StudentId { get; set; }
         public string StudentName { get; set; }
-        public List<byte[]> ImageBytes { get; set; }
-
         public int CommmentCount { get; set; }
         public int LikeCount { get; set; }
         public int DislikeCount { get; set; }
@@ -29,7 +27,7 @@
         public string Description { get; set; }
         public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
-        public byte[] StudentAvatar { get; set; }
+        public string StudentAvatar { get; set; }
         public string StudentName { get; set; }
         public int PublishStatusId { get; set; }
         public string CloudImagePath { get; set; }
@@ -44,8 +42,6 @@
         public bool IsDisliked { get; set; }
         public int ViewCount { get; set; }
         public bool IsViewed { get; set; }
-        public List<byte[]> ImageBytes { get; set; }
-
         //public string MarketingCoordinatorId { get; set; }
     }
 }

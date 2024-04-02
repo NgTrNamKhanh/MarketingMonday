@@ -64,19 +64,18 @@ namespace Comp1640_Final.Controllers
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
-                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                        var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                         // If imageBytes is null, read the default image file
-                        if (userImageBytes == null)
+                        if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "default-avatar.jpg";
-                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
                         }
-						UserComment userComment = new UserComment
+                        UserComment userComment = new UserComment
 						{
 							Id = user.Id,
-							UserAvatar = userImageBytes,
+							UserAvatar = cloudUserImage,
 							FirstName = user.FirstName,
 							LastName = user.LastName
 						};
@@ -114,20 +113,19 @@ namespace Comp1640_Final.Controllers
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
-                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                        var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                         // If imageBytes is null, read the default image file
-                        if (userImageBytes == null)
+                        if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "default-avatar.jpg";
-                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
                         }
-						UserComment userComment = new UserComment
-						{
-							Id = user.Id,
-							UserAvatar = userImageBytes,
-							FirstName = user.FirstName,
+                        UserComment userComment = new UserComment
+                        {
+                            Id = user.Id,
+                            UserAvatar = cloudUserImage,
+                            FirstName = user.FirstName,
 							LastName = user.LastName
 						};
 						commentResponse.UserComment = userComment;
@@ -164,19 +162,18 @@ namespace Comp1640_Final.Controllers
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
-                        var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                        var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                         // If imageBytes is null, read the default image file
-                        if (userImageBytes == null)
+                        if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "default-avatar.jpg";
-                            var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                            userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
                         }
                         UserComment userComment = new UserComment
                         {
                             Id = user.Id,
-                            UserAvatar = userImageBytes,
+                            UserAvatar = cloudUserImage,
                             FirstName = user.FirstName,
                             LastName = user.LastName
                         };
@@ -226,19 +223,19 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(commentDto.UserId);
                 var commentResult = _context.Comments.Find(comment.Id);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
-				var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
-				// If imageBytes is null, read the default image file
-				if (userImageBytes == null)
-				{
-					var defaultImageFileName = "default-avatar.jpg";
-					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-				}
-				UserComment userComment = new UserComment
-				{
-					Id = user.Id,
-					UserAvatar = userImageBytes,
-					FirstName = user.FirstName,
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                UserComment userComment = new UserComment
+                {
+                    Id = user.Id,
+                    UserAvatar = cloudUserImage,
+                    FirstName = user.FirstName,
 					LastName = user.LastName
 				};
 				commentResponse.UserComment = userComment;
@@ -268,19 +265,19 @@ namespace Comp1640_Final.Controllers
 				var user = await _userManager.FindByIdAsync(commentDto.UserId);
 				var replyResult = _context.Comments.Find(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
-				var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
-																					// If imageBytes is null, read the default image file
-				if (userImageBytes == null)
-				{
-					var defaultImageFileName = "default-avatar.jpg";
-					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-				}
-				UserComment userComment = new UserComment
-				{
-					Id = user.Id,
-					UserAvatar = userImageBytes,
-					FirstName = user.FirstName,
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                UserComment userComment = new UserComment
+                {
+                    Id = user.Id,
+                    UserAvatar = cloudUserImage,
+                    FirstName = user.FirstName,
 					LastName = user.LastName
 				};
 				replyResponse.UserComment = userComment;
@@ -309,19 +306,19 @@ namespace Comp1640_Final.Controllers
 				var commentResult = _context.Comments.Find(id);
                 var user = await _userManager.FindByIdAsync(commentResult.UserId);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
-				var userImageBytes = await _userService.GetImagesByUserId(user.Id); 
-																					
-				if (userImageBytes == null)
-				{
-					var defaultImageFileName = "default-avatar.jpg";
-					var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-					userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-				}
-				UserComment userComment = new UserComment
-				{
-					Id = user.Id,
-					UserAvatar = userImageBytes,
-					FirstName = user.FirstName,
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                UserComment userComment = new UserComment
+                {
+                    Id = user.Id,
+                    UserAvatar = cloudUserImage,
+                    FirstName = user.FirstName,
 					LastName = user.LastName
 				};
                 commentResponse.UserComment = userComment;

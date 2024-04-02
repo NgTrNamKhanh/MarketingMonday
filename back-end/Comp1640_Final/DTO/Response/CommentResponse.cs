@@ -20,7 +20,7 @@
     public class UserComment 
     {
         public string Id { get; set; }
-        public byte[] UserAvatar { get; set; }
+        public string UserAvatar { get; set; }
         public string FirstName { get; set; }
 		public string LastName { get; set; }
 

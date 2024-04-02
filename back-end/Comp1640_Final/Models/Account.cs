@@ -18,7 +18,7 @@ namespace Comp1640_Final.Models
         public string Role { get; set; }
         [NotMapped]
         public IFormFile AvatarImageFile { get; set; }
-        public string? AvatarImagePath { get; set; }
+        public string? CloudAvatarImagePath { get; set; }
 
         public int FacultyId { get; set; }
     }

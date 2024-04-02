@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using Comp1640_Final.DTO;
 using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
@@ -30,54 +32,59 @@ namespace Comp1640_Final.Controllers
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
         private static IWebHostEnvironment _webHostEnvironment;
+        private readonly Cloudinary _cloudinary;
 
         public AdminController(IAuthService authService,
             UserManager<ApplicationUser> userManager,
             IUserService userService,
             IWebHostEnvironment webHostEnvironment,
+            Cloudinary cloudinary,
             IMapper mapper)
         {
             _authService = authService;
             _userManager = userManager;
             _mapper = mapper;
             _userService = userService;
+            _cloudinary = cloudinary;
             _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost("createAccount")]
         public async Task<IActionResult> CreateAccount([FromForm] CreateAccountDTO account)
         {
-            var accountMap = _mapper.Map<Account>(account);
+            var accountMap = _mapper.Map<Models.Account>(account);
             accountMap.Id = Guid.NewGuid();
-            if (account.AvatarImageFile != null)
+
+            try
             {
-                try
+                if (account.AvatarImageFile != null)
                 {
                     if (!_userService.IsValidImageFile(account.AvatarImageFile))
                     {
                         return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                     }
 
-                    var imagePaths = await _userService.SaveImage(account.AvatarImageFile, (accountMap.Id).ToString());
-                    if (imagePaths.Any())
+                    // Upload the avatar image to Cloudinary
+                    var uploadParams = new ImageUploadParams
                     {
-                        accountMap.AvatarImagePath = imagePaths;
-                    }
-                    else
-                    {
-                        return BadRequest("Failed to save avatar image.");
-                    }
+                        File = new FileDescription(account.AvatarImageFile.FileName, account.AvatarImageFile.OpenReadStream())
+                    };
+                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+                    // Set the user's avatar image path to the URL from Cloudinary
+                    accountMap.CloudAvatarImagePath = uploadResult.Uri.ToString();
                 }
-                catch (Exception ex)
+
+                if (await _authService.CreateAccountUser(accountMap))
                 {
-                    return BadRequest(ex.ToString());
+                    return Ok("Create Successful");
                 }
+                return BadRequest("Something went wrong");
             }
-            if (await _authService.CreateAccountUser(accountMap))
+            catch (Exception ex)
             {
-                return Ok("Create Successful");
+                return BadRequest($"Failed to create account: {ex.Message}");
             }
-            return BadRequest("Something went wrong");
         }
 
         //[HttpPut]
@@ -136,15 +143,6 @@ namespace Comp1640_Final.Controllers
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                var imageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
-
-                // If imageBytes is null, read the default image file
-                if (imageBytes == null)
-                {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName); // Provide the path to your default image
-                    imageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-                }
 
                 accountDto.Add(new
                 {
@@ -155,7 +153,7 @@ namespace Comp1640_Final.Controllers
                     Email = user.Email,
                     Role = roles,
                     FacultyId = user.FacultyId,
-                    ImageAvatarBytes = imageBytes
+                    CloudAvatarImagePath = user.CloudAvatarImagePath,
                 });
             }
 
@@ -175,15 +173,6 @@ namespace Comp1640_Final.Controllers
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
-                if (!string.IsNullOrEmpty(user.AvatarImagePath))
-                {
-                    var avatarDirectory = Path.GetDirectoryName(Path.Combine(_webHostEnvironment.WebRootPath, user.AvatarImagePath?.TrimStart('\\')));
-                    if (Directory.Exists(avatarDirectory))
-                    {
-                        Directory.Delete(avatarDirectory, true);
-                    }
-                }
-
                 return Ok(); // Successfully deleted
             }
             else

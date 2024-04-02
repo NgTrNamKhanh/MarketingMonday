@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Comp1640_Final.Services
 {
-    public interface IAritcleService
+    public interface IArticleService
     {
         ICollection<Article> GetArticles();
         Article GetArticleByID(Guid id);
@@ -15,24 +15,22 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
         Task<IEnumerable<Article>> GetApprovedArticles(int facultyID);
+        Task<IEnumerable<Article>> GetGuestApprovedArticles(int facultyID);
         Task<IEnumerable<Article>> GetArticleByCoordinatorStatusAndFacultyId(bool coordinatorStatus, int facultyId);
         Task<IEnumerable<Article>> GetArticleByProfile(string userId);
         Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId);
         Task<bool> UpdateArticle(Article article);
         Task<bool> AddArticle(Article article);
         bool IsValidImageFile(List<IFormFile> imageFile);
-        Task<IEnumerable<string>> SaveImages(List<IFormFile> imageFile, string subFolderName);
         bool IsValidDocFile(IFormFile imageFile);
-        Task<string> SaveDoc(IFormFile docFile, string subFolderName);
         bool ArticleExists(Guid articleId);
         bool DeleteArticle(Article article);
-        Task<IEnumerable<byte[]>> GetImagesByArticleId(Guid articleId);
         bool Save();
         string GetPublicIdFromImageUrl(string imageUrl);
         string GetPublicIdFromDocUrl(string docUrl);
 
     }
-    public class AritcleService : IAritcleService
+    public class AritcleService : IArticleService
     {
         private readonly ProjectDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -65,8 +63,16 @@ namespace Comp1640_Final.Services
         public async Task<IEnumerable<Article>> GetApprovedArticles(int facultyID)
         {
             return await _context.Articles
-                .Where(p =>  p.PublishStatusId == (int)EPublishStatus.Approval
-                                          && p.FacultyId == facultyID)
+                .Where(p => p.PublishStatusId == (int)EPublishStatus.Approval 
+                && p.FacultyId == facultyID)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Article>> GetGuestApprovedArticles(int facultyID)
+        {
+            return await _context.Articles
+                .Where(p => p.CoordinatorStatus == true 
+                && p.PublishStatusId == (int)EPublishStatus.Approval
+                && p.FacultyId == facultyID)
                 .ToListAsync();
         }
         public async Task<IEnumerable<Article>> GetArticleByCoordinatorStatusAndFacultyId(bool coordinatorStatus, int facultyId)
@@ -162,31 +168,6 @@ namespace Comp1640_Final.Services
 
             return true;
         }
-        public async Task<IEnumerable<string>> SaveImages(List<IFormFile> imageFiles, string subfolderName)
-        {
-            var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images", subfolderName);
-
-            if (!Directory.Exists(imagesDirectory))
-                Directory.CreateDirectory(imagesDirectory);
-
-            var imagePaths = new List<string>();
-
-            foreach (var imageFile in imageFiles)
-            {
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
-                var filePath = Path.Combine(imagesDirectory, fileName);
-
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(fileStream);
-                    await fileStream.FlushAsync();
-                }
-
-                imagePaths.Add("\\Images\\" + subfolderName + "\\" + fileName);
-            }
-
-            return imagePaths;
-        }
 
         public bool IsValidDocFile(IFormFile docFile)
         {
@@ -210,54 +191,6 @@ namespace Comp1640_Final.Services
             // Perform additional checks if needed, such as content type validation.
 
             return true;
-        }
-        public async Task<string> SaveDoc(IFormFile docFile, string subfolderName)
-        {
-            var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs", subfolderName);
-
-            if (!Directory.Exists(docsDirectory))
-                Directory.CreateDirectory(docsDirectory);
-
-            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(docFile.FileName);
-            var filePath = Path.Combine(docsDirectory, fileName);
-
-            using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await docFile.CopyToAsync(fileStream);
-                await fileStream.FlushAsync();
-            }
-
-            return "\\Docs\\" + subfolderName + "\\" + fileName;
-        }
-
-        public async Task<IEnumerable<byte[]>> GetImagesByArticleId(Guid articleId)
-        {
-            var article = await _context.Articles.FindAsync(articleId);
-
-            if (article == null)
-            {
-                return null; // Or handle as needed
-            }
-
-            var imagePaths = article.ImagePath?.Split(';');
-            var imageBytesList = new List<byte[]>();
-
-            foreach (var imagePath in imagePaths)
-            {
-                var filePath = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('\\'));
-
-                if (System.IO.File.Exists(filePath))
-                {
-                    var imageBytes = await System.IO.File.ReadAllBytesAsync(filePath);
-                    imageBytesList.Add(imageBytes);
-                }
-                else
-                {
-                    // Optionally log or handle the case where the image file is not found
-                }
-            }
-
-            return imageBytesList;
         }
 
         public string GetPublicIdFromImageUrl(string imageUrl)

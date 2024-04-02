@@ -30,7 +30,7 @@ namespace Comp1640_Final.Controllers
     [ApiController]
     public class ArticlesController : ControllerBase
     {
-        private readonly IAritcleService _articleService;
+        private readonly IArticleService _articleService;
         private readonly IMapper _mapper;
         private readonly ProjectDbContext _context;
         private static IWebHostEnvironment _webHostEnvironment;
@@ -42,7 +42,7 @@ namespace Comp1640_Final.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Cloudinary _cloudinary;
 
-        public ArticlesController(IAritcleService articleService,
+        public ArticlesController(IArticleService articleService,
             IMapper mapper,
             ProjectDbContext context,
             IWebHostEnvironment webHostEnvironment,
@@ -77,18 +77,16 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
 
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -97,7 +95,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
 
@@ -114,17 +111,15 @@ namespace Comp1640_Final.Controllers
             var article = _articleService.GetArticleByID(articleId);
             var articleDTO = _mapper.Map<SubmissionResponse>(article);
             var user = await _userManager.FindByIdAsync(article.StudentId);
-            var imageBytes = await _articleService.GetImagesByArticleId(articleId);
-            var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+            var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
             // If imageBytes is null, read the default image file
-            if (userImageBytes == null)
+            if (cloudUserImage == null)
             {
-                var defaultImageFileName = "default-avatar.jpg";
-                var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                cloudUserImage = defaultImageFileName;
             }
-            articleDTO.StudentAvatar = userImageBytes;
+            articleDTO.StudentAvatar = cloudUserImage;
             //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
             articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
             articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -134,7 +129,6 @@ namespace Comp1640_Final.Controllers
             articleDTO.ViewCount = article.ViewCount;
             articleDTO.IsViewed = article.ViewCount >= 1;
             articleDTO.StudentName = user.FirstName + " " + user.LastName;
-            articleDTO.ImageBytes = imageBytes.ToList();
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -154,17 +148,15 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -173,7 +165,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
 
@@ -192,19 +183,17 @@ namespace Comp1640_Final.Controllers
 
             foreach (var article in articles)
             {
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -213,7 +202,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
             }
@@ -231,19 +219,17 @@ namespace Comp1640_Final.Controllers
 
             foreach (var article in articles)
             {
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -252,7 +238,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
             }
@@ -273,16 +258,15 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<ArticleResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
-                // If imageBytes is null, read the default image file/+++
-                if (userImageBytes == null)
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -290,13 +274,49 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentAvatar = userImageBytes;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
         }
+
+        [HttpGet("guest/faculty")]
+        public async Task<IActionResult> GetGuestApprovedAticles(int facultyId, string userId)
+        {
+            var articles = await _articleService.GetGuestApprovedArticles(facultyId);
+
+            if (articles == null || !articles.Any())
+                return BadRequest("There is no article here");
+
+            var articleDTOs = new List<ArticleResponse>();
+
+            foreach (var article in articles)
+            {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<ArticleResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                articleDTO.StudentAvatar = cloudUserImage;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
+                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTOs.Add(articleDTO);
+            }
+            return Ok(articleDTOs);
+        }
+
         [HttpGet("status/{publishStatusId}/faculty/{facultyId}")]
         public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId, string userId)
         {
@@ -312,17 +332,15 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -331,7 +349,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
 
@@ -353,17 +370,15 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
                 var articleDTO = _mapper.Map<SubmissionResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
-                articleDTO.StudentAvatar = userImageBytes;
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -372,7 +387,6 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
 
@@ -395,16 +409,15 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(article.StudentId);
 
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
-                var imageBytes = await _articleService.GetImagesByArticleId(article.Id);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id); // Await the method call
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (userImageBytes == null)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
+                articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
                 articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
@@ -412,26 +425,11 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentAvatar = userImageBytes;
                 articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.ImageBytes = imageBytes.ToList();
                 articleDTOs.Add(articleDTO);
             }
 
             return Ok(articleDTOs);
-        }
-
-        [HttpGet("GetImages/{articleId}")]
-        public async Task<IActionResult> GetImagesByArticleId(Guid articleId)
-        {
-            var imageBytesList = await _articleService.GetImagesByArticleId(articleId);
-
-            if (imageBytesList == null || !imageBytesList.Any())
-            {
-                return NotFound("No images found for the article");
-            }
-
-            return Ok(imageBytesList);
         }
 
         [HttpGet("DownloadDocument/{articleId}")]
@@ -444,26 +442,29 @@ namespace Comp1640_Final.Controllers
                 return NotFound("Article not found");
             }
 
-            // Get the file path of the document associated with the article
-            var documentPath = article.DocPath;
+            // Get the Cloudinary URL of the document associated with the article
+            var documentUrl = article.CloudDocPath;
 
-            if (string.IsNullOrEmpty(documentPath))
+            if (string.IsNullOrEmpty(documentUrl))
             {
                 return NotFound("Document not found for the article");
             }
 
-            // Combine the file path with the web root path to get the absolute file path
-            var absolutePath = Path.Combine(_webHostEnvironment.WebRootPath, documentPath.TrimStart('\\'));
-
-            // Check if the file exists
-            if (!System.IO.File.Exists(absolutePath))
+            try
             {
-                return NotFound("Document file not found");
-            }
+                // Generate a secure URL for downloading the document from Cloudinary
+                var secureUrl = _cloudinary.Api.UrlImgUp
+                    .Secure()
+                    .Transform(new Transformation().FetchFormat("auto")) // Optional: Apply transformations if needed
+                    .BuildUrl(documentUrl);
 
-            // Return the file for download
-            var fileStream = System.IO.File.OpenRead(absolutePath);
-            return File(fileStream, "application/octet-stream", Path.GetFileName(absolutePath));
+                // Redirect the user to the secure URL for downloading the document
+                return Redirect(secureUrl);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to generate download URL for the document: {ex.Message}");
+            }
         }
 
         [HttpPost("student")]
@@ -479,51 +480,6 @@ namespace Comp1640_Final.Controllers
             articleMap.Id = Guid.NewGuid();
             articleMap.PublishStatusId = (int)EPublishStatus.Pending;
             articleMap.UploadDate = DateTime.Now;
-
-            #region save image and file
-            if (articleAdd.ImageFiles.Count > 0)
-            {
-                try
-                {
-                    if (!_articleService.IsValidImageFile(articleAdd.ImageFiles))
-                    {
-                        return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
-                    }
-
-                    var imagePaths = await _articleService.SaveImages(articleAdd.ImageFiles, articleMap.Id.ToString());
-                    if (imagePaths.Any())
-                    {
-                        articleMap.ImagePath = string.Join(";", imagePaths);
-                    }
-                    else
-                    {
-                        return BadRequest("Failed to save image files.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.ToString());
-                }
-            }
-
-            if (articleAdd.DocFiles.Length > 0)
-            {
-                try
-                {
-                    if (!_articleService.IsValidDocFile(articleAdd.DocFiles))
-                    {
-                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
-                    }
-
-                    var docPath = await _articleService.SaveDoc(articleAdd.DocFiles, articleMap.Id.ToString());
-                    articleMap.DocPath = docPath;
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.ToString());
-                }
-            }
-            #endregion save image and file
 
             if (articleAdd.ImageFiles.Count > 0)
             {
@@ -603,64 +559,6 @@ namespace Comp1640_Final.Controllers
             var articleMap = _mapper.Map<Article>(articleUpdate);
             articleMap.UploadDate = DateTime.Now;
             var article = _articleService.GetArticleByID(articleMap.Id);
-
-            #region save image and file
-            if (articleUpdate.ImageFiles.Count > 0)
-            {
-                try
-                {
-                    if (!_articleService.IsValidImageFile(articleUpdate.ImageFiles))
-                    {
-                        return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
-                    }
-
-                    var imagePaths = await _articleService.SaveImages(articleUpdate.ImageFiles, articleMap.Id.ToString());
-
-                    // Delete old image files
-                    var oldImagePaths = article.ImagePath?.Split(';');
-                    foreach (var oldImagePath in oldImagePaths)
-                    {
-                        var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, oldImagePath.TrimStart('\\'));
-                        if (System.IO.File.Exists(oldFilePath))
-                        {
-                            System.IO.File.Delete(oldFilePath);
-                        }
-                    }
-
-                    articleMap.ImagePath = string.Join(";", imagePaths);
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.ToString());
-                }
-            }
-
-            if (articleUpdate.DocFiles.Length > 0)
-            {
-                try
-                {
-                    if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
-                    {
-                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
-                    }
-
-                    var docPath = await _articleService.SaveDoc(articleUpdate.DocFiles, articleMap.Id.ToString());
-
-                    // Delete old document file
-                    var oldDocPath = Path.Combine(_webHostEnvironment.WebRootPath, article.DocPath.TrimStart('\\'));
-                    if (System.IO.File.Exists(oldDocPath))
-                    {
-                        System.IO.File.Delete(oldDocPath);
-                    }
-
-                    articleMap.DocPath = docPath;
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.ToString());
-                }
-            }
-            #endregion save image and file
 
             if (articleUpdate.ImageFiles.Count > 0)
             {
@@ -913,6 +811,17 @@ namespace Comp1640_Final.Controllers
 
             return Ok("Successfully delete article");
         }
+
+        //private async Task<string> GetUserId()
+        //{
+        //    var principal = _httpContextAccessor.HttpContext.User;
+        //    var user = await _userManager.FindByEmailAsync(principal.Identity.Name);
+        //    if (user != null)
+        //    {
+        //        return user.Id;
+        //    }
+        //    return null;
+        //}
 		[HttpPost("download")]
 		public async Task<IActionResult> DownloadSubmission([FromBody] DownloadArticleDTO downloadArticle)
 		{

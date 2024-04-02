@@ -16,7 +16,7 @@ namespace Comp1640_Final.Controllers
     public class NotificationsController : ControllerBase
     {
         private readonly ProjectDbContext _context;
-        private readonly IAritcleService _aritcleService;
+        private readonly IArticleService _aritcleService;
         private readonly ILikeService _likeService;
         private readonly IDislikeService _dislikeService;
         private readonly ICommentService _commentService;
@@ -28,7 +28,7 @@ namespace Comp1640_Final.Controllers
 
 
         public NotificationsController(ProjectDbContext context,
-            IAritcleService aritcleService,
+            IArticleService aritcleService,
             ILikeService likeService,
             IDislikeService dislikeService,
             ICommentService commentService,
@@ -64,19 +64,18 @@ namespace Comp1640_Final.Controllers
             {
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var user = await _userManager.FindByIdAsync(notification.UserInteractionId);
-                var userImageBytes = await _userService.GetImagesByUserId(user.Id);
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
-                if (userImageBytes == null)
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
-                    
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
                 UserNoti userNoti = new UserNoti
                 {
                     Id = user.Id,
-                    UserAvatar = userImageBytes,
+                    UserAvatar = cloudUserImage,
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };

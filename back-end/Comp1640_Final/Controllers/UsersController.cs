@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using CloudinaryDotNet.Actions;
+using CloudinaryDotNet;
 using Comp1640_Final.Data;
 using Comp1640_Final.DTO;
 using Comp1640_Final.DTO.Response;
@@ -20,6 +22,7 @@ namespace Comp1640_Final.Controllers
         private readonly IMapper _mapper;
         private readonly ProjectDbContext _context;
         private static IWebHostEnvironment _webHostEnvironment;
+        private readonly Cloudinary _cloudinary;
 
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -27,6 +30,7 @@ namespace Comp1640_Final.Controllers
             IMapper mapper,
             ProjectDbContext context,
             IWebHostEnvironment webHostEnvironment,
+            Cloudinary cloudinary,
             UserManager<ApplicationUser> userManager)
         {
             _userService = userService;
@@ -34,6 +38,7 @@ namespace Comp1640_Final.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _cloudinary = cloudinary;
         }
         [HttpGet("accounts/{Id}")]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUserById(string Id)
@@ -46,7 +51,14 @@ namespace Comp1640_Final.Controllers
             }
 
             var roles = await _userManager.GetRolesAsync(user);
-            var imageBytes = await _userService.GetImagesByUserId(user.Id);
+            var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+            // If imageBytes is null, read the default image file
+            if (cloudUserImage == null)
+            {
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                cloudUserImage = defaultImageFileName;
+            }
 
             var accountDto = new
             {
@@ -57,13 +69,13 @@ namespace Comp1640_Final.Controllers
                 Email = user.Email,
                 Role = roles,
                 FacultyId = user.FacultyId,
-                ImageAvatarBytes = imageBytes
+                CloudAvatar = cloudUserImage
             };
 
             return Ok(accountDto);
         }
         [HttpPut("ChangeAvatar")]
-        public async Task<ActionResult<Account>> ChangeAvatar(IFormFile avatarImage, string userId)
+        public async Task<ActionResult<Models.Account>> ChangeAvatar(IFormFile avatarImage, string userId)
         {
             if (avatarImage == null || avatarImage.Length == 0)
                 return BadRequest("No image file provided.");
@@ -79,32 +91,35 @@ namespace Comp1640_Final.Controllers
                 {
                     return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
                 }
-
-                var oldImagePath = user.AvatarImagePath; // Store the old image path
-
-                var imagePath = await _userService.SaveImage(avatarImage, (user.Id).ToString());
-
-                // Delete the old image file
-                if (!string.IsNullOrEmpty(oldImagePath))
+                if (user.CloudAvatarImagePath != null)
                 {
-                    var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, oldImagePath.TrimStart('\\'));
-                    if (System.IO.File.Exists(oldFilePath))
+                    var oldImagePublicId = _userService.GetPublicIdFromImageUrl(user.CloudAvatarImagePath); // Extract public ID of the old image
+                                                                                                            
+                    // Delete the old image from Cloudinary
+                    if (!string.IsNullOrEmpty(oldImagePublicId))
                     {
-                        System.IO.File.Delete(oldFilePath);
+                        await _cloudinary.DeleteResourcesAsync(oldImagePublicId);
                     }
                 }
+                // Upload the new image to Cloudinary
+                var uploadParams = new ImageUploadParams
+                {
+                    File = new FileDescription(avatarImage.FileName, avatarImage.OpenReadStream())
+                };
+                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
-                // Set the user's avatar image path to the new one
-                user.AvatarImagePath = imagePath;
-                
+                // Update the user's avatar image URL with the new one from Cloudinary
+                user.CloudAvatarImagePath = uploadResult.Uri.ToString();
+
+                // Update the user entity in the database
                 await _userManager.UpdateAsync(user);
             }
             catch (Exception ex)
             {
                 return BadRequest($"Failed to change avatar: {ex.Message}");
             }
-            var imageBytes = await _userService.GetImagesByUserId(userId);
-            return Ok(imageBytes);
+
+            return Ok(user.CloudAvatarImagePath);
         }
 
         [HttpPut("changePassword")]

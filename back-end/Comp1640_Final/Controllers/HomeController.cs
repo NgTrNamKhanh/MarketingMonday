@@ -49,13 +49,13 @@ namespace Comp1640_Final.Controllers
 
                 //var token = GenerateJwtToken(identityUser, roles);
                 var token = CreateToken(identityUser, roles[0]);
-                var userImageBytes = await _userService.GetImagesByUserId(identityUser.Id);
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(identityUser.Id); // Await the method call
 
-                if (userImageBytes == null)
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "default-avatar.jpg";
-                    var defaultImagePath = Path.Combine(_webHostEnvironment.WebRootPath, "UserAvatars", "DontHaveAva", defaultImageFileName);
-                    userImageBytes = await System.IO.File.ReadAllBytesAsync(defaultImagePath);
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
                 }
 
                 var accountDto = new LoginResponse
@@ -67,7 +67,7 @@ namespace Comp1640_Final.Controllers
                     Email = identityUser.Email,
                     Roles = roles.ToArray(),
                     FacultyId = identityUser.FacultyId,
-                    Avatar = userImageBytes,
+                    Avatar = cloudUserImage,
                     Jwt_token = token
                 };
 
