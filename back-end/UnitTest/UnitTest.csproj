@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Comp1640_Final\Comp1640_Final.csproj" />
+  </ItemGroup>
+
 </Project>
