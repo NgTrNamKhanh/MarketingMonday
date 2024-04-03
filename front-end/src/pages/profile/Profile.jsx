@@ -43,7 +43,7 @@ export default function Profile() {
             <div className="profileInformation">
                 <div className="profileLeft">
                     <div className="profileCover">
-                        <img src={`data:image/jpeg;base64,${currentUser.avatar}`} className="profileUserImg" alt="profile"  onClick={()=>setOptionsOpen(!optionsOpen)}/>
+                        <img src={currentUser.avatar} className="profileUserImg" alt="profile"  onClick={()=>setOptionsOpen(!optionsOpen)}/>
                     </div>
                     {optionsOpen && (
                         <div className="profileDropdownContent" >
@@ -55,9 +55,11 @@ export default function Profile() {
                 </div>
                 <div className="profileRight">
                     <h4 className="profileInfoName">{currentUser.firstName} {currentUser.lastName}</h4>
+                    <h5>Phone Number</h5>
                     <span>{currentUser.phoneNumber}</span>
+                    <h5>Email</h5>
                     <span>{currentUser.email}</span>
-                    <span>{currentUser.phoneNumber}</span>
+                    <h5>Faculty</h5>
                     <span>{getFacultyName(currentUser.facultyId)}</span>
                     <button onClick={()=>handleOpenChangePassword()}>Change password</button>
                 </div>

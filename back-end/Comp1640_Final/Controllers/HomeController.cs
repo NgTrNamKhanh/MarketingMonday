@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -47,7 +48,6 @@ namespace Comp1640_Final.Controllers
                 var identityUser = await _userManager.FindByEmailAsync(email);
                 var roles = await _userManager.GetRolesAsync(identityUser);
 
-                //var token = GenerateJwtToken(identityUser, roles);
                 var token = CreateToken(identityUser, roles[0]);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(identityUser.Id); // Await the method call
 
@@ -71,11 +71,20 @@ namespace Comp1640_Final.Controllers
                     Jwt_token = token
                 };
 
+                // Set cookie
+                Response.Cookies.Append("CMU-user", JsonConvert.SerializeObject(accountDto), new CookieOptions
+                {
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTime.Now.AddDays(1) // You can set the expiration time as per your requirement
+                });
+
                 return Ok(accountDto);
             }
 
             return BadRequest("Email or password is not correct");
         }
+
 
         private string CreateToken(ApplicationUser user, string role)
         {

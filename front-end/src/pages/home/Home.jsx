@@ -19,27 +19,26 @@ import Article from "../article/Article";
 import './home.css'
 import { ProtectedRoute } from "../../common/with-router";
 import Unauthorized from "../errors/unauthorized/Unauthorized";
-import Notification from "../../services/notification.service";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import apis from "../../services/apis.service";
 export default function Home() {
     const [message, setMessage] = useState()
-    const [connection, setConnection] = useState()
-    useEffect(() => {
-        const connect = async ()=>{
-            const connection = new HubConnectionBuilder()
-            .withUrl(apis.normal+"notificationHub")
-            .build();
-            connection.on("ReceiveNotification", (message)=>{
-                setMessage(message)
-            })
+    // const [connection, setConnection] = useState()
+    // useEffect(() => {
+    //     const connect = async ()=>{
+    //         const connection = new HubConnectionBuilder()
+    //         .withUrl(apis.normal+"notificationHub")
+    //         .build();
+    //         connection.on("ReceiveNotification", (message)=>{
+    //             setMessage(message)
+    //         })
 
-            await connection.start();
-            setConnection(connection)
-        }
-        connect()
-    }, []);
+    //         await connection.start();
+    //         setConnection(connection)
+    //     }
+    //     connect()
+    // }, []);
     
     console.log(message)
     const [isLoading, setIsLoading] = useState(true);

@@ -32,60 +32,44 @@ import { jwtDecode } from "jwt-decode";
 class AuthService {
 
     login(email, password) {
-        //real 
         return axios.post(`${apis.normal}login?email=${encodeURIComponent(email)}&passWord=${encodeURIComponent(password)}`)
         .then((response) => {
-            // if (response.data.jwt_token) {
-                console.log(response.data);
-                localStorage.setItem("CMU-user", JSON.stringify(response.data));
-            // }
+            console.log(response.data);
+            // Set cookie
+            document.cookie = `CMU-user=${JSON.stringify(response.data)}; path=/`;
             return response.data;
         });
-        //mock
-        // const user = mockData.find(user => user.username === email && user.password === password);
-        
-        // if (!user) {
-        //     return Promise.reject("Wrong email or password");
-        // }
-        // const userData = {
-        //     username: user.username,
-        //     role: user.role,
-        // };
-        // localStorage.setItem("CMU-user", JSON.stringify(userData));
-
-        // // Resolve with user data
-        // return Promise.resolve(userData);
     }
 
 
     logout() {
-        localStorage.removeItem("CMU-user");
+        document.cookie = "CMU-user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // return axios.post(apis.account + "logout");
     }
 
-    // register(formData) {
-    //     return axios.post(apis.account + "register", formData, {
-    //     headers: {
-    //         "Content-Type": "multipart/form-data",
-    //     },
-    //     });
-    // }
 
     getCurrentUser() {
-        const user = JSON.parse(localStorage.getItem("CMU-user"));
-
-        if (user && user.jwt_token) {
-        const decodedToken = jwtDecode(user.jwt_token);
-        const currentTime = Date.now() / 1000;
-
-        if (decodedToken.exp < currentTime) {
-            // Token has expired, clear local storage
-            localStorage.removeItem("CMU-user");
-            return null;
+        const cookieString = document.cookie;
+        const cookies = cookieString.split(';').map(cookie => cookie.trim());
+        const userCookie = cookies.find(cookie => cookie.startsWith("CMU-user="));
+    
+        if (userCookie) {
+            const user = JSON.parse(userCookie.substring("CMU-user=".length));
+            if (user && user.jwt_token) {
+                const decodedToken = jwtDecode(user.jwt_token);
+                const currentTime = Date.now() / 1000;
+    
+                if (decodedToken.exp < currentTime) {
+                    // Token has expired, clear cookie
+                    document.cookie = "CMU-user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+                    return null;
+                }
+            }
+            return user;
         }
-        }
-        return user;
+        return null;
     }
+    
 }
 
 export default new AuthService();
