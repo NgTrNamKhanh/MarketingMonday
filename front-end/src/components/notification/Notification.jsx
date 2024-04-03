@@ -5,7 +5,7 @@ export default function Notification({notification}) {
     return (
         <div class="notification">
             <div class="user-pic">
-                <img src={`data:image/jpeg;base64,${notification.userNoti.userAvatar}`} className="topbarImg" alt="profile" />
+                <img src={notification.userNoti.userAvatar} className="topbarImg" alt="profile" />
                 {/* <div class="notification-type">
                     <ChatBubble className='notification-type-icon'/>
                 </div> */}

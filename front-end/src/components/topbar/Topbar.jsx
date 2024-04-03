@@ -124,13 +124,13 @@ export default function Topbar({user, setCurrentUser}) {
                             </div>
                         )}
                     <a onClick={handleDropdownToggle}>
-                        <img src={`data:image/jpeg;base64,${user.avatar}`} className="topbarImg" alt="profile" />
+                        <img src={user.avatar} className="topbarImg" alt="profile" />
                     </a>
                     {dropdownOpen && (
                             <div className="dropdownContent" ref={optionsRef}>
                                 <Link to="/profile" className="dropdownContentItemLink">
                                     <div className="dropdownContentItem">
-                                            <img src={`data:image/jpeg;base64,${user.avatar}`} className="topbarImg linkIcon" alt="profile" />
+                                            <img src={user.avatar} className="topbarImg linkIcon" alt="profile" />
                                             <span>{user.firstName} {user.lastName}</span>
                                             <ChevronRight className="moreIcon"/>
                                     </div>

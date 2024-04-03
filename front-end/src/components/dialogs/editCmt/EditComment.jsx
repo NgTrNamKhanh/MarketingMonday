@@ -7,8 +7,7 @@ import apis from '../../../services/apis.service';
 const initialValues = {
     comment: "",
 };
-export default function EditComment({open, handleClose, comment,  comments ,setComments}) {
-    const [loading, setLoading] = useState(false);
+export default function EditComment({open, handleClose, comment,  setSelectedComment}) {
     initialValues.comment = comment ? comment.content : "";
     const userSchema = yup.object().shape({
         comment: yup.string().required("required"),
@@ -21,13 +20,14 @@ export default function EditComment({open, handleClose, comment,  comments ,setC
                 const url = apis.comment;
                 const res = await authHeader().put(url, null, {params:{id: comment.id, content:values.comment }});
                 if (res.status === 200) {
-                    // Update the comment object with the new content
-                    const updatedComment = { ...comment, content: values.comment  };
-                    // Find the index of the edited comment in the comments array
-                    const commentIndex = comments.findIndex((c) => c.id === comment.id);
-                    // Create a new array with the updated comment at its original index
-                    const updatedComments = [...comments.slice(0, commentIndex), updatedComment, ...comments.slice(commentIndex + 1)];
-                    setComments(updatedComments);
+                    setSelectedComment(res.data)
+                    // // Update the comment object with the new content
+                    // const updatedComment = { ...comment, content: values.comment  };
+                    // // Find the index of the edited comment in the comments array
+                    // const commentIndex = comments.findIndex((c) => c.id === comment.id);
+                    // // Create a new array with the updated comment at its original index
+                    // const updatedComments = [...comments.slice(0, commentIndex), updatedComment, ...comments.slice(commentIndex + 1)];
+                    // setComments(updatedComments);
                     setIsSubmitting(false);
                     setMessage("Comment edit successfully.");
                     handleClose();
