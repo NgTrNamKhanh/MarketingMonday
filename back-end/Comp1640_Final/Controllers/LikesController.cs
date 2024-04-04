@@ -110,23 +110,22 @@ namespace Comp1640_Final.Controllers
         {
             var existingLike = await _likeService.GetLikeByArticleAndUser(likeDto.ArticleId, likeDto.UserId);
             //for noti
-            var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
-            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
+            
 
             if (existingLike != null)
             {
                 var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-                string message = user.FirstName + " " + user.LastName + " liked your post: " + article.Title;
-                var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
-                if (oldNoti != null)
-                {
-                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
-                    if (!deleteNoti)
-                    {
-                        return BadRequest("Error");
-                    }
-                    return Ok("Successful");
-                }
+                //string message = user.FirstName + " " + user.LastName + " liked your post: " + article.Title;
+                //var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
+                //if (oldNoti != null)
+                //{
+                //    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                //    if (!deleteNoti)
+                //    {
+                //        return BadRequest("Error");
+                //    }
+                //    return Ok("Successful");
+                //}
                 if (!deleteLikeResult)
                 {
                     return BadRequest("Error deleting existing like.");
@@ -154,13 +153,29 @@ namespace Comp1640_Final.Controllers
             else
             {
                 //---------------- noti -----------------
-
-
-                string message = user.FirstName + " " + user.LastName + " liked your post: " + article.Title;
+                var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
+                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
+                //var author = await _userManager.FindByIdAsync(article.StudentId); //tìm thg tác giả của article
+                var sampleMessage = "liked your post";
+                var oldNoti = await _notificationService.GetNotiByUserAndArticle(article.StudentId, likeDto.ArticleId, sampleMessage);
+                // xóa noti cũ
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                    //return Ok("Successful");
+                }
+                // add noti mới
+                var likeCount = await _likeService.GetArticleLikesCount(likeDto.ArticleId) -1;
+                string message = user.FirstName + " " + user.LastName + " and " + likeCount.ToString() + " others liked your post: " + article.Title;
                 var notification = new Notification
                 {
                     UserId = article.StudentId,
                     UserInteractionId = likeDto.UserId,
+                    ArticleId = likeDto.ArticleId,
                     Message = message,
                 };
                 await _notificationService.PostNotification(notification);
@@ -191,24 +206,22 @@ namespace Comp1640_Final.Controllers
         public async Task<ActionResult<Like>> PostCommentLike(CommentInteractDTO likeDto)
         {
             var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
-            //for notification
-            var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
-            var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+           
 
             if (existingLike != null)
             {
                 var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-                string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content;
-                var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
-                if (oldNoti != null)
-                {
-                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
-                    if (!deleteNoti)
-                    {
-                        return BadRequest("Error");
-                    }
-                    return Ok("Successful");
-                }
+                //string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content;
+                //var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
+                //if (oldNoti != null)
+                //{
+                //    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                //    if (!deleteNoti)
+                //    {
+                //        return BadRequest("Error");
+                //    }
+                //    return Ok("Successful");
+                //}
                 if (!deleteLikeResult)
                 {
                     return BadRequest("Error deleting existing like.");
@@ -235,12 +248,28 @@ namespace Comp1640_Final.Controllers
             else
             {
                 //------------------ noti -------------------
-
-                string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content ;
+                var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
+                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+                var sampleMessage = "liked your comment";
+                var oldNoti = await _notificationService.GetNotiByUserAndComment(comment.UserId, likeDto.CommentId, sampleMessage);
+                // xóa noti cũ
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                    //return Ok("Successful");
+                }
+                // add noti mứi
+                var likeCount = await _likeService.GetCommentLikesCount(likeDto.CommentId) - 1;
+                string message = user.FirstName + " " + user.LastName + " and " + likeCount.ToString() + " others liked your comment: " + comment.Content ;
                 var notification = new Notification
                 {
                     UserId = comment.UserId,
                     UserInteractionId = likeDto.UserId,
+                    CommentId = likeDto.CommentId,
                     Message = message,
                 };
                 await _notificationService.PostNotification(notification);

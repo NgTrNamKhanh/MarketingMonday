@@ -9,7 +9,8 @@ namespace Comp1640_Final.Services
     {
         Task<bool> PostNotification(Notification notification);
         Task<ICollection<Notification>> GetNotifications(string userId);
-        Task<Notification> GetNotiByUserAndMessage(string userId, string message);
+        Task<Notification> GetNotiByUserAndArticle(string userId, Guid articleId, string message);
+        Task<Notification> GetNotiByUserAndComment(string userId, Guid commentId, string message);
         Task<bool> DeleteNoti(Notification notification);
         Task<bool> Save();
 
@@ -30,12 +31,30 @@ namespace Comp1640_Final.Services
             return await Save();
         }
 
-        public async Task<Notification> GetNotiByUserAndMessage(string userId, string message)
+        public async Task<Notification> GetNotiByUserAndArticle(string userId, Guid articleId, string message)
         {
             return await _context.Notifications.Where(n => n.UserId == userId)
-                .Where(n => n.Message == message)
-                .FirstOrDefaultAsync();
+                .Where(n => n.ArticleId == articleId)
+                .Where(n => n.Message.Contains(message))
+                .OrderByDescending(n => n.CreatedAt)
+                 .FirstOrDefaultAsync();
         }
+
+        public async Task<Notification> GetNotiByUserAndComment(string userId, Guid commentId, string message)
+        {
+            return await _context.Notifications.Where(n => n.UserId == userId)
+                .Where(n => n.CommentId == commentId)
+                .Where(n => n.Message.Contains(message))
+                .OrderByDescending(n => n.CreatedAt)
+                 .FirstOrDefaultAsync();
+        }
+
+        //public async Task<Notification> GetNotiByUserAndMessage(string userId, string message)
+        //{
+        //    return await _context.Notifications.Where(n => n.UserId == userId)
+        //        .Where(n => n.Message == message)
+        //        .FirstOrDefaultAsync();
+        //}
 
         public async Task<ICollection<Notification>> GetNotifications(string userId)
         {

@@ -104,6 +104,21 @@ namespace Comp1640_Final.Data
 
             // -------------------- End Dislike -----------------------
 
+            // -------------------- Noti ----------------------
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Article)
+                .WithMany()
+                .HasForeignKey(n => n.ArticleId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Notification>()
+                .HasOne(n => n.Comment)
+                .WithMany()
+                .HasForeignKey(n => n.CommentId)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.NoAction);
+
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<IdentityUserLogin<string>>()
                 .HasKey(l => new { l.LoginProvider, l.ProviderKey, l.UserId });
