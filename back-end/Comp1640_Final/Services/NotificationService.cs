@@ -32,7 +32,9 @@ namespace Comp1640_Final.Services
 
         public async Task<Notification> GetNotiByUserAndMessage(string userId, string message)
         {
-            return await _context.Notifications.Where(n => n.UserId == userId).Where(n => n.Message == message).FirstOrDefaultAsync();
+            return await _context.Notifications.Where(n => n.UserId == userId)
+                .Where(n => n.Message == message)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<ICollection<Notification>> GetNotifications(string userId)
