@@ -108,11 +108,8 @@ using (var scope = app.Services.CreateScope())
 
 
 
-app.MapHub<NotificationHub>("api/notificationHub");
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapHub<NotificationHub>("/notificationHub");
-//});
+//app.MapHub<NotificationHub>("api/notificationHub");
+
 app.UseCors(builder =>
 {
     builder
@@ -124,9 +121,15 @@ app.UseCors(builder =>
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+});
 
 app.MapControllers();
 

@@ -72,14 +72,14 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
-                //UserNoti userNoti = new UserNoti
-                //{
-                //    Id = user.Id,
-                //    UserAvatar = cloudUserImage,
-                //    FirstName = user.FirstName,
-                //    LastName = user.LastName
-                //};
-                //notiResponse.UserNoti = userNoti;
+                UserNoti userNoti = new UserNoti
+                {
+                    Id = user.Id,
+                    UserAvatar = cloudUserImage,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName
+                };
+                notiResponse.UserNoti = userNoti;
                 notiResponses.Add(notiResponse);
             }
             return Ok(notiResponses);

@@ -27,10 +27,13 @@ namespace Comp1640_Final.Controllers
         private readonly ILikeService _likeService;
         private readonly IDislikeService _dislikeService;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IArticleService _articleService;
+        private readonly INotificationService _notificationService;
 
         public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, 
             ICommentService commentService, IWebHostEnvironment webHostEnvironment, IUserService userService, ILikeService likeService, 
-            IDislikeService dislikeService, IHttpContextAccessor httpContextAccessor)
+            IDislikeService dislikeService, IHttpContextAccessor httpContextAccessor,
+            IArticleService articleService, INotificationService notificationService)
         {
             _context = context;
             _mapper = mapper;
@@ -41,6 +44,8 @@ namespace Comp1640_Final.Controllers
             _likeService = likeService;
             _dislikeService  = dislikeService;
             _httpContextAccessor = httpContextAccessor;
+            _articleService = articleService;
+            _notificationService = notificationService;
 
         }
 
@@ -220,7 +225,32 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
+                // notification
+                var article = _articleService.GetArticleByID(commentDto.ArticleId); //tìm article
                 var user = await _userManager.FindByIdAsync(commentDto.UserId);
+                var sampleMessage = "other have commented on your post";
+                // delete old noti
+                var oldNoti = await _notificationService.GetNotiByUserAndArticle(article.StudentId, commentDto.ArticleId, sampleMessage);
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                }
+                // create new noti
+                var commentCount = await _commentService.GetCommentsCount(commentDto.ArticleId) - 1;
+                var message = user.FirstName + " " + user.LastName + " and " + commentCount + " other have commented on your post" ;
+                var notification = new Notification
+                {
+                    UserId = article.StudentId,
+                    UserInteractionId = commentDto.UserId,
+                    ArticleId = commentDto.ArticleId,
+                    Message = message
+                };
+                await _notificationService.PostNotification(notification);
+                // dữ liệu trả về khi post
                 var commentResult = _context.Comments.Find(comment.Id);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -262,7 +292,31 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
+                //noti
 				var user = await _userManager.FindByIdAsync(commentDto.UserId);
+                var sampleMessage = "other have replied your comment";
+                var oldNoti = await _notificationService.GetNotiByUserAndComment(parentComment.UserId, parentCommentId, sampleMessage);
+                if (oldNoti != null)
+                {
+                    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
+                    if (!deleteNoti)
+                    {
+                        return BadRequest("Error");
+                    }
+                }
+
+                var repliesCount = await _commentService.GetRepliesCount(parentCommentId) - 1;
+                var message = user.FirstName + " " + user.LastName + " and " + repliesCount + " other have replied your comment";
+                var notification = new Notification
+                {
+                    UserId = parentComment.UserId,
+                    UserInteractionId = commentDto.UserId,
+                    CommentId = parentCommentId,
+                    Message = message,
+                };
+                await _notificationService.PostNotification(notification);
+
+                // dữ liệu trả về
 				var replyResult = _context.Comments.Find(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
