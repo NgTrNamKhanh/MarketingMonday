@@ -4,7 +4,6 @@ namespace Comp1640_Final.Models
 {
     public class Account
     {
-        public Guid Id { get; set; }
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -17,7 +16,7 @@ namespace Comp1640_Final.Models
 
         public string Role { get; set; }
         [NotMapped]
-        public IFormFile AvatarImageFile { get; set; }
+        public IFormFile? AvatarImageFile { get; set; }
         public string? CloudAvatarImagePath { get; set; }
 
         public int FacultyId { get; set; }

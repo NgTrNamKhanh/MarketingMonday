@@ -29,31 +29,32 @@ namespace Comp1640_Final.Controllers
     {
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        private static IWebHostEnvironment _webHostEnvironment;
+        //private static IWebHostEnvironment _webHostEnvironment;
         private readonly Cloudinary _cloudinary;
 
         public AdminController(IAuthService authService,
             UserManager<ApplicationUser> userManager,
             IUserService userService,
-            IWebHostEnvironment webHostEnvironment,
-            Cloudinary cloudinary,
-            IMapper mapper)
+            //IWebHostEnvironment webHostEnvironment,
+            Cloudinary cloudinary
+            //IMapper mapper
+            )
         {
             _authService = authService;
             _userManager = userManager;
-            _mapper = mapper;
+            //_mapper = mapper;
             _userService = userService;
             _cloudinary = cloudinary;
-            _webHostEnvironment = webHostEnvironment;
+            //_webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost("createAccount")]
-        public async Task<IActionResult> CreateAccount([FromForm] CreateAccountDTO account)
+        public async Task<IActionResult> CreateAccount([FromForm] Models.Account account)
         {
-            var accountMap = _mapper.Map<Models.Account>(account);
-            accountMap.Id = Guid.NewGuid();
+            //var accountMap = _mapper.Map<Models.Account>(account);
+            //accountMap.Id = Guid.NewGuid();
 
             try
             {
@@ -72,10 +73,10 @@ namespace Comp1640_Final.Controllers
                     var uploadResult = await _cloudinary.UploadAsync(uploadParams);
 
                     // Set the user's avatar image path to the URL from Cloudinary
-                    accountMap.CloudAvatarImagePath = uploadResult.Uri.ToString();
+                    account.CloudAvatarImagePath = uploadResult.Uri.ToString();
                 }
 
-                if (await _authService.CreateAccountUser(accountMap))
+                if (await _authService.CreateAccountUser(account))
                 {
                     return Ok("Create Successful");
                 }
