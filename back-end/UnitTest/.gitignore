@@ -46,3 +46,13 @@ bld/
 *.user
 *.userosscache
 *.sln.docstates
+
+# NUnit test files
+*.nunit
+*.nunit.xml
+
+# Ignore NUnit cache files
+*.cache
+*.json
+*.props
+*.targets

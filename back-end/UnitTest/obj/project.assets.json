@@ -508,7 +508,8 @@
           "lib/netcoreapp3.1/Microsoft.VisualStudio.CodeCoverage.Shim.dll": {}
         },
         "build": {
-          "build/netstandard2.0/_._": {}
+          "build/netstandard2.0/Microsoft.CodeCoverage.props": {},
+          "build/netstandard2.0/Microsoft.CodeCoverage.targets": {}
         }
       },
       "Microsoft.CSharp/4.7.0": {
@@ -1119,10 +1120,11 @@
           "lib/netcoreapp3.1/_._": {}
         },
         "build": {
-          "build/netcoreapp3.1/_._": {}
+          "build/netcoreapp3.1/Microsoft.NET.Test.Sdk.props": {},
+          "build/netcoreapp3.1/Microsoft.NET.Test.Sdk.targets": {}
         },
         "buildMultiTargeting": {
-          "buildMultiTargeting/_._": {}
+          "buildMultiTargeting/Microsoft.NET.Test.Sdk.props": {}
         }
       },
       "Microsoft.NETCore.Platforms/1.1.1": {
@@ -1415,7 +1417,7 @@
           }
         },
         "build": {
-          "build/netcoreapp3.1/_._": {}
+          "build/netcoreapp3.1/Microsoft.TestPlatform.TestHost.props": {}
         }
       },
       "Microsoft.Win32.Registry/4.5.0": {
@@ -1513,8 +1515,11 @@
           }
         },
         "build": {
-          "build/_._": {}
+          "build/NUnit.props": {}
         }
+      },
+      "NUnit.Analyzers/4.1.0": {
+        "type": "package"
       },
       "NUnit.Console/3.17.0": {
         "type": "package",
@@ -1548,7 +1553,7 @@
       "NUnit3TestAdapter/4.5.0": {
         "type": "package",
         "build": {
-          "build/netcoreapp3.1/_._": {}
+          "build/netcoreapp3.1/NUnit3TestAdapter.props": {}
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl/4.3.2": {
@@ -4932,6 +4937,24 @@
         "nunit.nuspec"
       ]
     },
+    "NUnit.Analyzers/4.1.0": {
+      "sha512": "Odd1RusSMnfswIiCPbokAqmlcCCXjQ20poaXWrw+CWDnBY1vQ/x6ZGqgyJXpebPq5Uf8uEBe5iOAySsCdSrWdQ==",
+      "type": "package",
+      "path": "nunit.analyzers/4.1.0",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "analyzers/dotnet/cs/nunit.analyzers.dll",
+        "docs/README.md",
+        "images/nunit_256.png",
+        "license.txt",
+        "nunit.analyzers.4.1.0.nupkg.sha512",
+        "nunit.analyzers.nuspec",
+        "tools/install.ps1",
+        "tools/uninstall.ps1"
+      ]
+    },
     "NUnit.Console/3.17.0": {
       "sha512": "7+CAHE1hteLwG8ATouNztYE2siPCrXVptK4MM+im6QhAFWg5faCtRFBTwUcvfiPsscXAgqttgubrJBl2ZfT8fA==",
       "type": "package",
@@ -8214,7 +8237,14 @@
   "projectFileDependencyGroups": {
     "net7.0": [
       "Comp1640_Final >= 1.0.0",
-      "Moq >= 4.20.70"
+      "Microsoft.NET.Test.Sdk >= 17.9.0",
+      "Moq >= 4.20.70",
+      "NUnit >= 4.1.0",
+      "NUnit.Analyzers >= 4.1.0",
+      "NUnit.Console >= 3.17.0",
+      "NUnit.ConsoleRunner >= 3.17.0",
+      "NUnit.Extension.NUnitProjectLoader >= 3.7.1",
+      "NUnit3TestAdapter >= 4.5.0"
     ]
   },
   "packageFolders": {
@@ -8265,9 +8295,39 @@
       "net7.0": {
         "targetAlias": "net7.0",
         "dependencies": {
+          "Microsoft.NET.Test.Sdk": {
+            "target": "Package",
+            "version": "[17.9.0, )"
+          },
           "Moq": {
             "target": "Package",
             "version": "[4.20.70, )"
+          },
+          "NUnit": {
+            "target": "Package",
+            "version": "[4.1.0, )"
+          },
+          "NUnit.Analyzers": {
+            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[4.1.0, )"
+          },
+          "NUnit.Console": {
+            "target": "Package",
+            "version": "[3.17.0, )"
+          },
+          "NUnit.ConsoleRunner": {
+            "target": "Package",
+            "version": "[3.17.0, )"
+          },
+          "NUnit.Extension.NUnitProjectLoader": {
+            "target": "Package",
+            "version": "[3.7.1, )"
+          },
+          "NUnit3TestAdapter": {
+            "target": "Package",
+            "version": "[4.5.0, )"
           }
         },
         "imports": [
