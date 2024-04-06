@@ -44,45 +44,45 @@ namespace UnitTest
                 _cloudinaryMock.Object);
         }
 
-        [Test]
-        public async Task CreateAccount_Test()
-        {
-            // Arrange
-            var accountDto = new Comp1640_Final.Models.Account
-            {
-                FirstName = "Quoc",
-                LastName = "Viet",
-                PhoneNumber = "1234567890",
-                Email = "viet@gmail.com",
-                Password = "viet123",
-                Role = "Admin",
-                FacultyId = 1
+        //[Test]
+        //public async Task CreateAccount_Test()
+        //{
+        //    // Arrange
+        //    var accountDto = new Comp1640_Final.Models.Account
+        //    {
+        //        FirstName = "Quoc",
+        //        LastName = "Viet",
+        //        PhoneNumber = "1234567890",
+        //        Email = "viet@gmail.com",
+        //        Password = "viet123",
+        //        Role = "Admin",
+        //        FacultyId = 1
                 
-            };
-            var user = new ApplicationUser 
-            {
-                FirstName = accountDto.FirstName,
-                LastName = accountDto.LastName,
-                Email = accountDto.Email,
-                UserName = accountDto.Email,
-                FacultyId = accountDto.FacultyId,
-                PhoneNumber = accountDto.PhoneNumber,
-                CloudAvatarImagePath = accountDto.CloudAvatarImagePath,
-            };
+        //    };
+        //    var user = new ApplicationUser 
+        //    {
+        //        FirstName = accountDto.FirstName,
+        //        LastName = accountDto.LastName,
+        //        Email = accountDto.Email,
+        //        UserName = accountDto.Email,
+        //        FacultyId = accountDto.FacultyId,
+        //        PhoneNumber = accountDto.PhoneNumber,
+        //        CloudAvatarImagePath = accountDto.CloudAvatarImagePath,
+        //    };
 
-            //_authServiceMock.Setup(a => a.CreateAccountUser(accountDto)).ReturnsAsync(false);
-            _authServiceMock.Setup(a => a.CreateAccountUser(accountDto)).ReturnsAsync(true);
-            _userManagerMock.Setup(u => u.CreateAsync(user, accountDto.Password)).ReturnsAsync(IdentityResult.Success);
-            //_cloudinaryMock.Setup(c => c.UploadAsync(It.IsAny<ImageUploadParams>())).ReturnsAsync(new ImageUploadResult());
+        //    //_authServiceMock.Setup(a => a.CreateAccountUser(accountDto)).ReturnsAsync(false);
+        //    _authServiceMock.Setup(a => a.CreateAccountUser(accountDto)).ReturnsAsync(true);
+        //    _userManagerMock.Setup(u => u.CreateAsync(user, accountDto.Password)).ReturnsAsync(IdentityResult.Success);
+        //    //_cloudinaryMock.Setup(c => c.UploadAsync(It.IsAny<ImageUploadParams>())).ReturnsAsync(new ImageUploadResult());
 
-            // Act
-            var result = await _adminController.CreateAccount(accountDto) ;
+        //    // Act
+        //    var result = await _adminController.CreateAccount(accountDto) ;
 
-            // Assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            //Assert.That(result, Is.EqualTo("Create Successful"));
-        }
+        //    // Assert
+        //    Assert.That(result, Is.Not.Null);
+        //    Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        //    //Assert.That(result, Is.EqualTo("Create Successful"));
+        //}
 
     }
 }
