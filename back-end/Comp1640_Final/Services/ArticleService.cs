@@ -150,7 +150,7 @@ namespace Comp1640_Final.Services
                 return false;
             }
 
-            var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" }; // Add more file extensions as needed
+            var allowedExtensions = new[] { ".png", ".jpg", ".jpeg", ".gif" }; 
 
             foreach (var imageFile in imageFiles)
             {
@@ -163,7 +163,6 @@ namespace Comp1640_Final.Services
                     return false;
                 }
 
-                // Perform additional checks if needed, such as content type validation.
             }
 
             return true;

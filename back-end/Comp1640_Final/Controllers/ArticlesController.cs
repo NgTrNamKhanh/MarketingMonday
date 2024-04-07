@@ -320,6 +320,9 @@ namespace Comp1640_Final.Controllers
         [HttpGet("status/{publishStatusId}/faculty/{facultyId}")]
         public async Task<IActionResult> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId, string userId)
         {
+            if (publishStatusId < 0 || publishStatusId > 3 || publishStatusId == null)
+                return BadRequest("Error publish status input");
+
             var articles = await _articleService.GetArticleByPublishStatusIdAndFacultyId(publishStatusId, facultyId);
 
             if (articles == null || !articles.Any())
@@ -559,6 +562,10 @@ namespace Comp1640_Final.Controllers
             var articleMap = _mapper.Map<Article>(articleUpdate);
             articleMap.UploadDate = DateTime.Now;
             var article = _articleService.GetArticleByID(articleMap.Id);
+            if (article.PublishStatusId == (int)EPublishStatus.Approval)
+            {
+                return BadRequest("Approved article can not be update");
+            }
 
             if (articleUpdate.ImageFiles.Count > 0)
             {
