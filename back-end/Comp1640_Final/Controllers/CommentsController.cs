@@ -435,9 +435,11 @@ namespace Comp1640_Final.Controllers
                 foreach (var reply in replies)
                 {
                     await DeleteCommentAndReplies(reply.Id); //gọi đệ quy
-                    //delete likes và dislike của reply
+                    //delete likes, dislike va noti của reply
                     var likesOfReply = await _likeService.GetCommentLikes(reply.Id);
                     var dislikesOfReply = await _dislikeService.GetCommentDislikes(reply.Id);
+                    var noti = await _notificationService.GetNotiByComment(reply.Id);
+                    _context.Notifications.RemoveRange(noti);
                     _context.Likes.RemoveRange(likesOfReply); 
                     _context.Dislikes.RemoveRange(dislikesOfReply);
                     //delete reply
@@ -448,23 +450,33 @@ namespace Comp1640_Final.Controllers
             //delete likes và dislike của comment gốc
             var likesOfComment = await _likeService.GetCommentLikes(commentId);
             var dislikesOfComment = await _dislikeService.GetCommentDislikes(commentId);
+            var noti = await _notificationService.GetNotiByComment(commentId);
+            _context.RemoveRange(noti);
             _context.Likes.RemoveRange(likesOfComment);
             _context.Dislikes.RemoveRange(dislikesOfComment);
 
+
             //xoá comment gốc
             var commentToDelete = _commentService.GetCommentById(commentId);
+
+            var parentComment = _commentService.GetCommentById((Guid)commentToDelete.ParentCommentId);
+            var commentResponse = _mapper.Map<CommentResponse>(parentComment);
+
+            
+
             if (commentToDelete != null)
             {
                 await DeleteCommentAndReplies(commentId); //xoá tất cả replies, likes và dislikes liên quan
                 _context.Comments.Remove(commentToDelete); //xoá comment gốc
             }
-
             var result = await _commentService.Save(); //save vào db
+
+            commentResponse.hasReplies = await _commentService.HasReplies(parentComment.Id);
             if (!result)
             {
                 return BadRequest("Failed");
             }
-            return Ok("Delete successful");
+            return Ok(commentResponse);
         }
 
     }

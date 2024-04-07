@@ -15,6 +15,7 @@ namespace Comp1640_Final.Services
         Task<bool> PostComment(Comment cmt);
 
         Task<bool> EditComment(Comment cmt);
+        Task<bool> HasReplies (Guid parentId);
         Task<int> GetCommentsCount(Guid  articleId);
         Task<int> GetRepliesCount(Guid commentId);
         Task<bool> Save();
@@ -77,6 +78,11 @@ namespace Comp1640_Final.Services
         public async Task<int> GetRepliesCount(Guid commentId)
         {
             return await _context.Comments.CountAsync(p => p.ParentCommentId == commentId);
+        }
+
+        public async Task<bool> HasReplies(Guid parentId)
+        {
+            return await _context.Comments.AnyAsync(c => c.ParentCommentId == parentId);
         }
 
         public async Task<bool> PostComment(Comment cmt)

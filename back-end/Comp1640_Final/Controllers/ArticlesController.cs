@@ -500,7 +500,7 @@ namespace Comp1640_Final.Controllers
                         {
                             File = new FileDescription(file.FileName, file.OpenReadStream())
                         };
-                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                        var uploadResult = await _articleService.UploadImage(uploadParams);
                         uploadResults.Add(uploadResult);
                     }
 
@@ -527,7 +527,7 @@ namespace Comp1640_Final.Controllers
                     {
                         File = new FileDescription(articleAdd.DocFiles.FileName, articleAdd.DocFiles.OpenReadStream())
                     };
-                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                    var uploadResult = await _articleService.UploadFile(uploadParams);
 
                     // Update article with new file URLs
                     articleMap.CloudDocPath = uploadResult.Url.ToString();

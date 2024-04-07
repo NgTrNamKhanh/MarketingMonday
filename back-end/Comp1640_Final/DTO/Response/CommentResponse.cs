@@ -15,6 +15,7 @@
         public bool IsDisliked { get; set; }
         public string ParentCommentId { get; set; }
         public bool  hasReplies { get; set; }
+        public bool IsLastReply { get; set; }
 
     }
     public class UserComment 

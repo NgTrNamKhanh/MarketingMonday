@@ -109,30 +109,8 @@ namespace Comp1640_Final.Controllers
         [HttpPut("account")]
         public async Task<IActionResult> PutAccountForAdmin([FromForm] EditAccountDTO account, string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
-            var oldRoles = await _userManager.GetRolesAsync(user);
-            if (!string.IsNullOrWhiteSpace(account.Password))
-            {
-                // If password is provided and not empty, reset it
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-                var result = await _userManager.ResetPasswordAsync(user, token, account.Password);
-                if (!result.Succeeded)
-                {
-                    return BadRequest("Failed to reset password");
-                }
-            }
-
-            user.Email = account.Email;
-            user.PhoneNumber = account.PhoneNumber;
-            user.UserName = account.Email;
-            user.FirstName = account.FirstName;
-            user.LastName = account.LastName;
-            user.FacultyId = account.FacultyId;
-            await _userManager.RemoveFromRolesAsync(user, oldRoles);
-            // Thêm vai trò mới
-            var changeRole = await _userManager.AddToRoleAsync(user, account.Role);
-            var changeEmail = await _userManager.UpdateAsync(user);
-            if (changeEmail.Succeeded)
+            
+            if (await _authService.EditAccount(account,userId))
             {
                 return Ok("Successful");
             }
@@ -142,7 +120,7 @@ namespace Comp1640_Final.Controllers
         [HttpGet("accounts")]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetAllUsers()
         {
-            var users = await _userManager.Users.ToListAsync();
+            var users = _authService.GetAllUsers();
             var accountDto = new List<object>();
 
             foreach (var user in users)
@@ -165,26 +143,26 @@ namespace Comp1640_Final.Controllers
             return Ok(accountDto);
         }
 
-        [HttpDelete("{email}")]
-        public async Task<IActionResult> DeleteUser(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
+        //[HttpDelete("{userId}")]
+        //public async Task<IActionResult> DeleteUser(string userId)
+        //{
+        //    var user = await _userManager.FindByIdAsync(userId);
 
-            if (user == null)
-            {
-                return NotFound(); // User not found
-            }
+        //    if (user == null)
+        //    {
+        //        return NotFound(); // User not found
+        //    }
 
-            var result = await _userManager.DeleteAsync(user);
-            if (result.Succeeded)
-            {
-                return Ok(); // Successfully deleted
-            }
-            else
-            {
-                return BadRequest(result.Errors); // Failed to delete user
-            }
-        }
+        //    var result = await _userManager.DeleteAsync(user);
+        //    if (result.Succeeded)
+        //    {
+        //        return Ok(); // Successfully deleted
+        //    }
+        //    else
+        //    {
+        //        return BadRequest(result.Errors); // Failed to delete user
+        //    }
+        //}
 
 
     }
