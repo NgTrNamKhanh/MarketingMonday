@@ -11,6 +11,7 @@ namespace Comp1640_Final.Services
         Task<ICollection<Notification>> GetNotifications(string userId);
         Task<Notification> GetNotiByUserAndArticle(string userId, Guid articleId, string message);
         Task<Notification> GetNotiByUserAndComment(string userId, Guid commentId, string message);
+        Task<ICollection<Notification>> GetNotiByComment( Guid commentId);
         Task<bool> DeleteNoti(Notification notification);
         Task<bool> Save();
 
@@ -29,6 +30,11 @@ namespace Comp1640_Final.Services
         {
             _context.Remove(notification);
             return await Save();
+        }
+
+        public async Task<ICollection<Notification>> GetNotiByComment(Guid commentId)
+        {
+            return await _context.Notifications.Where(n => n.CommentId == commentId).ToListAsync();
         }
 
         public async Task<Notification> GetNotiByUserAndArticle(string userId, Guid articleId, string message)

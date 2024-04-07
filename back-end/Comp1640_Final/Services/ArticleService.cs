@@ -1,4 +1,6 @@
-﻿using Comp1640_Final.Data;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Comp1640_Final.Data;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -21,6 +23,8 @@ namespace Comp1640_Final.Services
         Task<IEnumerable<Article>> GetArticleByPublishStatus(int publishStatusId);
         Task<bool> UpdateArticle(Article article);
         Task<bool> AddArticle(Article article);
+        Task<ImageUploadResult> UploadImage(ImageUploadParams parameters);
+        Task<RawUploadResult> UploadFile(RawUploadParams parameters);
         bool IsValidImageFile(List<IFormFile> imageFile);
         bool IsValidDocFile(IFormFile imageFile);
         bool ArticleExists(Guid articleId);
@@ -35,12 +39,15 @@ namespace Comp1640_Final.Services
         private readonly ProjectDbContext _context;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly Cloudinary _cloudinary;
 
-        public AritcleService(ProjectDbContext context, IWebHostEnvironment webHostEnvironment, UserManager<ApplicationUser> userManager)
+        public AritcleService(ProjectDbContext context, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _cloudinary = cloudinary;
+
         }
         public ICollection<Article> GetArticles()
         {
@@ -211,6 +218,16 @@ namespace Comp1640_Final.Services
             var publicIdWithExtension = segments[segments.Length - 1]; // Get the last segment (filename with extension)
             var publicId = publicIdWithExtension.Substring(0, publicIdWithExtension.LastIndexOf('.')); // Remove the file extension
             return publicId;
+        }
+
+        public async Task<ImageUploadResult> UploadImage(ImageUploadParams parameters)
+        {
+            return await _cloudinary.UploadAsync(parameters);
+        }
+
+        public async Task<RawUploadResult> UploadFile(RawUploadParams parameters)
+        {
+            return await _cloudinary.UploadAsync(parameters);
         }
     }
 }

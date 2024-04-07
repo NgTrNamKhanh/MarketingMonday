@@ -1,4 +1,6 @@
-﻿using Comp1640_Final.Data;
+﻿using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using Comp1640_Final.Data;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,7 @@ namespace Comp1640_Final.Services
         Task<string> SaveImage(IFormFile imageFile, string subFolderName);
         string GetPublicIdFromImageUrl(string imageUrl);
         Task<string> GetCloudinaryAvatarImagePath(string userId);
+
 
     }
     public class UserService : IUserService
@@ -101,5 +104,7 @@ namespace Comp1640_Final.Services
             var publicId = fileName.Substring(0, fileName.LastIndexOf('.')); // Remove the file extension
             return publicId;
         }
+
+
     }
 }
