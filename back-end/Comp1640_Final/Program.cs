@@ -23,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ProjectDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, options => options.EnableRetryOnFailure()));
 
 var configuration = builder.Configuration;
 var cloudinaryAccount = configuration.GetSection("Cloudinary").Get<CloudinarySettings>();

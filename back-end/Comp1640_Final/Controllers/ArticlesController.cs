@@ -703,7 +703,7 @@ namespace Comp1640_Final.Controllers
         }
 
         [HttpPut("updateListCoordinatorStatus")]
-        public async Task<ActionResult> UpdateListCoordinatorStatusArticle([FromBody] List<Guid> articleIds)
+        public async Task<ActionResult> UpdateListCoordinatorStatusArticle([FromForm] List<Guid> articleIds)
         {
             if (articleIds == null || articleIds.Count == 0)
                 return BadRequest("No article IDs provided.");
