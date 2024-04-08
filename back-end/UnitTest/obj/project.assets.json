@@ -8248,19 +8248,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DELL\\.nuget\\packages\\": {}
+    "C:\\Users\\longd\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\UnitTest\\UnitTest.csproj",
+      "projectUniqueName": "C:\\COMP1640\\MarketingMonday\\back-end\\UnitTest\\UnitTest.csproj",
       "projectName": "UnitTest",
-      "projectPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\UnitTest\\UnitTest.csproj",
-      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\UnitTest\\obj\\",
+      "projectPath": "C:\\COMP1640\\MarketingMonday\\back-end\\UnitTest\\UnitTest.csproj",
+      "packagesPath": "C:\\Users\\longd\\.nuget\\packages\\",
+      "outputPath": "C:\\COMP1640\\MarketingMonday\\back-end\\UnitTest\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\longd\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8268,14 +8268,14 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "https://www.nuget.org/api/v2/": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640_Final\\Comp1640_Final.csproj": {
-              "projectPath": "C:\\Users\\DELL\\Desktop\\github folder\\MarketingMonday\\back-end\\Comp1640_Final\\Comp1640_Final.csproj"
+            "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640_Final\\Comp1640_Final.csproj": {
+              "projectPath": "C:\\COMP1640\\MarketingMonday\\back-end\\Comp1640_Final\\Comp1640_Final.csproj"
             }
           }
         }
@@ -8284,11 +8284,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -8346,7 +8341,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }
