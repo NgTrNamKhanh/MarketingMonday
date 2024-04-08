@@ -53,9 +53,6 @@ namespace Comp1640_Final.Controllers
         [HttpPost("createAccount")]
         public async Task<IActionResult> CreateAccount([FromForm] Models.Account account)
         {
-            //var accountMap = _mapper.Map<Models.Account>(account);
-            //accountMap.Id = Guid.NewGuid();
-
             try
             {
                 if (account.AvatarImageFile != null)
@@ -75,6 +72,12 @@ namespace Comp1640_Final.Controllers
                     // Set the user's avatar image path to the URL from Cloudinary
                     account.CloudAvatarImagePath = uploadResult.Uri.ToString();
                 }
+                else
+                {
+                    // If no avatar image is provided, set a default image URL
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    account.CloudAvatarImagePath = defaultImageFileName;
+                }
 
                 if (await _authService.CreateAccountUser(account))
                 {
@@ -87,6 +90,7 @@ namespace Comp1640_Final.Controllers
                 return BadRequest($"Failed to create account: {ex.Message}");
             }
         }
+
 
         //[HttpPut]
         //public async Task<IActionResult> PutAccount(string email, string password)

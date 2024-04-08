@@ -15,6 +15,7 @@ namespace Comp1640_Final.Services
         Task<Like> GetLikeByCommentAndUser(Guid commentId, string userId);
         Task<bool> IsArticleLiked(string userId, Guid articleId);
         Task<bool> IsCommentLiked(string userId, Guid commentId);
+
         Task<bool> PostLike(Like like);
         Task<int> GetArticleLikesCount(Guid articleId);
         Task<int> GetCommentLikesCount(Guid commentId);

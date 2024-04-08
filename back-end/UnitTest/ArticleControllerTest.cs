@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Comp1640_Final.Controllers;
 using Comp1640_Final.Data;
+using Comp1640_Final.DTO.Request;
 using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
@@ -13,6 +15,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -381,6 +384,111 @@ namespace UnitTest
 
         }
 
+        [Test]
+        public async Task AddArticle_ValidImageAndDoc_Test()
+        {
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("kjghgfghd"));
+            var imageFile1 = new FormFile(memoryStream,2, 2,"kasjdkadsj","ytdsdrs");
+            var imageFile2 = new FormFile(memoryStream,4, 4,"gfdghgahsd","asdagfd");
+            var listImageFile = new List<IFormFile> 
+            {
+                imageFile1,
+                imageFile2,
+            };
+
+
+            var article = new Article();
+            var articleDto = new AddArticleDTO
+            {
+                ImageFiles = listImageFile,
+                DocFiles = imageFile1,
+            };
+            var uploadImgResultMock = new ImageUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            var uploadFileResultMock = new RawUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            _mapperMock.Setup(m => m.Map<Article>(articleDto)).Returns(article);
+            _articleServiceMock.Setup(a => a.AddArticle(article)).ReturnsAsync(true);
+            _articleServiceMock.Setup(a => a.IsValidImageFile(articleDto.ImageFiles)).Returns(true);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+            _articleServiceMock.Setup(u => u.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
+            _articleServiceMock.Setup(u => u.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+
+            var result = await _articleController.AddArticle(articleDto);
+            //assert
+            Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
+
+            var resultOk = (OkObjectResult)result.Result;
+
+            Assert.That(resultOk.Value, Is.EqualTo("Successfully added"));
+        }
+
+        [Test]
+        public async Task AddArticle_NotValidImage_Test()
+        {
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("kjghgfghd"));
+            var imageFile1 = new FormFile(memoryStream, 2, 2, "kasjdkadsj", "ytdsdrs");
+            var imageFile2 = new FormFile(memoryStream, 4, 4, "gfdghgahsd", "asdagfd");
+            var listImageFile = new List<IFormFile>
+            {
+                imageFile1,
+                imageFile2,
+            };
+
+
+            var article = new Article();
+            var articleDto = new AddArticleDTO
+            {
+                ImageFiles = listImageFile,
+                DocFiles = imageFile1,
+            };
+            var uploadImgResultMock = new ImageUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            var uploadFileResultMock = new RawUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            _mapperMock.Setup(m => m.Map<Article>(articleDto)).Returns(article);
+            _articleServiceMock.Setup(a => a.AddArticle(article)).ReturnsAsync(true);
+            _articleServiceMock.Setup(a => a.IsValidImageFile(articleDto.ImageFiles)).Returns(false);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+            _articleServiceMock.Setup(u => u.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+
+            var result = await _articleController.AddArticle(articleDto);
+            //assert
+            Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
+
+        }
+
+        [Test]
+        public async Task AddArticle_NotValidDoc_Test()
+        {
+            var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes("kjghgfghd"));
+            var imageFile1 = new FormFile(memoryStream, 2, 2, "kasjdkadsj", "ytdsdrs");
+            var imageFile2 = new FormFile(memoryStream, 4, 4, "gfdghgahsd", "asdagfd");
+            var listImageFile = new List<IFormFile>
+            {
+                imageFile1,
+                imageFile2,
+            };
+
+
+            var article = new Article();
+            var articleDto = new AddArticleDTO
+            {
+                ImageFiles = listImageFile,
+                DocFiles = imageFile1,
+            };
+            var uploadImgResultMock = new ImageUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            var uploadFileResultMock = new RawUploadResult { Uri = new Uri("http://example.com/image.jpg") };
+            _mapperMock.Setup(m => m.Map<Article>(articleDto)).Returns(article);
+            _articleServiceMock.Setup(a => a.AddArticle(article)).ReturnsAsync(true);
+            _articleServiceMock.Setup(a => a.IsValidImageFile(articleDto.ImageFiles)).Returns(true);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(false);
+            _articleServiceMock.Setup(u => u.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
+            _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+
+            var result = await _articleController.AddArticle(articleDto);
+            //assert
+            Assert.That(result.Result, Is.InstanceOf<BadRequestObjectResult>());
+
+        }
 
     }
 }
