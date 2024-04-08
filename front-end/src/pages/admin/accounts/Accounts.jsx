@@ -11,41 +11,7 @@ import apis from "../../../services/apis.service";
 import authService from "../../../services/auth.service";
 import authHeader from "../../../services/auth.header";
 import axios from "axios";
-// const data = [
-//     {
-//         id: 1,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         firstName: "user1",
-//         lastName: "lmao",
-//         email: "user1@gmail.com",
-//         contact_number: "123456789",
-//         faculty: "Marketing",
-//         role: 'user',
-        
-//     },
-//     {
-//         id: 2,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         firstName: "user2",
-//         lastName: 'lmao',
-//         email: "user2@gmail.com",
-//         contact_number: "123456789",
-//         faculty: "Marketing",
-//         role: 'user',
-        
-//     },
-//     {
-//         id: 3,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         firstName: "user3",
-//         lastName: 'lmao',
-//         email: "user3@gmail.com",
-//         contact_number: "123456789",
-//         faculty: "Marketing",
-//         role: 'user',
-        
-//     },
-// ];
+
 
 const Accounts = () => {
     const {data, loading ,error, reFetch} = useFetch(apis.admin+"accounts") 

@@ -128,7 +128,13 @@ export default function Feed({userId}) {
                 setLoading(true)
                 try {
                     setError(null)
-                    const response = await authHeader().get(apis.article + "approved/faculty", { params: { facultyId: facultyId, userId: currentUser.id }});
+                    let url;
+                    if (currentUser.roles.includes('guest')) {
+                        url = `${apis.article}guest/faculty`;
+                    } else {
+                        url = `${apis.article}approved/faculty`;
+                    }
+                    const response = await authHeader().get(url, { params: { facultyId: facultyId, userId: currentUser.id }});
                     setFilteredPosts(response.data)
                     setPosts(response.data)
                     setLoading(false)

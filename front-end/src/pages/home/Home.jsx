@@ -85,7 +85,7 @@ export default function Home() {
                                             <Navigate to="/accounts" />
                                         ) : currentUser.roles.includes('Manager') ? (
                                             <Navigate to="/dashboard" />
-                                        ) : currentUser.roles.includes('Student') ? (
+                                        ) : currentUser.roles.includes('Student', 'Guest') ? (
                                             <Navigate to={`/feed/${currentUser.facultyId}`} />
                                         ) : currentUser.roles.includes('Coordinator') ? (
                                             <Navigate to="/submissions" />
@@ -100,7 +100,7 @@ export default function Home() {
                             <Route path="/feed/:facultyId" element=
                                 {<ProtectedRoute
                                     element={<Feed />}
-                                    requiredRoles={['Admin', 'Manager', 'Coordinator','Student','Guess']}
+                                    requiredRoles={['Admin', 'Manager', 'Coordinator','Student','Guest']}
                                 />}  
                             />
                             <Route path="/profile" element={<Profile/>} />

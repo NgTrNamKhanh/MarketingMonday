@@ -113,8 +113,9 @@ using (var scope = app.Services.CreateScope())
 app.UseCors(builder =>
 {
     builder
-    .WithOrigins("http://localhost:3000")
-    .AllowAnyMethod()
+    //.WithOrigins("http://localhost:3000")
+	.WithOrigins("https://marketingmonday.onrender.com")
+	.AllowAnyMethod()
     .AllowAnyHeader()
     .AllowCredentials();
 });

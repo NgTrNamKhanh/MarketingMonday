@@ -17,9 +17,9 @@
         public bool IsLiked { get; set; }
         public bool IsDisliked { get; set; }
         public bool IsViewed { get; set; }
-
-        //public string MarketingCoordinatorId { get; set; }
-    }
+		public bool CoordinatorStatus { get; set; }
+		//public string MarketingCoordinatorId { get; set; }
+	}
     public class SubmissionResponse
     {
         public Guid Id { get; set; }
@@ -42,6 +42,8 @@
         public bool IsDisliked { get; set; }
         public int ViewCount { get; set; }
         public bool IsViewed { get; set; }
+
+        public bool CoordinatorStatus { get; set; }
         //public string MarketingCoordinatorId { get; set; }
     }
 }

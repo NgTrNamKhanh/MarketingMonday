@@ -4,61 +4,8 @@ import "./submissions.css"
 import { useParams } from 'react-router-dom';
 import authHeader from '../../services/auth.header';
 import apis from '../../services/apis.service';
-import useFetch from '../../hooks/useFetch'
 import authService from '../../services/auth.service';
 import { ScaleLoader } from 'react-spinners';
-const submissions = [
-    {
-        id: 1,
-        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: "user1",
-        date: "February 20, 2024",
-        title: "Submission Title 1",
-        content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        submissionimgs: [
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-        ],
-        likes: 10,
-        dislikes: 2,
-        commentsCount: 5,
-        files: [
-            // {
-            //     name: 'tut3-RADconcepts.doc',
-            //     lastModified: 1706591705000,
-            //     lastModifiedDate: new Date('Tue Jan 30 2024 12:15:05 GMT+0700 (Indochina Time)'),
-            //     size: 30208,
-            //     type: 'application/msword',
-            //     webkitRelativePath: ''
-            // }
-        ]
-    },
-    {
-        id: 2,
-        img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-        username: "user2",
-        date: "February 19, 2024",
-        title: "Submission Title 2",
-        content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        submissionimgs: [
-            "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-            "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-        ],
-        likes: 20,
-        dislikes: 1,
-        commentsCount: 8,
-        files: [
-            // Add file objects here if needed
-        ]
-    }
-    // Add more submissions as needed
-];
-
 export default function Submissions () {
     const { facultyId } = useParams();
     const [submissions, setSubmissions] = useState([]);
@@ -67,6 +14,7 @@ export default function Submissions () {
     const [error, setError] = useState()
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [selectedSubmissions, setSelectedSubmissions] = useState([]);
     useEffect(() => {
         const fetchCurrentUser = async () => {
             setLoading(true)
@@ -124,6 +72,9 @@ export default function Submissions () {
             case "reject":
                 filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 2);
                 break;
+            case 'guest approved':
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1 && submission.coordinatorStatus == true);
+                break;
             default:
                 filteredSubmissions = submissions;
                 break;
@@ -131,12 +82,46 @@ export default function Submissions () {
         setFilteredSubmissions(filteredSubmissions);
     };
 
+    const handleCheckboxChange = (submissionId, checked) => {
+        if (checked) {
+            setSelectedSubmissions(prevState => [...prevState, submissionId]);
+        } else {
+            setSelectedSubmissions(prevState => prevState.filter(id => id !== submissionId));
+        }
+    };
+    const handleGuestApprove = async() => {
+        try {
+            const FormData = require('form-data');
+            const formData = new FormData();
+            selectedSubmissions.forEach(articleId => {
+                formData.append('articleIds', articleId);
+            });
+            // setIsSubmitting(true);
+            const url = `${apis.article}updateListCoordinatorStatus`;
+
+            const res = await authHeader().put(url, formData);
+            if (res.status === 200) {
+
+                // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                // setIsSubmitting(false);
+                // setMessage("Account edited successfully.");
+            } else {
+                // setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+            }
+        } catch (error) {
+            // setIsSubmitting(false);
+            // setMessage(error.response.data);
+        }
+        console.log("Guest approved submissions:", selectedSubmissions);
+    };
     return (
         <div className="submissions">
             <div className="postFilter">
                         <select value={selectedFilter} onChange={handleFilterChange}>
                         <option value="all">All</option>
                         <option value="approved">Approved</option>
+                        <option value="guest approved">Guest Approved</option>
                         <option value="not commented">Not Commented</option>
                         <option value="commented">Commented</option>
                         <option value="reject">Reject</option>
@@ -151,10 +136,25 @@ export default function Submissions () {
                     {error ? (
                         <div>{error}</div>
                     ) : (
-                        filteredSubmissions.map((submission) => (
-                            <Submission key={submission.id} submission={submission} />
-                        ))
+                    <>
+                        {filteredSubmissions.map((submission) => (
+                            <div key={submission.id}>
+                                {submission.publishStatusId === 1 && (
+                                    <label>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedSubmissions.includes(submission.id)}
+                                        onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
+                                    />
+                                    {submission.title}
+                                </label>
+                                )}
+                                <Submission submission={submission} />
+                            </div>
+                        ))}
+                    </>
                     )}
+                    <button onClick={handleGuestApprove}>Guest Approve Selected</button>
                 </div>
             )}
         </div>
