@@ -113,7 +113,7 @@ const LoginBox = ({setCurrentUser}) => {
                     console.log("Logged in successfully:", userData);
                     setCurrentUser(userData)
                     if(userData.roles.includes('Admin')){
-                        navigator("/dashboard");
+                        navigator("/accounts");
                     }else if (userData.roles.includes('Coordinator')){
                         navigator(`/submissions/${userData.facultyId}`);
                     }else if (userData.roles.includes('Manager')){

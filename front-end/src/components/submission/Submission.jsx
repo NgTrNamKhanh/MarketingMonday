@@ -136,37 +136,40 @@ export default function  Submission ({ submission, reFetch }) {
     };
     
     let pictureLayout;
-    if (submission.imageBytes.length === 1) {
+    if (submission.cloudImagePath == null){
+        pictureLayout = null
+    }
+    else if (submission.cloudImagePath.length === 1) {
         pictureLayout = (
             <div className="submissionCenter">
-                {submission.imageBytes.map((img, index) => (
-                    <img src={`data:image/jpeg;base64,${img}`} key={index} className="submissionImg"  alt={`submission image ${index}`}/>
+                {submission.cloudImagePath.map((img, index) => (
+                    <img src={img} key={index} className="submissionImg"  alt={`submission image ${index}`}/>
                     // <img key={index} src={img} className="submissionImg" alt={`submission image ${index}`} />
                 ))}
             </div>
         );
-    } else if (submission.imageBytes.length === 2) {
+    } else if (submission.cloudImagePath.length === 2) {
         pictureLayout = (
             <div className="submissionImgGroup">
-                <img src={`data:image/jpeg;base64,${submission.imageBytes[0]}`} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
-                <img src={`data:image/jpeg;base64,${submission.imageBytes[1]}`} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
+                <img src={submission.cloudImagePath[0]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
+                <img src={submission.cloudImagePath[1]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
             </div>
         );
-    } else{
+    } else if (submission.cloudImagePath.length > 2){
         pictureLayout = (
             <div className="submissionCenter">
                 <div className="submissionImgGroup">
-                    <img src={`data:image/jpeg;base64,${submission.imageBytes[0]}`}  alt="Rendered Image"/>
-                    <img src={`data:image/jpeg;base64,${submission.imageBytes[1]}`} alt="Rendered Image"/>
+                    <img src={submission.cloudImagePath[0]}  alt="Rendered Image"/>
+                    <img src={submission.cloudImagePath[1]} alt="Rendered Image"/>
                 </div>
                 <div className="submissionImgGroup">
-                    <img src={`data:image/jpeg;base64,${submission.imageBytes[2]}`}className="submissionImg"  alt="Rendered Image"/>
-                    {submission.imageBytes.length > 3 && 
+                    <img src={submission.cloudImagePath[2]}className="submissionImg"  alt="Rendered Image"/>
+                    {submission.cloudImagePath.length > 3 && 
                         <div className="extraImg">
-                            {submission.imageBytes.slice(3,7).map((img, index) => (
-                                <img src={`data:image/jpeg;base64,${img}`} key={index} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`}/>
+                            {submission.cloudImagePath.slice(3,7).map((img, index) => (
+                                <img src={img} key={index} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`}/>
                             ))}
-                            <div className="overlay">+{submission.imageBytes.length - 3}</div>
+                            <div className="overlay">+{submission.cloudImagePath.length - 3}</div>
                         </div>
                     }
                 </div>
@@ -207,7 +210,7 @@ export default function  Submission ({ submission, reFetch }) {
             studentName: submission.studentName,
             title: submission.title,
             description: submission.description,
-            imageFiles: submission.imageBytes
+            imageFiles: submission.cloudImagePath
         }
         try {
             const response = await authHeader().post(apis.article+"download", downloadData, {
@@ -240,7 +243,7 @@ export default function  Submission ({ submission, reFetch }) {
             <div className="submissionWrapper">
                 <div className="submissionTop">
                     <div className="submissionTopLeft">
-                        <img src={`data:image/jpeg;base64,${submission.studentAvatar}`} className="submissionProfileImg" alt="profile" />
+                        <img src={submission.studentAvatar} className="submissionProfileImg" alt="profile" />
                         <span className="submissionUsername">{submission.studentName}</span>
                         <span className="submissionDate">
                             {formatDate(submission.uploadDate)}

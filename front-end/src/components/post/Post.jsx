@@ -91,44 +91,47 @@ export default function Post({ post, isProfile, currentUser}) {
     } 
     
 
-    // let pictureLayout;
-    // if (post.imageBytes.length === 1) {
-    //     pictureLayout = (
-    //         <div className="postCenter">
-    //             {post.imageBytes.map((img, index) => (
-    //                 <img src={`data:image/jpeg;base64,${img}`} key={index} className="postImg"  alt={`post image ${index}`}/>
-    //                 // <img key={index} src={img} className="postImg" alt={`post image ${index}`} />
-    //             ))}
-    //         </div>
-    //     );
-    // } else if (post.imageBytes.length === 2) {
-    //     pictureLayout = (
-    //         <div className="postImgGroup">
-    //             <img src={`data:image/jpeg;base64,${post.imageBytes[0]}`} className="postImg postImgBottom" alt="Rendered Image"/>
-    //             <img src={`data:image/jpeg;base64,${post.imageBytes[1]}`} className="postImg postImgBottom" alt="Rendered Image"/>
-    //         </div>
-    //     );
-    // } else{
-    //     pictureLayout = (
-    //         <div className="postCenter">
-    //             <div className="postImgGroup">
-    //                 <img src={`data:image/jpeg;base64,${post.imageBytes[0]}`}  alt="Rendered Image"/>
-    //                 <img src={`data:image/jpeg;base64,${post.imageBytes[1]}`} alt="Rendered Image"/>
-    //             </div>
-    //             <div className="postImgGroup">
-    //                 <img src={`data:image/jpeg;base64,${post.imageBytes[2]}`}className="postImg"  alt="Rendered Image"/>
-    //                 {post.imageBytes.length > 3 && 
-    //                     <div className="extraImg">
-    //                         {post.imageBytes.slice(3,7).map((img, index) => (
-    //                             <img src={`data:image/jpeg;base64,${img}`} key={index} className="postImg postImgBottom" alt={`post image ${index + 3}`}/>
-    //                         ))}
-    //                         <div className="overlay">+{post.imageBytes.length - 3}</div>
-    //                     </div>
-    //                 }
-    //             </div>
-    //         </div>
-    //     );
-    // } 
+    let pictureLayout;
+    if (post.cloudImagePath == null){
+        pictureLayout = null
+    }
+    else if (post.cloudImagePath.length === 1) {
+        pictureLayout = (
+            <div className="postCenter">
+                {post.cloudImagePath.map((img, index) => (
+                    <img src={img} key={index} className="postImg"  alt={`post image ${index}`}/>
+                    // <img key={index} src={img} className="postImg" alt={`post image ${index}`} />
+                ))}
+            </div>
+        );
+    } else if (post.cloudImagePath.length === 2) {
+        pictureLayout = (
+            <div className="postImgGroup">
+                <img src={post.cloudImagePath[0]} className="postImg postImgBottom" alt="Rendered Image"/>
+                <img src={post.cloudImagePath[1]} className="postImg postImgBottom" alt="Rendered Image"/>
+            </div>
+        );
+    } else if (post.cloudImagePath.length > 2){
+        pictureLayout = (
+            <div className="postCenter">
+                <div className="postImgGroup">
+                    <img src={post.cloudImagePath[0]}  alt="Rendered Image"/>
+                    <img src={post.cloudImagePath[1]} alt="Rendered Image"/>
+                </div>
+                <div className="postImgGroup">
+                    <img src={post.cloudImagePath[2]}className="postImg"  alt="Rendered Image"/>
+                    {post.cloudImagePath.length > 3 && 
+                        <div className="extraImg">
+                            {post.cloudImagePath.slice(3,7).map((img, index) => (
+                                <img src={img} key={index} className="postImg postImgBottom" alt={`post image ${index + 3}`}/>
+                            ))}
+                            <div className="overlay">+{post.cloudImagePath.length - 3}</div>
+                        </div>
+                    }
+                </div>
+            </div>
+        );
+    } 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Open modal
