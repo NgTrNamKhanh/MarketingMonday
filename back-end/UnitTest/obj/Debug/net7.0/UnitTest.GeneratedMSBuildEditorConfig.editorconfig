@@ -8,6 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = UnitTest
-build_property.ProjectDir = C:\Users\DELL\Desktop\github folder\MarketingMonday\back-end\UnitTest\
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = C:\COMP1640\MarketingMonday\back-end\UnitTest\
