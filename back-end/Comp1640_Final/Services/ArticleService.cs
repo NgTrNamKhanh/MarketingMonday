@@ -32,6 +32,10 @@ namespace Comp1640_Final.Services
         bool Save();
         string GetPublicIdFromImageUrl(string imageUrl);
         string GetPublicIdFromDocUrl(string docUrl);
+        Task<List<string>> UploadImages(List<IFormFile> imageFiles);
+        Task DeleteDocumentFromCloudinary(string cloudDocPath);
+        Task<string> UploadDocument(IFormFile docFile);
+        Task DeleteImagesFromCloudinary(string cloudImagePath);
 
     }
     public class AritcleService : IArticleService
@@ -40,12 +44,18 @@ namespace Comp1640_Final.Services
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly Cloudinary _cloudinary;
+        private readonly ICloudinaryService _cloudinaryService;
 
-        public AritcleService(ProjectDbContext context, IWebHostEnvironment webHostEnvironment, Cloudinary cloudinary, UserManager<ApplicationUser> userManager)
+        public AritcleService(ProjectDbContext context, 
+            IWebHostEnvironment webHostEnvironment, 
+            Cloudinary cloudinary,
+            ICloudinaryService cloudinaryService,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+            _cloudinaryService = cloudinaryService;
             _cloudinary = cloudinary;
 
         }
@@ -228,5 +238,46 @@ namespace Comp1640_Final.Services
         {
             return await _cloudinary.UploadAsync(parameters);
         }
+
+        public async Task<List<string>> UploadImages(List<IFormFile> imageFiles)
+        {
+            if (imageFiles == null || !imageFiles.Any())
+                throw new ArgumentException("Image files collection is null or empty.");
+
+            var uploadTasks = imageFiles.Select(file => _cloudinaryService.UploadImage(file));
+            var uploadResults = await Task.WhenAll(uploadTasks);
+
+            return uploadResults.Select(result => result.Uri.ToString()).ToList();
+        }
+
+        public async Task DeleteImagesFromCloudinary(string cloudImagePath)
+        {
+            if (string.IsNullOrEmpty(cloudImagePath))
+                return;
+
+            var imageUrls = cloudImagePath.Split(';');
+
+            foreach (var imageUrl in imageUrls)
+            {
+                var publicId = _cloudinaryService.GetPublicIdFromImageUrl(imageUrl);
+                await _cloudinaryService.DeleteResource(publicId);
+            }
+        }
+
+        public async Task<string> UploadDocument(IFormFile docFile) 
+        {
+            var uploadResult = await _cloudinaryService.UploadDocument(docFile);
+            return uploadResult.Url.ToString();
+        }
+
+        public async Task DeleteDocumentFromCloudinary(string cloudDocPath) 
+        {
+            if (string.IsNullOrEmpty(cloudDocPath))
+                return;
+
+            var publicDocId = _cloudinaryService.GetPublicIdFromDocUrl(cloudDocPath);
+            await _cloudinaryService.DeleteResource(publicDocId);
+        }
+
     }
 }

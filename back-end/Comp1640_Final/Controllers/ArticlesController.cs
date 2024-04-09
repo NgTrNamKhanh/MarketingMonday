@@ -546,7 +546,6 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully added");
         }
 
-
         [HttpPut("{articleId}")]
         public async Task<ActionResult<Article>> UpdateArticle([FromForm] EditArticleDTO articleUpdate)
         {
@@ -564,95 +563,149 @@ namespace Comp1640_Final.Controllers
             var article = _articleService.GetArticleByID(articleMap.Id);
             if (article.PublishStatusId == (int)EPublishStatus.Approval)
             {
-                return BadRequest("Approved article can not be update");
+                return BadRequest("Approved article cannot be updated");
             }
 
-            if (articleUpdate.ImageFiles.Count > 0)
+            try
             {
-                try
+                if (articleUpdate.ImageFiles.Count > 0)
                 {
-                    if (!_articleService.IsValidImageFile(articleUpdate.ImageFiles))
-                    {
-                        return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
-                    }
-
-                    // Delete old images from Cloudinary
-                    if (!string.IsNullOrEmpty(article.CloudImagePath))
-                    {
-                        var oldImagePaths = article.CloudImagePath.Split(';');
-                        foreach (var oldImagePath in oldImagePaths)
-                        {
-                            // Delete old image from Cloudinary
-                            var publicId = _articleService.GetPublicIdFromImageUrl(oldImagePath);
-                            await _cloudinary.DeleteResourcesAsync(publicId);
-                        }
-                    }
-                    // Save new images to Cloudinary
-                    var uploadResults = new List<ImageUploadResult>();
-                    foreach (var file in articleUpdate.ImageFiles)
-                    {
-                        var uploadParams = new ImageUploadParams
-                        {
-                            File = new FileDescription(file.FileName, file.OpenReadStream())
-                        };
-                        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-                        uploadResults.Add(uploadResult);
-                    }
-
-                    // Update article with new image URLs
-                    var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
-                    articleMap.CloudImagePath = string.Join(";", imageUrls);
+                    var newImageUrls = await _articleService.UploadImages(articleUpdate.ImageFiles);
+                    await _articleService.DeleteImagesFromCloudinary(article.CloudImagePath);
+                    articleMap.CloudImagePath = string.Join(";", newImageUrls);
                 }
-                catch (Exception ex)
+
+                if (articleUpdate.DocFiles.Length > 0)
                 {
-                    return BadRequest(ex.ToString());
+                    var newDocUrl = await _articleService.UploadDocument(articleUpdate.DocFiles);
+                    await _articleService.DeleteDocumentFromCloudinary(article.CloudDocPath);
+                    articleMap.CloudDocPath = newDocUrl;
                 }
+
+                if (article != null)
+                {
+                    _context.Entry(article).State = EntityState.Detached;
+                }
+
+                if (!await _articleService.UpdateArticle(articleMap))
+                {
+                    return BadRequest("Failed to update article.");
+                }
+
+                return Ok("Successfully updated");
             }
-
-            if (articleUpdate.DocFiles.Length > 0)
+            catch (Exception ex)
             {
-                try
-                {
-                    if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
-                    {
-                        return BadRequest("Invalid doc file format. Only DOC are allowed.");
-                    }
-
-                    // Delete old images from Cloudinary
-                    if (!string.IsNullOrEmpty(article.CloudDocPath))
-                    {
-                        var publicDocId = _articleService.GetPublicIdFromDocUrl(article.CloudDocPath);
-                        await _cloudinary.DeleteResourcesAsync(publicDocId);
-                    }
-
-                    // Save new files to Cloudinary
-                    var uploadParams = new RawUploadParams
-                    {
-                        File = new FileDescription(articleUpdate.DocFiles.FileName, articleUpdate.DocFiles.OpenReadStream())
-                    };
-                    var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-                    // Update article with new file URLs
-                    articleMap.CloudDocPath = uploadResult.Url.ToString();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.ToString());
-                }
+                return BadRequest(ex.Message);
             }
-
-            if (article != null)
-            {
-                _context.Entry(article).State = EntityState.Detached;
-            }
-
-            if (!await _articleService.UpdateArticle(articleMap))
-            {
-                return BadRequest("Failed to update article.");
-            }
-
-            return Ok("Successfully updated");
         }
+
+        //[HttpPut("{articleId}")]
+        //public async Task<ActionResult<Article>> UpdateArticle1([FromForm] EditArticleDTO articleUpdate)
+        //{
+        //    if (articleUpdate == null)
+        //        return BadRequest(ModelState);
+
+        //    if (!_articleService.ArticleExists(articleUpdate.Id))
+        //        return NotFound();
+
+        //    if (!ModelState.IsValid)
+        //        return BadRequest(ModelState);
+
+        //    var articleMap = _mapper.Map<Article>(articleUpdate);
+        //    articleMap.UploadDate = DateTime.Now;
+        //    var article = _articleService.GetArticleByID(articleMap.Id);
+        //    if (article.PublishStatusId == (int)EPublishStatus.Approval)
+        //    {
+        //        return BadRequest("Approved article can not be update");
+        //    }
+
+        //    if (articleUpdate.ImageFiles.Count > 0)
+        //    {
+        //        try
+        //        {
+        //            if (!_articleService.IsValidImageFile(articleUpdate.ImageFiles))
+        //            {
+        //                return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
+        //            }
+
+        //            // Delete old images from Cloudinary
+        //            if (!string.IsNullOrEmpty(article.CloudImagePath))
+        //            {
+        //                var oldImagePaths = article.CloudImagePath.Split(';');
+        //                foreach (var oldImagePath in oldImagePaths)
+        //                {
+        //                    // Delete old image from Cloudinary
+        //                    var publicId = _articleService.GetPublicIdFromImageUrl(oldImagePath);
+        //                    await _cloudinary.DeleteResourcesAsync(publicId);
+        //                }
+        //            }
+        //            // Save new images to Cloudinary
+        //            var uploadResults = new List<ImageUploadResult>();
+        //            foreach (var file in articleUpdate.ImageFiles)
+        //            {
+        //                var uploadParams = new ImageUploadParams
+        //                {
+        //                    File = new FileDescription(file.FileName, file.OpenReadStream())
+        //                };
+        //                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        //                uploadResults.Add(uploadResult);
+        //            }
+
+        //            // Update article with new image URLs
+        //            var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
+        //            articleMap.CloudImagePath = string.Join(";", imageUrls);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest(ex.ToString());
+        //        }
+        //    }
+
+        //    if (articleUpdate.DocFiles.Length > 0)
+        //    {
+        //        try
+        //        {
+        //            if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
+        //            {
+        //                return BadRequest("Invalid doc file format. Only DOC are allowed.");
+        //            }
+
+        //            // Delete old images from Cloudinary
+        //            if (!string.IsNullOrEmpty(article.CloudDocPath))
+        //            {
+        //                var publicDocId = _articleService.GetPublicIdFromDocUrl(article.CloudDocPath);
+        //                await _cloudinary.DeleteResourcesAsync(publicDocId);
+        //            }
+
+        //            // Save new files to Cloudinary
+        //            var uploadParams = new RawUploadParams
+        //            {
+        //                File = new FileDescription(articleUpdate.DocFiles.FileName, articleUpdate.DocFiles.OpenReadStream())
+        //            };
+        //            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+
+        //            // Update article with new file URLs
+        //            articleMap.CloudDocPath = uploadResult.Url.ToString();
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest(ex.ToString());
+        //        }
+        //    }
+
+        //    if (article != null)
+        //    {
+        //        _context.Entry(article).State = EntityState.Detached;
+        //    }
+
+        //    if (!await _articleService.UpdateArticle(articleMap))
+        //    {
+        //        return BadRequest("Failed to update article.");
+        //    }
+
+        //    return Ok("Successfully updated");
+        //}
 
         [HttpPut("updatePublishStatus/{articleId}")]
         public async Task<ActionResult<Article>> UpdateStatusArticle(Guid articleId, int publicStatus)
@@ -766,44 +819,26 @@ namespace Comp1640_Final.Controllers
             {
                 return NotFound();
             }
+
             var articleToDelete = _articleService.GetArticleByID(articleId);
-
-            var imagesDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Images", articleId.ToString());
-            if (Directory.Exists(imagesDirectory))
-            {
-                Directory.Delete(imagesDirectory, true);
-            }
-
-            var docsDirectory = Path.Combine(_webHostEnvironment.WebRootPath, "Docs", articleId.ToString());
-            if (Directory.Exists(docsDirectory))
-            {
-                Directory.Delete(docsDirectory, true);
-            }
 
             if (!string.IsNullOrEmpty(articleToDelete.CloudImagePath))
             {
                 try
                 {
-                    var imageUrls = articleToDelete.CloudImagePath.Split(';');
-                    foreach (var imageUrl in imageUrls)
-                    {
-                        // Extract public ID from Cloudinary image URL
-                        var publicId = _articleService.GetPublicIdFromImageUrl(imageUrl);
-                        // Delete image from Cloudinary
-                        await _cloudinary.DeleteResourcesAsync(publicId);
-                    }
+                    await _articleService.DeleteImagesFromCloudinary(articleToDelete.CloudImagePath);
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(ex.Message);
                 }
             }
+
             if (!string.IsNullOrEmpty(articleToDelete.CloudDocPath))
             {
                 try
                 {
-                    var publicId = _articleService.GetPublicIdFromDocUrl(articleToDelete.CloudDocPath);
-                    await _cloudinary.DeleteResourcesAsync(publicId);
+                    await _articleService.DeleteDocumentFromCloudinary(articleToDelete.CloudDocPath);
                 }
                 catch (Exception ex)
                 {
@@ -829,7 +864,7 @@ namespace Comp1640_Final.Controllers
         //    }
         //    return null;
         //}
-		[HttpPost("download")]
+        [HttpPost("download")]
 		public async Task<IActionResult> DownloadSubmission([FromBody] DownloadArticleDTO downloadArticle)
 		{
 			// Create a memory stream to hold the generated Word document

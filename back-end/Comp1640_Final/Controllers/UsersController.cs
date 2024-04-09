@@ -23,6 +23,7 @@ namespace Comp1640_Final.Controllers
         private readonly ProjectDbContext _context;
         private static IWebHostEnvironment _webHostEnvironment;
         private readonly Cloudinary _cloudinary;
+        private readonly ICloudinaryService _cloudinaryService;
 
         private readonly UserManager<ApplicationUser> _userManager;
 
@@ -31,6 +32,7 @@ namespace Comp1640_Final.Controllers
             ProjectDbContext context,
             IWebHostEnvironment webHostEnvironment,
             Cloudinary cloudinary,
+            ICloudinaryService cloudinaryService,
             UserManager<ApplicationUser> userManager)
         {
             _userService = userService;
@@ -39,6 +41,7 @@ namespace Comp1640_Final.Controllers
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
             _cloudinary = cloudinary;
+            _cloudinaryService = cloudinaryService;
         }
         [HttpGet("accounts/{Id}")]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUserById(string Id)
@@ -94,19 +97,15 @@ namespace Comp1640_Final.Controllers
                 if (user.CloudAvatarImagePath != null)
                 {
                     var oldImagePublicId = _userService.GetPublicIdFromImageUrl(user.CloudAvatarImagePath); // Extract public ID of the old image
-                                                                                                            
+
                     // Delete the old image from Cloudinary
                     if (!string.IsNullOrEmpty(oldImagePublicId))
                     {
-                        await _cloudinary.DeleteResourcesAsync(oldImagePublicId);
+                        await _cloudinaryService.DeleteResource(oldImagePublicId);
                     }
                 }
-                // Upload the new image to Cloudinary
-                var uploadParams = new ImageUploadParams
-                {
-                    File = new FileDescription(avatarImage.FileName, avatarImage.OpenReadStream())
-                };
-                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+                // Upload the new image to Cloudinary using the service method
+                var uploadResult = await _cloudinaryService.UploadAvatarImage(avatarImage);
 
                 // Update the user's avatar image URL with the new one from Cloudinary
                 user.CloudAvatarImagePath = uploadResult.Uri.ToString();
@@ -121,6 +120,7 @@ namespace Comp1640_Final.Controllers
 
             return Ok(user.CloudAvatarImagePath);
         }
+
 
         [HttpPut("changePassword")]
         public async Task<IActionResult> PutAccount(string email, string password)
