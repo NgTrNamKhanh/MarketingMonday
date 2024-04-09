@@ -120,8 +120,6 @@ export default function Feed({userId}) {
         }
         setFilteredPosts(filteredPosts);
     };
-    console.log(facultyId)
-    console.log(userId)
     useEffect(() => {
         const fetchPosts = async () => {
             if (facultyId && currentUser) {

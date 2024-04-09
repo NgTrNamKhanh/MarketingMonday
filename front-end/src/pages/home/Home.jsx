@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import authService from "../../services/auth.service";
 import Feed from "../../components/feed/Feed";
-import Rightbar from "../../components/rightbar/Rightbar";
 import CoordinatorSidebar from "../../components/sidebar/Coordinator/CoordinatorSidebar";
 import StudentSidebar from "../../components/sidebar/Student/StudentSidebar";
 import AdminSidebar from "../../components/sidebar/Admin/AdminSidebar";
@@ -21,10 +20,25 @@ import { ProtectedRoute } from "../../common/with-router";
 import Unauthorized from "../errors/unauthorized/Unauthorized";
 import { ToastContainer } from "react-toastify";
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import apis from "../../services/apis.service";
 export default function Home() {
-    const [message, setMessage] = useState()
-    // const [connection, setConnection] = useState()
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            setIsLoading(true)
+            const user = authService.getCurrentUser();
+            console.log(user)
+            if (user) {
+                setCurrentUser(user);
+            }
+            setIsLoading(false);
+        };
+        fetchCurrentUser();
+    }, []);
+    // const [message, setMessage] = useState()
+    // console.log(message)
+       // const [connection, setConnection] = useState()
     // useEffect(() => {
     //     const connect = async ()=>{
     //         const connection = new HubConnectionBuilder()
@@ -39,20 +53,6 @@ export default function Home() {
     //     }
     //     connect()
     // }, []);
-    
-    console.log(message)
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentUser, setCurrentUser] = useState(null);
-    useEffect(() => {
-        const fetchCurrentUser = async () => {
-            const user = authService.getCurrentUser();
-            if (user) {
-                setCurrentUser(user);
-            }
-            setIsLoading(false);
-        };
-        fetchCurrentUser();
-    }, []);
     if (isLoading) {
         return <div>Loading...</div>;
     }
@@ -60,7 +60,6 @@ export default function Home() {
         <Router> 
             <div>
             {currentUser && <Topbar  setCurrentUser={setCurrentUser} user={currentUser}/>}
-            <ToastContainer />
                 <div className="homeContainer">
                     {currentUser && (
                             <>
