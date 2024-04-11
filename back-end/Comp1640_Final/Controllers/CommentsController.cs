@@ -72,6 +72,7 @@ namespace Comp1640_Final.Controllers
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                         var firstName = user.FirstName;
                         var lastName = user.LastName;
+                        var userIden = user.Id;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
@@ -84,10 +85,11 @@ namespace Comp1640_Final.Controllers
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
+                            userIden = "";
                         }
                         UserComment userComment = new UserComment
 						{
-							Id = user.Id,
+							Id = userIden,
 							UserAvatar = cloudUserImage,
 							FirstName = firstName,
 							LastName = lastName,
@@ -129,6 +131,7 @@ namespace Comp1640_Final.Controllers
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                         var firstName = user.FirstName;
                         var lastName = user.LastName;
+                        var userIden = user.Id;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
@@ -141,10 +144,11 @@ namespace Comp1640_Final.Controllers
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
+                            userIden = "";
                         }
                         UserComment userComment = new UserComment
                         {
-                            Id = user.Id,
+                            Id = userIden,
                             UserAvatar = cloudUserImage,
                             FirstName = firstName,
                             LastName = lastName,
@@ -186,6 +190,7 @@ namespace Comp1640_Final.Controllers
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                         var firstName = user.FirstName;
                         var lastName = user.LastName;
+                        var userIden = user.Id;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
@@ -198,10 +203,11 @@ namespace Comp1640_Final.Controllers
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
+                            userIden = "";
                         }
                         UserComment userComment = new UserComment
                         {
-                            Id = user.Id,
+                            Id = userIden,
                             UserAvatar = cloudUserImage,
                             FirstName = firstName,
                             LastName = lastName,
@@ -279,7 +285,8 @@ namespace Comp1640_Final.Controllers
                     UserId = article.StudentId,
                     UserInteractionId = commentDto.UserId,
                     ArticleId = commentDto.ArticleId,
-                    Message = message
+                    Message = message,
+                    IsAnonymous = commentDto.IsAnonymous,
                 };
                 await _notificationService.PostNotification(notification);
                 // dữ liệu trả về khi post
@@ -288,6 +295,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;
                 var lastName = user.LastName;
+                var userIden = user.Id;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
@@ -300,10 +308,11 @@ namespace Comp1640_Final.Controllers
                     cloudUserImage = defaultImageFileName;
                     firstName = "Anonymous";
                     lastName = "";
+                    userIden = "";
                 }
                 UserComment userComment = new UserComment
                 {
-                    Id = user.Id,
+                    Id = userIden,
                     UserAvatar = cloudUserImage,
                     FirstName = firstName,
                     LastName = lastName,
@@ -361,6 +370,7 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = commentDto.UserId,
                     CommentId = parentCommentId,
                     Message = message,
+                    IsAnonymous = commentDto.IsAnonymous,
                 };
                 await _notificationService.PostNotification(notification);
 
@@ -370,6 +380,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;
                 var lastName = user.LastName;
+                var userIden = user.Id;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
@@ -382,10 +393,11 @@ namespace Comp1640_Final.Controllers
                     cloudUserImage = defaultImageFileName;
                     firstName = "Anonymous";
                     lastName = "";
+                    userIden = "";
                 }
                 UserComment userComment = new UserComment
                 {
-                    Id = user.Id,
+                    Id = userIden,
                     UserAvatar = cloudUserImage,
                     FirstName = firstName,
                     LastName = lastName,
@@ -419,6 +431,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;
                 var lastName = user.LastName;
+                var userIden = user.Id;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
@@ -431,10 +444,11 @@ namespace Comp1640_Final.Controllers
                     cloudUserImage = defaultImageFileName;
                     firstName = "Anonymous";
                     lastName = "";
+                    userIden = "";
                 }
                 UserComment userComment = new UserComment
                 {
-                    Id = user.Id,
+                    Id = userIden,
                     UserAvatar = cloudUserImage,
                     FirstName = firstName,
 					LastName = lastName

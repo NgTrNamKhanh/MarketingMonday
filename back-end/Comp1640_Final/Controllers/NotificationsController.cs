@@ -65,19 +65,29 @@ namespace Comp1640_Final.Controllers
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var user = await _userManager.FindByIdAsync(notification.UserInteractionId);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                var firstName = user.FirstName;
+                var lastName = user.LastName;
+                var userIden = user.Id;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (notification.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                    firstName = "Anonymous";
+                    lastName = "";
+                    userIden = "";
+                }
                 UserNoti userNoti = new UserNoti
                 {
-                    Id = user.Id,
+                    Id = userIden,
                     UserAvatar = cloudUserImage,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName
+                    FirstName = firstName,
+                    LastName = lastName
                 };
                 notiResponse.UserNoti = userNoti;
                 notiResponses.Add(notiResponse);

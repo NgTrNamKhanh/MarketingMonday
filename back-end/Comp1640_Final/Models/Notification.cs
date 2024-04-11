@@ -25,5 +25,6 @@ namespace Comp1640_Final.Models
         public string Message { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool? IsAnonymous { get; set; }
     }
 }

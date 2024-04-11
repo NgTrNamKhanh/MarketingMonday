@@ -160,6 +160,7 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = dislikeDto.UserId,
                     ArticleId = dislikeDto.ArticleId,
                     Message = message,
+                    IsAnonymous = false
                 };
                 await _notificationService.PostNotification(notification);
                 await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
@@ -237,6 +238,7 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = dislikeDto.UserId,
                     CommentId = dislikeDto.CommentId,
                     Message = message,
+                    IsAnonymous = false
                 };
                 await _notificationService.PostNotification(notification);
 
