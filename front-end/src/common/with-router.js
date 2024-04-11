@@ -14,9 +14,10 @@ export const withRouter = (Component) => {
 export const ProtectedRoute = ({ element, requiredRoles }) => {
     const user = authService.getCurrentUser();
     const navigate = useNavigate();
-
+    console.log(user)
     useEffect(() => {
         // Check if the user's role matches the required role
+        console.log(user)
         if (user != null && (Array.isArray(user.roles) && requiredRoles.some(role => user.roles.includes(role)))) {
             // Allow rendering the protected component
         } else {

@@ -33,14 +33,15 @@ export default function Topbar({user, setCurrentUser}) {
         authService.logout();
         setCurrentUser(null)
         navigator("/login");
-        localStorage.clear();
     }
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             if (user) {
                 try {
+                    console.log(user.id)
                     const response = await authHeader().get(apis.notification, {params:{userId: user.id}});
+                    console.log(response)
                     if (Array.isArray(response.data)) {
                         setNotifications(response.data);
                     } else {
