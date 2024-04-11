@@ -70,19 +70,27 @@ namespace Comp1640_Final.Controllers
                     if (user != null)
                     {
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                        var firstName = user.FirstName;
+                        var lastName = user.LastName;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
                             var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
+                        if (comment.IsAnonymous == true)
+                        {
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
+                            firstName = "Anonymous";
+                            lastName = "";
+                        }
                         UserComment userComment = new UserComment
 						{
 							Id = user.Id,
 							UserAvatar = cloudUserImage,
-							FirstName = user.FirstName,
-							LastName = user.LastName
+							FirstName = firstName,
+							LastName = lastName,
 						};
 						commentResponse.UserComment = userComment;
                     }
@@ -119,21 +127,29 @@ namespace Comp1640_Final.Controllers
                     if (user != null)
                     {
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                        var firstName = user.FirstName;
+                        var lastName = user.LastName;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
                             var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
+                        if (comment.IsAnonymous == true)
+                        {
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
+                            firstName = "Anonymous";
+                            lastName = "";
+                        }
                         UserComment userComment = new UserComment
                         {
                             Id = user.Id,
                             UserAvatar = cloudUserImage,
-                            FirstName = user.FirstName,
-							LastName = user.LastName
-						};
-						commentResponse.UserComment = userComment;
+                            FirstName = firstName,
+                            LastName = lastName,
+                        };
+                        commentResponse.UserComment = userComment;
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
@@ -168,19 +184,27 @@ namespace Comp1640_Final.Controllers
                     if (user != null)
                     {
                         var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                        var firstName = user.FirstName;
+                        var lastName = user.LastName;
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
                             var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
+                        if (comment.IsAnonymous == true)
+                        {
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            cloudUserImage = defaultImageFileName;
+                            firstName = "Anonymous";
+                            lastName = "";
+                        }
                         UserComment userComment = new UserComment
                         {
                             Id = user.Id,
                             UserAvatar = cloudUserImage,
-                            FirstName = user.FirstName,
-                            LastName = user.LastName
+                            FirstName = firstName,
+                            LastName = lastName,
                         };
                         commentResponse.UserComment = userComment;
                     }
@@ -241,7 +265,15 @@ namespace Comp1640_Final.Controllers
                 }
                 // create new noti
                 var commentCount = await _commentService.GetCommentsCount(commentDto.ArticleId) - 1;
-                var message = user.FirstName + " " + user.LastName + " and " + commentCount + " other have commented on your post" ;
+                var message = "";
+                if (commentDto.IsAnonymous == false)
+                {
+                    message = user.FirstName + " " + user.LastName + " and " + commentCount + " other have commented on your post";
+                }
+                if (commentDto.IsAnonymous == true)
+                {
+                    message = " An annoynimous user and " + commentCount + " other have commented on your post";
+                }
                 var notification = new Notification
                 {
                     UserId = article.StudentId,
@@ -254,21 +286,29 @@ namespace Comp1640_Final.Controllers
                 var commentResult = _context.Comments.Find(comment.Id);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                var firstName = user.FirstName;
+                var lastName = user.LastName;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (commentDto.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                    firstName = "Anonymous";
+                    lastName = "";
+                }
                 UserComment userComment = new UserComment
                 {
                     Id = user.Id,
                     UserAvatar = cloudUserImage,
-                    FirstName = user.FirstName,
-					LastName = user.LastName
-				};
-				commentResponse.UserComment = userComment;
+                    FirstName = firstName,
+                    LastName = lastName,
+                };
+                commentResponse.UserComment = userComment;
 				return Ok(commentResponse);
             }
         }
@@ -306,7 +346,15 @@ namespace Comp1640_Final.Controllers
                 }
 
                 var repliesCount = await _commentService.GetRepliesCount(parentCommentId) - 1;
-                var message = user.FirstName + " " + user.LastName + " and " + repliesCount + " other have replied your comment";
+                var message = "";
+                if (commentDto.IsAnonymous == false)
+                {
+                    message = user.FirstName + " " + user.LastName + " and " + repliesCount + " other have commented on your post";
+                }
+                if (commentDto.IsAnonymous == true)
+                {
+                    message = " An annoynimous user and " + repliesCount + " other have commented on your post";
+                }
                 var notification = new Notification
                 {
                     UserId = parentComment.UserId,
@@ -320,21 +368,29 @@ namespace Comp1640_Final.Controllers
 				var replyResult = _context.Comments.Find(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                var firstName = user.FirstName;
+                var lastName = user.LastName;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (commentDto.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                    firstName = "Anonymous";
+                    lastName = "";
+                }
                 UserComment userComment = new UserComment
                 {
                     Id = user.Id,
                     UserAvatar = cloudUserImage,
-                    FirstName = user.FirstName,
-					LastName = user.LastName
-				};
-				replyResponse.UserComment = userComment;
+                    FirstName = firstName,
+                    LastName = lastName,
+                };
+                replyResponse.UserComment = userComment;
                 return Ok(replyResponse);
             }
         }
@@ -361,19 +417,27 @@ namespace Comp1640_Final.Controllers
                 var user = await _userManager.FindByIdAsync(commentResult.UserId);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
-
+                var firstName = user.FirstName;
+                var lastName = user.LastName;
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (comment.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                    firstName = "Anonymous";
+                    lastName = "";
+                }
                 UserComment userComment = new UserComment
                 {
                     Id = user.Id,
                     UserAvatar = cloudUserImage,
-                    FirstName = user.FirstName,
-					LastName = user.LastName
+                    FirstName = firstName,
+					LastName = lastName
 				};
                 commentResponse.UserComment = userComment;
                 return Ok(commentResponse);

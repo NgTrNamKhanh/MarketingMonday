@@ -9,6 +9,7 @@
         public string EventId { get; set; }
         public List<IFormFile> ImageFiles { get; set; }
         public IFormFile? DocFiles { get; set; }
+        public bool? IsAnonymous { get; set; }
 
         //public string MarketingCoordinatorId { get; set; }
     }

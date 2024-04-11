@@ -86,6 +86,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -94,7 +99,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -113,8 +119,13 @@ namespace Comp1640_Final.Controllers
             var user = await _userManager.FindByIdAsync(article.StudentId);
             var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
-            // If imageBytes is null, read the default image file
+            // If image is null, set to the default image file
             if (cloudUserImage == null)
+            {
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                cloudUserImage = defaultImageFileName;
+            }
+            if (article.IsAnonymous == true)
             {
                 var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                 cloudUserImage = defaultImageFileName;
@@ -128,7 +139,8 @@ namespace Comp1640_Final.Controllers
             articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
             articleDTO.ViewCount = article.ViewCount;
             articleDTO.IsViewed = article.ViewCount >= 1;
-            articleDTO.StudentName = user.FirstName + " " + user.LastName;
+            //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+            articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -156,6 +168,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -164,7 +181,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -193,6 +211,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
@@ -202,7 +225,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -229,6 +253,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
@@ -238,7 +267,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -266,6 +296,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -274,7 +309,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -303,6 +339,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -311,7 +352,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -343,6 +385,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -351,7 +398,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -381,6 +429,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -389,7 +442,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -420,6 +474,11 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
+                if (article.IsAnonymous == true)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
                 articleDTO.StudentAvatar = cloudUserImage;
                 articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
                 articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
@@ -428,7 +487,8 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -599,113 +659,6 @@ namespace Comp1640_Final.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        //[HttpPut("{articleId}")]
-        //public async Task<ActionResult<Article>> UpdateArticle1([FromForm] EditArticleDTO articleUpdate)
-        //{
-        //    if (articleUpdate == null)
-        //        return BadRequest(ModelState);
-
-        //    if (!_articleService.ArticleExists(articleUpdate.Id))
-        //        return NotFound();
-
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
-
-        //    var articleMap = _mapper.Map<Article>(articleUpdate);
-        //    articleMap.UploadDate = DateTime.Now;
-        //    var article = _articleService.GetArticleByID(articleMap.Id);
-        //    if (article.PublishStatusId == (int)EPublishStatus.Approval)
-        //    {
-        //        return BadRequest("Approved article can not be update");
-        //    }
-
-        //    if (articleUpdate.ImageFiles.Count > 0)
-        //    {
-        //        try
-        //        {
-        //            if (!_articleService.IsValidImageFile(articleUpdate.ImageFiles))
-        //            {
-        //                return BadRequest("Invalid image file format. Only PNG, JPG, JPEG, and GIF are allowed.");
-        //            }
-
-        //            // Delete old images from Cloudinary
-        //            if (!string.IsNullOrEmpty(article.CloudImagePath))
-        //            {
-        //                var oldImagePaths = article.CloudImagePath.Split(';');
-        //                foreach (var oldImagePath in oldImagePaths)
-        //                {
-        //                    // Delete old image from Cloudinary
-        //                    var publicId = _articleService.GetPublicIdFromImageUrl(oldImagePath);
-        //                    await _cloudinary.DeleteResourcesAsync(publicId);
-        //                }
-        //            }
-        //            // Save new images to Cloudinary
-        //            var uploadResults = new List<ImageUploadResult>();
-        //            foreach (var file in articleUpdate.ImageFiles)
-        //            {
-        //                var uploadParams = new ImageUploadParams
-        //                {
-        //                    File = new FileDescription(file.FileName, file.OpenReadStream())
-        //                };
-        //                var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-        //                uploadResults.Add(uploadResult);
-        //            }
-
-        //            // Update article with new image URLs
-        //            var imageUrls = uploadResults.Select(r => r.Uri.ToString()).ToList();
-        //            articleMap.CloudImagePath = string.Join(";", imageUrls);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return BadRequest(ex.ToString());
-        //        }
-        //    }
-
-        //    if (articleUpdate.DocFiles.Length > 0)
-        //    {
-        //        try
-        //        {
-        //            if (!_articleService.IsValidDocFile(articleUpdate.DocFiles))
-        //            {
-        //                return BadRequest("Invalid doc file format. Only DOC are allowed.");
-        //            }
-
-        //            // Delete old images from Cloudinary
-        //            if (!string.IsNullOrEmpty(article.CloudDocPath))
-        //            {
-        //                var publicDocId = _articleService.GetPublicIdFromDocUrl(article.CloudDocPath);
-        //                await _cloudinary.DeleteResourcesAsync(publicDocId);
-        //            }
-
-        //            // Save new files to Cloudinary
-        //            var uploadParams = new RawUploadParams
-        //            {
-        //                File = new FileDescription(articleUpdate.DocFiles.FileName, articleUpdate.DocFiles.OpenReadStream())
-        //            };
-        //            var uploadResult = await _cloudinary.UploadAsync(uploadParams);
-
-        //            // Update article with new file URLs
-        //            articleMap.CloudDocPath = uploadResult.Url.ToString();
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            return BadRequest(ex.ToString());
-        //        }
-        //    }
-
-        //    if (article != null)
-        //    {
-        //        _context.Entry(article).State = EntityState.Detached;
-        //    }
-
-        //    if (!await _articleService.UpdateArticle(articleMap))
-        //    {
-        //        return BadRequest("Failed to update article.");
-        //    }
-
-        //    return Ok("Successfully updated");
-        //}
 
         [HttpPut("updatePublishStatus/{articleId}")]
         public async Task<ActionResult<Article>> UpdateStatusArticle(Guid articleId, int publicStatus)

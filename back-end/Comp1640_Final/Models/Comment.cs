@@ -13,6 +13,8 @@ namespace Comp1640_Final.Models
         public DateTime CreateOn { get; set; } = DateTime.Now;
 
         public string UserId { get; set; }
+        public bool? IsAnonymous { get; set; }
+
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 

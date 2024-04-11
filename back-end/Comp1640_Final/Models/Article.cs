@@ -17,6 +17,7 @@ namespace Comp1640_Final.Models
         public bool CoordinatorStatus { get; set; }
         public string? CloudImagePath { get; set; }
         public string? CloudDocPath { get; set; }
+        public bool? IsAnonymous { get; set; }
 
         [ForeignKey("FacultyId")]
         public int FacultyId { get; set; }

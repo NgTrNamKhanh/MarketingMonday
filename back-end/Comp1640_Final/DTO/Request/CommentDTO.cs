@@ -6,6 +6,7 @@
         public string Content { get; set; }
         public string UserId { get; set; }
         public Guid ArticleId { get; set; }
+        public bool? IsAnonymous { get; set; }
 
     }
 

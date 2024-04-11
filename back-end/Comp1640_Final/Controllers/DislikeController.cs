@@ -68,6 +68,7 @@ namespace Comp1640_Final.Controllers
         //        return StatusCode(500, $"Failed to get dislikes count: {ex.Message}");
         //    }
         //}
+
         [HttpGet("count/comment/{articleId}")]
         public async Task<IActionResult> GetCommentDislikesCount(Guid commentId)
         {
@@ -81,6 +82,7 @@ namespace Comp1640_Final.Controllers
                 return StatusCode(500, $"Failed to get dislikes count: {ex.Message}");
             }
         }
+
         [HttpGet("article/{articleId}")]
         public async Task<IActionResult> GetArticleDislikes(Guid articleId)
         {
@@ -92,6 +94,7 @@ namespace Comp1640_Final.Controllers
             var likeResponse = _mapper.Map<List<InteractResponse>>(dislikes);
             return Ok(likeResponse);
         }
+
         [HttpGet("comment/{commentId}")]
         public async Task<IActionResult> GetCommentDislikes(Guid commentId)
         {
@@ -114,17 +117,7 @@ namespace Comp1640_Final.Controllers
             if (existingDislike != null)
             {
                 var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
-                //string message = user.FirstName + " " + user.LastName + " disliked your post: " + article.Title;
-                //var oldNoti = await _notificationService.GetNotiByUserAndMessage(dislikeDto.UserId, message);
-                //if (oldNoti != null)
-                //{
-                //    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
-                //    if (!deleteNoti)
-                //    {
-                //        return BadRequest("Error");
-                //    }
-                //    return Ok("Successful");
-                //}
+                
                 if (!deleteDislikeResult)
                 {
                     return BadRequest("Error deleting existing dislike.");
@@ -132,15 +125,6 @@ namespace Comp1640_Final.Controllers
                 return Ok("Dislike deleted successfully.");
             }
 
-            //var existingLike = await _likeService.GetLikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId);
-            //if (existingLike != null)
-            //{
-            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-            //    if (!deleteLikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing like.");
-            //    }
-            //}
             var dislike = _mapper.Map<Dislike>(dislikeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;
@@ -203,42 +187,24 @@ namespace Comp1640_Final.Controllers
 
         }
         [HttpPost("comment")]
-        public async Task<ActionResult<Dislike>> PostCommentDislike(CommentInteractDTO likeDto)
+        public async Task<ActionResult<Dislike>> PostCommentDislike(CommentInteractDTO dislikeDto)
         {
-            var existingDislike = await _dislikeService.GetDislikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
+            var existingDislike = await _dislikeService.GetDislikeByCommentAndUser(dislikeDto.CommentId, dislikeDto.UserId);
             //noti info
 
 
             if (existingDislike != null)
             {
                 var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
-                //string message = user.FirstName + " " + user.LastName + " disliked your comment: " + comment.Content;
-                //var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
-                //if (oldNoti != null)
-                //{
-                //    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
-                //    if (!deleteNoti)
-                //    {
-                //        return BadRequest("Error");
-                //    }
-                //    return Ok("Successful");
-                //}
+                
                 if (!deleteDislikeResult)
                 {
                     return BadRequest("Error deleting existing dislike.");
                 }
                 return Ok("Existing dislike deleted successfully.");
             }
-            //var existingLike = await _likeService.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId);
-            //if (existingLike != null)
-            //{
-            //    var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-            //    if (!deleteLikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing like.");
-            //    }
-            //}
-            var dislike = _mapper.Map<Dislike>(likeDto);
+            
+            var dislike = _mapper.Map<Dislike>(dislikeDto);
             dislike.Id = Guid.NewGuid();
             dislike.Date = DateTime.Now;
             var result = await _dislikeService.PostDislike(dislike);
@@ -250,10 +216,10 @@ namespace Comp1640_Final.Controllers
             else
             {
                 //------------------ noti -------------------
-                var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
-                var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+                var comment = _commentService.GetCommentById(dislikeDto.CommentId); // tìm comment
+                var user = await _userManager.FindByIdAsync(dislikeDto.UserId); // tìm user tương tác
                 var sampleMessage = "disliked your comment";
-                var oldNoti = await _notificationService.GetNotiByUserAndComment(comment.UserId, likeDto.CommentId, sampleMessage);
+                var oldNoti = await _notificationService.GetNotiByUserAndComment(comment.UserId, dislikeDto.CommentId, sampleMessage);
                 if (oldNoti != null)
                 {
                     var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
@@ -263,13 +229,13 @@ namespace Comp1640_Final.Controllers
                     }
                     //return Ok("Successful");
                 }
-                var dislikeCount = await _dislikeService.GetCommentDislikesCount(likeDto.CommentId) -1;
+                var dislikeCount = await _dislikeService.GetCommentDislikesCount(dislikeDto.CommentId) -1;
                 string message = user.FirstName + " " + user.LastName + " and " + dislikeCount.ToString() + " others disliked your comment: " + comment.Content;
                 var notification = new Notification
                 {
                     UserId = comment.UserId,
-                    UserInteractionId = likeDto.UserId,
-                    CommentId = likeDto.CommentId,
+                    UserInteractionId = dislikeDto.UserId,
+                    CommentId = dislikeDto.CommentId,
                     Message = message,
                 };
                 await _notificationService.PostNotification(notification);
@@ -298,15 +264,16 @@ namespace Comp1640_Final.Controllers
                 return Ok(notiResponse);
             }
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDislike(Guid id)
         {
-            var like = await _context.Dislikes.FirstOrDefaultAsync(l => l.Id == id);
-            if (like == null)
+            var dislike = await _context.Dislikes.FirstOrDefaultAsync(l => l.Id == id);
+            if (dislike == null)
             {
                 return NotFound();
             }
-            var result = await _dislikeService.DeleteDislike(like);
+            var result = await _dislikeService.DeleteDislike(dislike);
             if (!result)
             {
                 return BadRequest("Error");
