@@ -81,12 +81,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -120,12 +115,7 @@ namespace Comp1640_Final.Controllers
             var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
             // If image is null, set to the default image file
-            if (cloudUserImage == null)
-            {
-                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                cloudUserImage = defaultImageFileName;
-            }
-            if (article.IsAnonymous == true)
+            if (cloudUserImage == null || article.IsAnonymous == true)
             {
                 var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                 cloudUserImage = defaultImageFileName;
@@ -163,12 +153,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -206,12 +191,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -248,12 +228,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -291,12 +266,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -334,12 +304,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -380,12 +345,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -424,12 +384,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
@@ -469,12 +424,7 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                }
-                if (article.IsAnonymous == true)
+                if (cloudUserImage == null || article.IsAnonymous == true)
                 {
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
