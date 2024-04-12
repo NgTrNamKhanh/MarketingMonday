@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 
 export default function authHeader() {
     const cookieString = decodeURIComponent(document.cookie);

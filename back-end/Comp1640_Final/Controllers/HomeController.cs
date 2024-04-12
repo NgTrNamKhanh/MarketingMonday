@@ -76,7 +76,7 @@ namespace Comp1640_Final.Controllers
                 {
                     HttpOnly = true,
                     SameSite = SameSiteMode.Strict,
-                    Expires = DateTime.Now.AddDays(1) // You can set the expiration time as per your requirement
+                    Expires = DateTime.Now.AddDays(1)
                 });
 
                 return Ok(accountDto);

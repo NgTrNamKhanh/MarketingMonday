@@ -6,11 +6,11 @@ import Comments from "../../comments/Comments"
 import apis from "../../../services/apis.service";
 export default function Modal({
     post, closeModal, currentUser, 
-    commentsCount, setCommentsCount, 
-    likesCount, dislikesCount,
+    commentCount, setCommentCount, viewCount,
+    likeCount, dislikeCount,
     setIsModalOpen, isLiked, isDisliked, handleLike, handleDislike,
-    formatDate}){
-        console.log(commentsCount)
+    formatDate, pictureLayout}){
+        console.log(commentCount)
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false); 
@@ -33,34 +33,34 @@ export default function Modal({
 
         fetchData();
     }, []);
-    const handleComment =  async (event) =>{
-        event.preventDefault();
-        setIsSubmitting(true);
-        try {
-            const comment = {
-                content: event.target.comment.value,
-                userId: currentUser.id,
-                articleId: post.id
-            }
-            const res = await authHeader().post(apis.comment+"createComment", comment);
-            if (res.status === 200) {
-                console.log(res)
-                setComments((prevComments) => [res.data,...prevComments ]);
-                setCommentsCount((prevCount) => prevCount + 1)
-                // localStorage.setItem("accounts", JSON.stringify(updatedData));
-                setIsSubmitting(false);
-                console.log("6")
-                // setMessage("Account edited successfully.");
-            } else {
-                setIsSubmitting(false);
-                // setMessage(`An error occurred: ${res.data}`);
-            }
-        } catch (error) {
-            setIsSubmitting(false);
-            // setMessage(error.response.data);
-        }
+    // const handleComment =  async (event) =>{
+    //     event.preventDefault();
+    //     setIsSubmitting(true);
+    //     try {
+    //         const comment = {
+    //             content: event.target.comment.value,
+    //             userId: currentUser.id,
+    //             articleId: post.id
+    //         }
+    //         const res = await authHeader().post(apis.comment+"createComment", comment);
+    //         if (res.status === 200) {
+    //             console.log(res)
+    //             setComments((prevComments) => [res.data,...prevComments ]);
+    //             setCommentCount((prevCount) => prevCount + 1)
+    //             // localStorage.setItem("accounts", JSON.stringify(updatedData));
+    //             setIsSubmitting(false);
+    //             console.log("6")
+    //             // setMessage("Account edited successfully.");
+    //         } else {
+    //             setIsSubmitting(false);
+    //             // setMessage(`An error occurred: ${res.data}`);
+    //         }
+    //     } catch (error) {
+    //         setIsSubmitting(false);
+    //         // setMessage(error.response.data);
+    //     }
 
-    }
+    // }
     
     
     return(
@@ -96,16 +96,17 @@ export default function Modal({
                                 </div>
                             ))} */}
                         </div>
-                        {/* {pictureLayout} */}
+                        {pictureLayout}
                         <div className="modalBottom">
                             <div className="postBottomLeft">
                                 <RecommendRounded className={`likeIcon postIcon`} />
-                                <span className="postLikeCounter">{likesCount}</span>
+                                <span className="postLikeCounter">{likeCount}</span>
                                 <RecommendRounded className={`disLikeIcon postIcon`} />
-                                <span className="postLikeCounter">{dislikesCount}</span>
+                                <span className="postLikeCounter">{dislikeCount}</span>
                             </div>
-                            <div className="postBottomRight" onClick={()=>{setIsModalOpen(true)}}>
-                                <span className="postCommentText">{commentsCount} comments</span>
+                            <div className="postBottomRight">
+                                <span className="postCommentText">{viewCount} views</span>
+                                <span className="postCommentText">{commentCount} comments</span>
                             </div>
                         </div>
                         <hr className="postHr"/>
@@ -138,7 +139,14 @@ export default function Modal({
                     </div>
                     {currentUser.roles.includes("Student","Guest") && (
                         <div className="modalStickyBottom">
-                                <CommentForm handleComment={handleComment} currentUser={currentUser} isSubmitting={isSubmitting}/>
+                                <CommentForm 
+                                    currentUser={currentUser} 
+                                    isSubmitting={isSubmitting} 
+                                    setIsSubmitting={setIsSubmitting}
+                                    setComments={setComments}
+                                    setCommentCount={setCommentCount}
+                                    post={post}
+                                />
                         </div>
                     )}
                 </div>

@@ -8,6 +8,8 @@
         public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
         public string StudentAvatar { get; set; }
+        public List<string> ListCloudImagePath { get; set; }
+        public string CloudDocPath { get; set; }
         public string StudentId { get; set; }
         public string StudentName { get; set; }
         public int CommmentCount { get; set; }
@@ -30,7 +32,7 @@
         public string StudentAvatar { get; set; }
         public string StudentName { get; set; }
         public int PublishStatusId { get; set; }
-        public string CloudImagePath { get; set; }
+        public List<string> ListCloudImagePath { get; set; }
         public string CloudDocPath { get; set; }
 
         public string CoordinatorComment { get; set; }
@@ -43,6 +45,7 @@
         public int ViewCount { get; set; }
         public bool IsViewed { get; set; }
 
+        public bool IsAnonymous { get; set; }
         public bool CoordinatorStatus { get; set; }
         //public string MarketingCoordinatorId { get; set; }
     }

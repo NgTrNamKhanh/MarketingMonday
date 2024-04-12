@@ -5,7 +5,8 @@ import { useParams } from 'react-router-dom';
 import authHeader from '../../services/auth.header';
 import apis from '../../services/apis.service';
 import authService from '../../services/auth.service';
-import { ScaleLoader } from 'react-spinners';
+import Skeleton from "@mui/material/Skeleton";
+import { Box} from "@mui/material";
 export default function Submissions () {
     const { facultyId } = useParams();
     const [submissions, setSubmissions] = useState([]);
@@ -73,7 +74,7 @@ export default function Submissions () {
                 filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 2);
                 break;
             case 'guest approved':
-                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1 && submission.coordinatorStatus == true);
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1 && submission.coordinatorStatus === true);
                 break;
             default:
                 filteredSubmissions = submissions;
@@ -129,7 +130,16 @@ export default function Submissions () {
             </div>
             <h1>Submissions</h1>
             {loading ? (
-                <ScaleLoader/>
+                <Box style={{ width: "100vh" }}>
+                {Array(10)
+                .fill()
+                .map((_, i) => (
+                    <>
+                    <Skeleton />
+                    <Skeleton animation={i % 2 === 0 ? "wave" : false} />
+                    </>
+                ))}
+            </Box>
             ):(
                 <div className="submissionsWrapper">
                     
@@ -143,7 +153,7 @@ export default function Submissions () {
                                     <label>
                                     <input
                                         type="checkbox"
-                                        checked={selectedSubmissions.includes(submission.id)}
+                                        checked={submission.publishStatusId === 1 && submission.coordinatorStatus === true}
                                         onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
                                     />
                                     {submission.title}

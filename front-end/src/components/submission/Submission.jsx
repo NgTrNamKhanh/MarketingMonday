@@ -116,12 +116,16 @@ export default function  Submission ({ submission, reFetch }) {
         try {
             console.log(submitStatus)
             setIsSubmitting(true);
-            const url = `${apis.article}updateStatus/${submission.id}?publicStatus=${submitStatus}`;
+            const url = `${apis.article}updatePublishStatus/${submission.id}?publicStatus=${submitStatus}`;
 
             const res = await authHeader().put(url, {});
             if (res.status === 200) {
                 const updatedData = await reFetch();
-
+                if (submitStatus === 1) {
+                    setStatus('approved');
+                }  else if (submitStatus === 2) {
+                    setStatus('reject');
+                }
                 // localStorage.setItem("accounts", JSON.stringify(updatedData));
                 setIsSubmitting(false);
                 // setMessage("Account edited successfully.");
@@ -136,40 +140,40 @@ export default function  Submission ({ submission, reFetch }) {
     };
     
     let pictureLayout;
-    if (submission.cloudImagePath == null){
+    if (submission.listCloudImagePath == null){
         pictureLayout = null
     }
-    else if (submission.cloudImagePath.length === 1) {
+    else if (submission.listCloudImagePath.length === 1) {
         pictureLayout = (
             <div className="submissionCenter">
-                {submission.cloudImagePath.map((img, index) => (
+                {submission.listCloudImagePath.map((img, index) => (
                     <img src={img} key={index} className="submissionImg"  alt={`submission image ${index}`}/>
                     // <img key={index} src={img} className="submissionImg" alt={`submission image ${index}`} />
                 ))}
             </div>
         );
-    } else if (submission.cloudImagePath.length === 2) {
+    } else if (submission.listCloudImagePath.length === 2) {
         pictureLayout = (
             <div className="submissionImgGroup">
-                <img src={submission.cloudImagePath[0]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
-                <img src={submission.cloudImagePath[1]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
+                <img src={submission.listCloudImagePath[0]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
+                <img src={submission.listCloudImagePath[1]} className="submissionImg submissionImgBottom" alt="Rendered Image"/>
             </div>
         );
-    } else if (submission.cloudImagePath.length > 2){
+    } else if (submission.listCloudImagePath.length > 2){
         pictureLayout = (
             <div className="submissionCenter">
                 <div className="submissionImgGroup">
-                    <img src={submission.cloudImagePath[0]}  alt="Rendered Image"/>
-                    <img src={submission.cloudImagePath[1]} alt="Rendered Image"/>
+                    <img src={submission.listCloudImagePath[0]}  alt="Rendered Image"/>
+                    <img src={submission.listCloudImagePath[1]} alt="Rendered Image"/>
                 </div>
                 <div className="submissionImgGroup">
-                    <img src={submission.cloudImagePath[2]}className="submissionImg"  alt="Rendered Image"/>
-                    {submission.cloudImagePath.length > 3 && 
+                    <img src={submission.listCloudImagePath[2]}className="submissionImg"  alt="Rendered Image"/>
+                    {submission.listCloudImagePath.length > 3 && 
                         <div className="extraImg">
-                            {submission.cloudImagePath.slice(3,7).map((img, index) => (
+                            {submission.listCloudImagePath.slice(3,7).map((img, index) => (
                                 <img src={img} key={index} className="submissionImg submissionImgBottom" alt={`submission image ${index + 3}`}/>
                             ))}
-                            <div className="overlay">+{submission.cloudImagePath.length - 3}</div>
+                            <div className="overlay">+{submission.listCloudImagePath.length - 3}</div>
                         </div>
                     }
                 </div>
@@ -210,7 +214,7 @@ export default function  Submission ({ submission, reFetch }) {
             studentName: submission.studentName,
             title: submission.title,
             description: submission.description,
-            imageFiles: submission.cloudImagePath
+            imageFiles: submission.listCloudImagePath
         }
         try {
             const response = await authHeader().post(apis.article+"download", downloadData, {
@@ -245,6 +249,11 @@ export default function  Submission ({ submission, reFetch }) {
                     <div className="submissionTopLeft">
                         <img src={submission.studentAvatar} className="submissionProfileImg" alt="profile" />
                         <span className="submissionUsername">{submission.studentName}</span>
+                        {
+                            submission.isAnonymous && (
+                                <span className="submissionUsername">(Anonymous)</span>
+                            )
+                        }
                         <span className="submissionDate">
                             {formatDate(submission.uploadDate)}
                         </span>

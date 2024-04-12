@@ -77,10 +77,6 @@ export default function CoordinatorSidebar() {
                         </li>
                     </Link>
                     )}
-                    <li className="sidebarListItem">
-                        <Build className="sidebarIcon"/>
-                        <span className="sidebarListItemText">Tools</span>
-                    </li>
                 </ul>
                 {/* <button className="sidebarButton">
                     Show More

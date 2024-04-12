@@ -5,7 +5,8 @@ import { useParams } from "react-router-dom";
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
 import authService from "../../services/auth.service";
-import { ScaleLoader } from "react-spinners";
+import Skeleton from "@mui/material/Skeleton";
+import { Box} from "@mui/material";
 // const postsData = [
 //     {
 //         id: 1,
@@ -188,10 +189,10 @@ export default function Feed({userId}) {
         let sortedPosts = [...posts];
         switch (filter) {
             case "views":
-                sortedPosts.sort((a, b) => b.views - a.views);
+                sortedPosts.sort((a, b) => b.viewCount - a.viewCount);
                 break;
             case "likes":
-                sortedPosts.sort((a, b) => b.likes - a.likes);
+                sortedPosts.sort((a, b) => b.likeCount - a.likeCount);
                 break;
             case "comments":
                 sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
@@ -225,22 +226,27 @@ export default function Feed({userId}) {
                             </select>
                         </div>
                 )}
-                {loading? (
-                    <ScaleLoader/>
-                ):(
-                    <>
-                        {error ? (
-                            <div>{error}</div>
-                                ) : (
-                            filteredPosts.map(post => (
-                            <Post
-                                post = {post}
-                                isProfile = {isProfile}
-                                currentUser={currentUser}
-                            />
-                            ))
-                        )}
-                    </>
+                {loading ? (
+                <Box style={{ width: "100vh" }}>
+                    {Array(10)
+                    .fill()
+                    .map((_, i) => (
+                        <>
+                        <Skeleton />
+                        <Skeleton animation={i % 2 === 0 ? "wave" : false} />
+                        </>
+                    ))}
+                </Box>
+                ) : error ? (
+                <p>Error: {error.message}</p>
+                ) : (
+                    filteredPosts.map(post => (
+                        <Post
+                            post = {post}
+                            isProfile = {isProfile}
+                            currentUser={currentUser}
+                        />
+                        ))
                 )}
             </div>
         </div>

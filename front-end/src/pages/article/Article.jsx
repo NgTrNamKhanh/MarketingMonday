@@ -5,7 +5,7 @@ import TermsAndConditions from "../../components/dialogs/termsAndConditions/Term
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
 import { Form, Formik } from "formik";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, Checkbox, FormControlLabel } from "@mui/material";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
@@ -65,7 +65,7 @@ export default function Article() {
     const [currentUser, setCurrentUser] = useState(null);
     const [event, setEvent] = useState();
 
-
+    const [isAnonymous, setIsAnonymous] = useState(false);
     useEffect(() => {
         const user = authService.getCurrentUser();
         if (user) {
@@ -169,6 +169,7 @@ export default function Article() {
             formData.append('FacultyId', currentUser.facultyId);
             formData.append('EventId',event.id );
             formData.append('StudentId', currentUser.id);
+            formData.append('IsAnonymous', isAnonymous); 
             selectedPhotos.forEach((photo, index) => {
                 formData.append(`ImageFiles`, photo, photo.name);
             });
@@ -352,6 +353,10 @@ export default function Article() {
                         <span>{message}</span>
                     </div>
                     <div className="buttonContainer">
+                        <FormControlLabel
+                            control={<Checkbox checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} />}
+                            label="Submit as Anonymous"
+                        />
                         <Button type="submit" disabled={isSubmitting || remainingTime === 'Expired'}>
                             {isSubmitting ? <span>Loading...</span> : "Submit"}
                         </Button>

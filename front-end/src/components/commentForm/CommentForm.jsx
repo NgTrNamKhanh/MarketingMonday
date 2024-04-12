@@ -1,11 +1,43 @@
 import { Send } from "@mui/icons-material";
 import { useState } from "react";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import authHeader from "../../services/auth.header";
+import apis from "../../services/apis.service";
 
-export default function CommentForm ({handleComment, currentUser, isSubmitting}){
+export default function CommentForm ({ currentUser, isSubmitting, setIsSubmitting, setComments,setCommentCount, post }){
     const [commentValue, setCommentValue] = useState('');
+    const [isAnonymous, setIsAnonymous] = useState(false);
     const handleCommentChange = (event) => {
         setCommentValue(event.target.value);
     };
+    const handleComment =  async (event) =>{
+        event.preventDefault();
+        setIsSubmitting(true);
+        try {
+            const comment = {
+                content: event.target.comment.value,
+                userId: currentUser.id,
+                articleId: post.id,
+                isAnonymous: isAnonymous
+            }
+            const res = await authHeader().post(apis.comment+"createComment", comment);
+            if (res.status === 200) {
+                console.log(res)
+                setComments((prevComments) => [res.data,...prevComments ]);
+                setCommentCount((prevCount) => prevCount + 1)
+                // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                setIsSubmitting(false);
+                // setMessage("Account edited successfully.");
+            } else {
+                setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+            }
+        } catch (error) {
+            setIsSubmitting(false);
+            // setMessage(error.response.data);
+        }
+
+    }
     return (
         <div className="commentInputWrapper">
             <img src={currentUser.avatar} className="userAvatar" alt="profile" />
@@ -19,13 +51,17 @@ export default function CommentForm ({handleComment, currentUser, isSubmitting})
                     className="commentInput"
                     disabled={isSubmitting} 
                 />
-                    <button 
-                        disabled={isSubmitting || !commentValue.trim()} 
-                        type="submit" 
-                        className="commentButton"
-                    >
-                            <Send/>
-                    </button>
+                <FormControlLabel
+                    control={<Checkbox checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} />}
+                    label="Submit as Anonymous"
+                />
+                <button 
+                    disabled={isSubmitting || !commentValue.trim()} 
+                    type="submit" 
+                    className="commentButton"
+                >
+                        <Send/>
+                </button>
             </form>
         </div>
 
