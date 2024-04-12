@@ -162,7 +162,7 @@ namespace Comp1640_Final.Controllers
                     IsAnonymous = false
                 };
                 await _notificationService.PostNotification(notification);
-                await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
+                //await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -180,7 +180,10 @@ namespace Comp1640_Final.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
-                notiResponse.UserNoti = userNoti;
+                if (notiResponse != null)
+                {
+                     notiResponse.UserNoti = userNoti;
+                }
                 //---------------- end noti -----------------
                 return Ok(notiResponse);
             }
@@ -194,32 +197,14 @@ namespace Comp1640_Final.Controllers
             if (existingLike != null)
             {
                 var deleteLikeResult = await _likeService.DeleteLike(existingLike);
-                //string message = user.FirstName + " " + user.LastName + " liked your comment: " + comment.Content;
-                //var oldNoti = await _notificationService.GetNotiByUserAndMessage(likeDto.UserId, message);
-                //if (oldNoti != null)
-                //{
-                //    var deleteNoti = await _notificationService.DeleteNoti(oldNoti);
-                //    if (!deleteNoti)
-                //    {
-                //        return BadRequest("Error");
-                //    }
-                //    return Ok("Successful");
-                //}
+
                 if (!deleteLikeResult)
                 {
                     return BadRequest("Error deleting existing like.");
                 }
                 return Ok("Existing like deleted successfully.");
             }
-            //var existingDislike = await _dislikeService.GetDislikeByArticleAndUser(likeDto.CommentId, likeDto.UserId);
-            //if (existingDislike != null)
-            //{
-            //    var deleteDislikeResult = await _dislikeService.DeleteDislike(existingDislike);
-            //    if (!deleteDislikeResult)
-            //    {
-            //        return BadRequest("Error deleting existing dislike.");
-            //    }
-            //}
+
             var like = _mapper.Map<Like>(likeDto);
             like.Id = Guid.NewGuid();
             like.Date = DateTime.Now;
@@ -258,7 +243,7 @@ namespace Comp1640_Final.Controllers
                 };
                 await _notificationService.PostNotification(notification);
 
-                await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
+                //await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -276,7 +261,10 @@ namespace Comp1640_Final.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
-                notiResponse.UserNoti = userNoti;
+                if (notiResponse != null)
+                {
+                    notiResponse.UserNoti = userNoti;
+                }
 
                 //-------------------- end noti --------------------
                 return Ok(notiResponse);

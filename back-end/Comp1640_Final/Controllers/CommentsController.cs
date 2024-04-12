@@ -55,7 +55,7 @@ namespace Comp1640_Final.Controllers
             var comments = await _commentService.GetComments();
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else
             {
@@ -113,7 +113,7 @@ namespace Comp1640_Final.Controllers
             var comments =  await _commentService.GetParentComments(articleId);
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else 
             {
@@ -173,7 +173,7 @@ namespace Comp1640_Final.Controllers
             var comments = await _commentService.GetReplies(parentId);
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else
             {

@@ -163,7 +163,7 @@ namespace Comp1640_Final.Controllers
                     IsAnonymous = false
                 };
                 await _notificationService.PostNotification(notification);
-                await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
+                //await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -181,7 +181,10 @@ namespace Comp1640_Final.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
-                notiResponse.UserNoti = userNoti;
+                if (notiResponse != null)
+                {
+                    notiResponse.UserNoti = userNoti;
+                }
                 //---------------- end noti -----------------
                 return Ok(notiResponse);
             }
@@ -242,7 +245,7 @@ namespace Comp1640_Final.Controllers
                 };
                 await _notificationService.PostNotification(notification);
 
-                await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
+                //await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -260,7 +263,10 @@ namespace Comp1640_Final.Controllers
                     FirstName = user.FirstName,
                     LastName = user.LastName
                 };
-                notiResponse.UserNoti = userNoti;
+                if (notiResponse != null)
+                {
+                    notiResponse.UserNoti = userNoti;
+                }
 
                 //-------------------- end noti --------------------
                 return Ok(notiResponse);
