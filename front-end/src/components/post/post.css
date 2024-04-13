@@ -101,6 +101,7 @@
     align-items: center;
 }
 .postCommentText{
+    margin-left: 10px;
     cursor: pointer;
     font-size: 15px;
 

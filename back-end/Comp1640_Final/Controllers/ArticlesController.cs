@@ -104,6 +104,12 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                if (article.CloudImagePath != null) {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 articleDTOs.Add(articleDTO);
             }
 
@@ -146,6 +152,13 @@ namespace Comp1640_Final.Controllers
             articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
             articleDTO.ViewCount = article.ViewCount;
             articleDTO.IsViewed = article.ViewCount >= 1;
+            if (article.CloudImagePath != null)
+            {
+                string cloudImagePath = article.CloudImagePath;
+                string[] paths = cloudImagePath.Split(';');
+                List<string> pathList = new List<string>(paths);
+                articleDTO.ListCloudImagePath = pathList;
+            }
             //articleDTO.StudentName = user.FirstName + " " + user.LastName;
             articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
             if (!ModelState.IsValid)
@@ -192,6 +205,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
@@ -239,6 +259,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -283,6 +310,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
@@ -329,6 +363,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -375,6 +416,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -423,6 +471,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
@@ -470,6 +525,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
@@ -518,6 +580,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);

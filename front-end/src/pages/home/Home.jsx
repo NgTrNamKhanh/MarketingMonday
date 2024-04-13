@@ -26,6 +26,7 @@ export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
         const fetchCurrentUser = async () => {
+            console.log("hi")
             setIsLoading(true)
             const user = authService.getCurrentUser();
             console.log(user)
@@ -36,6 +37,7 @@ export default function Home() {
         };
         fetchCurrentUser();
     }, []);
+    console.log(currentUser)
     // const [message, setMessage] = useState()
     // console.log(message)
        // const [connection, setConnection] = useState()
@@ -87,13 +89,14 @@ export default function Home() {
                                         ) : currentUser.roles.includes('Student', 'Guest') ? (
                                             <Navigate to={`/feed/${currentUser.facultyId}`} />
                                         ) : currentUser.roles.includes('Coordinator') ? (
-                                            <Navigate to="/submissions" />
+                                            <Navigate to={`/submissions/${currentUser.facultyId}`} />
                                         ) : (
                                             <Navigate to="/unauthorized" />
                                         )
-                                    ) : (
-                                        <Navigate to="/login" replace />
+                                    ): (
+                                        <Navigate to="/login" />
                                     )
+                                    
                                 }
                             />
                             <Route path="/feed/:facultyId" element=

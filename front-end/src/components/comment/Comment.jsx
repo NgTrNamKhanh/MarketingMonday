@@ -134,7 +134,7 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
             <img src={selectedComment.userComment.userAvatar} className="commentProfileImg" alt="profile" />
             <div className="commentTop">
                 <div className="commentTopLeft">
-                    <span className="commentUsername">{selectedComment.userComment.userName}{selectedComment.userComment.lastName}</span>
+                    <span className="commentUsername">{selectedComment.userComment.firstName} {selectedComment.userComment.lastName}</span>
                     <span className="commentDate">{formatDate(selectedComment.createOn)}</span>
                 </div>
             </div>

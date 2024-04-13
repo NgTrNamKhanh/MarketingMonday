@@ -41,17 +41,17 @@ export default function Post({ post, isProfile, currentUser}) {
 
     
 
-    const [likesCount, setLikesCount] = useState(post.likeCount)
+    const [likeCount, setLikeCount] = useState(post.likeCount)
 
     
     
     useEffect(() => {
-        setLikesCount(post.likeCount);
+        setLikeCount(post.likeCount);
     }, [post.likeCount]);
 
     const [isLiked, setIsLiked] = useState(post.isLiked)
     const handleLike =  () => {
-        setLikesCount(isLiked? likesCount -1 : likesCount+1)
+        setLikeCount(isLiked? likeCount -1 : likeCount+1)
         setIsLiked(!isLiked)
         try{
                 const like ={
@@ -65,17 +65,24 @@ export default function Post({ post, isProfile, currentUser}) {
             handleDislike()
         }
     }
-    const [commentsCount, setCommentsCount] = useState(post.commmentCount)
+    const [commentCount, setCommentCount] = useState(post.commmentCount)
     useEffect(() => {
-        setCommentsCount(post.commmentCount);
+        setCommentCount(post.commmentCount);
     }, [post.commmentCount]);
-    const [dislikesCount, setDisLikesCount] = useState(post.dislikeCount)
+
+    const [viewCount, setViewCount] = useState(post.viewCount)
     useEffect(() => {
-        setDisLikesCount(post.dislikeCount); 
+        setViewCount(post.viewCount);
+    }, [post.viewCount]);
+
+
+    const [dislikeCount, setDisLikeCount] = useState(post.dislikeCount)
+    useEffect(() => {
+        setDisLikeCount(post.dislikeCount); 
     }, [post.dislikeCount]);
     const [isDisliked, setIsDisLiked] = useState(post.isDisliked)
     const handleDislike =  () => {
-        setDisLikesCount(isDisliked? dislikesCount -1 : dislikesCount+1)
+        setDisLikeCount(isDisliked? dislikeCount -1 : dislikeCount+1)
         setIsDisLiked(!isDisliked)
         try{
             const dislike ={
@@ -92,40 +99,40 @@ export default function Post({ post, isProfile, currentUser}) {
     
 
     let pictureLayout;
-    if (post.cloudImagePath == null){
+    if (post.listCloudImagePath == null){
         pictureLayout = null
     }
-    else if (post.cloudImagePath.length === 1) {
+    else if (post.listCloudImagePath.length === 1) {
         pictureLayout = (
             <div className="postCenter">
-                {post.cloudImagePath.map((img, index) => (
+                {post.listCloudImagePath.map((img, index) => (
                     <img src={img} key={index} className="postImg"  alt={`post image ${index}`}/>
                     // <img key={index} src={img} className="postImg" alt={`post image ${index}`} />
                 ))}
             </div>
         );
-    } else if (post.cloudImagePath.length === 2) {
+    } else if (post.listCloudImagePath.length === 2) {
         pictureLayout = (
             <div className="postImgGroup">
-                <img src={post.cloudImagePath[0]} className="postImg postImgBottom" alt="Rendered Image"/>
-                <img src={post.cloudImagePath[1]} className="postImg postImgBottom" alt="Rendered Image"/>
+                <img src={post.listCloudImagePath[0]} className="postImg postImgBottom" alt="Rendered Image"/>
+                <img src={post.listCloudImagePath[1]} className="postImg postImgBottom" alt="Rendered Image"/>
             </div>
         );
-    } else if (post.cloudImagePath.length > 2){
+    } else if (post.listCloudImagePath.length > 2){
         pictureLayout = (
             <div className="postCenter">
                 <div className="postImgGroup">
-                    <img src={post.cloudImagePath[0]}  alt="Rendered Image"/>
-                    <img src={post.cloudImagePath[1]} alt="Rendered Image"/>
+                    <img src={post.listCloudImagePath[0]}  alt="Rendered Image"/>
+                    <img src={post.listCloudImagePath[1]} alt="Rendered Image"/>
                 </div>
                 <div className="postImgGroup">
-                    <img src={post.cloudImagePath[2]}className="postImg"  alt="Rendered Image"/>
-                    {post.cloudImagePath.length > 3 && 
+                    <img src={post.listCloudImagePath[2]}className="postImg"  alt="Rendered Image"/>
+                    {post.listCloudImagePath.length > 3 && 
                         <div className="extraImg">
-                            {post.cloudImagePath.slice(3,7).map((img, index) => (
+                            {post.listCloudImagePath.slice(3,7).map((img, index) => (
                                 <img src={img} key={index} className="postImg postImgBottom" alt={`post image ${index + 3}`}/>
                             ))}
-                            <div className="overlay">+{post.cloudImagePath.length - 3}</div>
+                            <div className="overlay">+{post.listCloudImagePath.length - 3}</div>
                         </div>
                     }
                 </div>
@@ -138,6 +145,7 @@ export default function Post({ post, isProfile, currentUser}) {
     const openModal = () => {
         if(!post.isViewed){
             authHeader().post(apis.article+"countView/"+post.id)
+            setViewCount(viewCount+1)
         }
         setIsModalOpen(true);
     };
@@ -210,19 +218,20 @@ export default function Post({ post, isProfile, currentUser}) {
                         </div>
                     ))} */}
                 </div>
-                {/* {pictureLayout} */}
+                {pictureLayout}
                 {(status === 'approved' || !isProfile) && 
                     (
                         <>
                         <div className="postBottom">
                             <div className="postBottomLeft">
                                 <RecommendRounded className={`likeIcon postIcon`} />
-                                <span className="postLikeCounter">{likesCount}</span>
+                                <span className="postLikeCounter">{likeCount}</span>
                                 <RecommendRounded className={`disLikeIcon postIcon`} />
-                                <span className="postLikeCounter">{dislikesCount}</span>
+                                <span className="postLikeCounter">{dislikeCount}</span>
                             </div>
-                            <div className="postBottomRight" onClick={openModal}>
-                                <span className="postCommentText">{commentsCount} comments</span>
+                            <div className="postBottomRight" >
+                                <span className="postCommentText">{viewCount} views</span>
+                                <span className="postCommentText" onClick={openModal}>{commentCount} comments</span>
                             </div>
                         </div>
                         <hr className="postHr"/>
@@ -260,16 +269,18 @@ export default function Post({ post, isProfile, currentUser}) {
                     post={post} 
                     closeModal={closeModal} 
                     currentUser={currentUser} 
-                    commentsCount={commentsCount} 
-                    setCommentsCount={setCommentsCount}
-                    likesCount={likesCount}
-                    dislikesCount={dislikesCount}
+                    commentCount={commentCount} 
+                    setCommentCount={setCommentCount}
+                    viewCount = {viewCount}
+                    likeCount={likeCount}
+                    dislikeCount={dislikeCount}
                     isLiked={isLiked}
                     isDisliked={isDisliked}
                     handleLike={handleLike}
                     handleDislike={handleDislike}
                     setIsModalOpen={setIsModalOpen}
                     formatDate={formatDate}
+                    pictureLayout={pictureLayout}
                 />}
         </div>
     );

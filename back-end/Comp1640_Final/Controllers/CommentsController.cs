@@ -59,7 +59,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else
             {
@@ -121,7 +121,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else 
             {
@@ -185,7 +185,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return Ok(comments);
+                return BadRequest();
             }
             else
             {
