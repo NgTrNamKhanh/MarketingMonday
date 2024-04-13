@@ -89,10 +89,11 @@ namespace UnitTest
                 }
             }; 
             var expectedResponse = new SubmissionResponse();
-
+            var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.GetArticles()).Returns(articles); //test method from service
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(new ApplicationUser());//student
+            _userManagerMock.Setup(u => u.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(curentRoles);
             _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(userId)).ReturnsAsync(cloudinaryUrl);//student ava
             _commentServiceMock.Setup(x => x.GetCommentsCount(articles[1].Id)).ReturnsAsync(1);
             _likeServiceMock.Setup(x => x.GetArticleLikesCount(articles[1].Id)).ReturnsAsync(1);
@@ -124,10 +125,12 @@ namespace UnitTest
                 CloudImagePath = cloudinaryUrl,
             };
             var expectedResponse = new SubmissionResponse();
+            var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.ArticleExists(articleId)).Returns(true);
             _articleServiceMock.Setup(x => x.GetArticleByID(articleId)).Returns(article); //test method from service
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(new ApplicationUser());//student
+            _userManagerMock.Setup(u => u.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(curentRoles);
             _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(userId)).ReturnsAsync(cloudinaryUrl);//student ava
             _commentServiceMock.Setup(x => x.GetCommentsCount(article.Id)).ReturnsAsync(1);
             _likeServiceMock.Setup(x => x.GetArticleLikesCount(article.Id)).ReturnsAsync(1);
@@ -199,9 +202,11 @@ namespace UnitTest
                 }
             };
             var expectedResponse = new ArticleResponse();
+            var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.GetApprovedArticles(facultyId)).ReturnsAsync(articles); //test method from service
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(new ApplicationUser());//student
+            _userManagerMock.Setup(u => u.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(curentRoles);
             _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(userId)).ReturnsAsync(cloudinaryUrl);//student ava
             _commentServiceMock.Setup(x => x.GetCommentsCount(articles[1].Id)).ReturnsAsync(1);
             _likeServiceMock.Setup(x => x.GetArticleLikesCount(articles[1].Id)).ReturnsAsync(1);
@@ -271,9 +276,11 @@ namespace UnitTest
                 }
             };
             var expectedResponse = new SubmissionResponse();
+            var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.GetArticleByPublishStatusIdAndFacultyId(statusId ,facultyId)).ReturnsAsync(articles); //test method from service
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(new ApplicationUser());//student
+            _userManagerMock.Setup(u => u.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(curentRoles);
             _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(userId)).ReturnsAsync(cloudinaryUrl);//student ava
             _commentServiceMock.Setup(x => x.GetCommentsCount(articles[1].Id)).ReturnsAsync(1);
             _likeServiceMock.Setup(x => x.GetArticleLikesCount(articles[1].Id)).ReturnsAsync(1);
@@ -344,9 +351,11 @@ namespace UnitTest
                 }
             };
             var expectedResponse = new SubmissionResponse();
+            var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.GetArticleByCoordinatorStatusAndFacultyId(coordinatoStatus, facultyId)).ReturnsAsync(articles); //test method from service
             _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(new ApplicationUser());//student
+            _userManagerMock.Setup(u => u.GetRolesAsync(It.IsAny<ApplicationUser>())).ReturnsAsync(curentRoles);
             _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(userId)).ReturnsAsync(cloudinaryUrl);//student ava
             _commentServiceMock.Setup(x => x.GetCommentsCount(articles[1].Id)).ReturnsAsync(1);
             _likeServiceMock.Setup(x => x.GetArticleLikesCount(articles[1].Id)).ReturnsAsync(1);
@@ -409,8 +418,8 @@ namespace UnitTest
             _articleServiceMock.Setup(a => a.AddArticle(article)).ReturnsAsync(true);
             _articleServiceMock.Setup(a => a.IsValidImageFile(articleDto.ImageFiles)).Returns(true);
             _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
-            _articleServiceMock.Setup(u => u.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
-            _articleServiceMock.Setup(u => u.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
+            _articleServiceMock.Setup(a => a.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
+            _articleServiceMock.Setup(a => a.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
             _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
 
             var result = await _articleController.AddArticle(articleDto);

@@ -59,7 +59,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return BadRequest();
+                return BadRequest("No comments found");
             }
             else
             {
@@ -69,7 +69,10 @@ namespace Comp1640_Final.Controllers
                     var commentResponse = _mapper.Map<CommentResponse>(comment);
                     ICollection<Comment> replies = await _commentService.GetReplies(comment.Id);
                     bool hasReplies = replies.Count > 0;
-                    commentResponse.hasReplies = hasReplies;
+                    if (commentResponse != null)
+                    {
+                        commentResponse.hasReplies = hasReplies;
+                    }
                     var user = await _userManager.FindByIdAsync(comment.UserId);
                     if (user != null)
                     {
@@ -98,7 +101,10 @@ namespace Comp1640_Final.Controllers
 							FirstName = firstName,
 							LastName = lastName,
 						};
-						commentResponse.UserComment = userComment;
+                        if (commentResponse != null)
+                        {
+                            commentResponse.UserComment = userComment;
+                        }
                     }
                     commentResponse.LikesCount = await _likeService.GetCommentLikesCount(comment.Id);
                     commentResponse.DislikesCount = await _dislikeService.GetCommentDislikesCount(comment.Id);
@@ -121,7 +127,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return BadRequest();
+                return BadRequest("No comments found");
             }
             else 
             {
@@ -185,7 +191,7 @@ namespace Comp1640_Final.Controllers
 
             if (comments == null)
             {
-                return BadRequest();
+                return BadRequest("No comments found");
             }
             else
             {
@@ -302,7 +308,8 @@ namespace Comp1640_Final.Controllers
                 };
                 await _notificationService.PostNotification(notification);
                 // dữ liệu trả về khi post
-                var commentResult = _context.Comments.Find(comment.Id);
+                var commentResult =  _commentService.GetCommentById(comment.Id);
+
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;
@@ -336,7 +343,7 @@ namespace Comp1640_Final.Controllers
         [HttpPost("createReply")]
         public async Task<ActionResult<Comment>> PostReply(Guid parentCommentId , CommentDTO commentDto)
         {
-            var parentComment = await _context.Comments.FindAsync(parentCommentId);
+            var parentComment = _commentService.GetCommentById(parentCommentId);
             if (parentComment == null)
             {
                 return BadRequest("Not found");
@@ -387,7 +394,7 @@ namespace Comp1640_Final.Controllers
                 await _notificationService.PostNotification(notification);
 
                 // dữ liệu trả về
-				var replyResult = _context.Comments.Find(reply.Id);
+				var replyResult = _commentService.GetCommentById(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;
@@ -422,7 +429,7 @@ namespace Comp1640_Final.Controllers
         [HttpPut()]
         public async Task<ActionResult<Comment>> PutComment(Guid id, string content)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = _commentService.GetCommentById(id);
             if (comment == null)
             {
                 return BadRequest("Not found any comment");
@@ -437,7 +444,7 @@ namespace Comp1640_Final.Controllers
             }
             else
             {
-				var commentResult = _context.Comments.Find(id);
+				var commentResult = _commentService.GetCommentById(id);
                 var user = await _userManager.FindByIdAsync(commentResult.UserId);
                 var commentResponse = _mapper.Map<CommentResponse>(commentResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
@@ -470,49 +477,6 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-        //public async Task<ActionResult> DeleteComment(Guid id)
-        //{
-        //    if (!_commentService.CommentExists(id))
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var comment = await _context.Comments.FindAsync(id);
-        //    var replies = await _commentService.GetReplies(id);
-        //    var result1 = new bool();
-        //    if (replies != null && replies.Count >0)
-        //    {
-        //        foreach (var reply in replies)
-        //        {
-        //            result1 = await _commentService.DeleteComment(reply);
-        //        }
-        //        //var comments = _mapper.Map<List<CommentDTO>>(_commentService.GetComments());
-
-        //        if (!result1)
-        //        {
-        //            return BadRequest("Failed");
-        //        }
-        //        else
-        //        {
-        //            var result = await _commentService.DeleteComment(comment);
-        //            if (!result)
-        //            {
-        //                return BadRequest("Failed");
-        //            }
-        //            return Ok("Delete successful");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        var result2 = await _commentService.DeleteComment(comment);
-        //        if (!result2)
-        //        {
-        //            return BadRequest("Failed");
-        //        }
-        //        return Ok("Delete successful");
-        //    }
-
-        //}
 
         [HttpDelete()]
         public async Task<ActionResult> DeleteComment(Guid commentId)
