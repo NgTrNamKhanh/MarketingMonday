@@ -71,6 +71,9 @@ namespace Comp1640_Final.Controllers
         {
             var articles = _articleService.GetArticles();
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -81,9 +84,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -95,12 +103,13 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
             return Ok(articleDTOs);
         }
+
         [HttpGet("id/{articleId}")]
         public async Task<IActionResult> GetArticleByID(Guid articleId, string userId)
         {
@@ -113,11 +122,19 @@ namespace Comp1640_Final.Controllers
             var articleDTO = _mapper.Map<SubmissionResponse>(article);
             var user = await _userManager.FindByIdAsync(article.StudentId);
             var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             // If image is null, set to the default image file
-            if (cloudUserImage == null || article.IsAnonymous == true)
+            if (cloudUserImage == null)
             {
-                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                cloudUserImage = defaultImageFileName;
+            }
+            if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+            {
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                 cloudUserImage = defaultImageFileName;
             }
             articleDTO.StudentAvatar = cloudUserImage;
@@ -130,7 +147,7 @@ namespace Comp1640_Final.Controllers
             articleDTO.ViewCount = article.ViewCount;
             articleDTO.IsViewed = article.ViewCount >= 1;
             //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-            articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+            articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -145,6 +162,10 @@ namespace Comp1640_Final.Controllers
             if (articles == null || !articles.Any())
                 return NotFound(); var articleDTOs = new List<SubmissionResponse>();
 
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
@@ -153,9 +174,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -167,7 +193,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -183,6 +209,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -191,9 +220,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -205,8 +239,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
-                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -220,6 +253,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -228,9 +264,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -243,7 +284,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -257,6 +298,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no article here");
 
             var articleDTOs = new List<ArticleResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -266,9 +310,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -280,7 +329,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -295,6 +344,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no article here");
 
             var articleDTOs = new List<ArticleResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -304,9 +356,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -318,7 +375,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
             return Ok(articleDTOs);
@@ -336,6 +393,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -345,9 +405,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -359,7 +424,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -375,6 +440,9 @@ namespace Comp1640_Final.Controllers
                 return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -384,9 +452,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -398,7 +471,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 
@@ -414,6 +487,9 @@ namespace Comp1640_Final.Controllers
                 return NotFound();
 
             var articleDTOs = new List<SubmissionResponse>();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
 
             foreach (var article in articles)
             {
@@ -424,9 +500,14 @@ namespace Comp1640_Final.Controllers
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
                 // If imageBytes is null, read the default image file
-                if (cloudUserImage == null || article.IsAnonymous == true)
+                if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 articleDTO.StudentAvatar = cloudUserImage;
@@ -438,7 +519,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ViewCount = article.ViewCount;
                 articleDTO.IsViewed = article.ViewCount >= 1;
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
-                articleDTO.StudentName = article.IsAnonymous == true ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
 

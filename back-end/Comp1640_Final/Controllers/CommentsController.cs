@@ -53,6 +53,10 @@ namespace Comp1640_Final.Controllers
         public async Task<IActionResult> GetComments(string userId)
         {
             var comments = await _commentService.GetComments();
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
             if (comments == null)
             {
                 return Ok(comments);
@@ -76,12 +80,12 @@ namespace Comp1640_Final.Controllers
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
-                        if (comment.IsAnonymous == true)
+                        if (comment.IsAnonymous == true && userId != comment.UserId && isGuestOrStudent)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
@@ -111,6 +115,10 @@ namespace Comp1640_Final.Controllers
         public async Task<IActionResult> GetParentComments(Guid articleId, string userId)
         {
             var comments =  await _commentService.GetParentComments(articleId);
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
             if (comments == null)
             {
                 return Ok(comments);
@@ -135,12 +143,12 @@ namespace Comp1640_Final.Controllers
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
-                        if (comment.IsAnonymous == true)
+                        if (comment.IsAnonymous == true && userId != comment.UserId && isGuestOrStudent)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
@@ -171,6 +179,10 @@ namespace Comp1640_Final.Controllers
         public async Task<IActionResult> GetReplies(Guid parentId, string userId)
         {
             var comments = await _commentService.GetReplies(parentId);
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
             if (comments == null)
             {
                 return Ok(comments);
@@ -194,12 +206,12 @@ namespace Comp1640_Final.Controllers
                         // If imageBytes is null, read the default image file
                         if (cloudUserImage == null)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
                             cloudUserImage = defaultImageFileName;
                         }
-                        if (comment.IsAnonymous == true)
+                        if (comment.IsAnonymous == true && userId != comment.UserId && isGuestOrStudent)
                         {
-                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                            var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
@@ -299,7 +311,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (commentDto.IsAnonymous == true)
@@ -452,7 +464,7 @@ namespace Comp1640_Final.Controllers
                     UserAvatar = cloudUserImage,
                     FirstName = firstName,
 					LastName = lastName
-				};
+                };
                 commentResponse.UserComment = userComment;
                 return Ok(commentResponse);
             }

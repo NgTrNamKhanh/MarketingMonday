@@ -71,12 +71,12 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (notification.IsAnonymous == true)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                     firstName = "Anonymous";
                     lastName = "";

@@ -75,7 +75,7 @@ namespace Comp1640_Final.Controllers
                 else
                 {
                     // If no avatar image is provided, set a default image URL
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
                     account.CloudAvatarImagePath = defaultImageFileName;
                 }
 
