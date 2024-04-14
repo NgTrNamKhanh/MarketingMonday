@@ -185,7 +185,7 @@ const Accounts = () => {
             localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data));
             localStorage.setItem("roles", JSON.stringify(rolesResponse.data));
             setFacultyOptions(facultiesResponse.data);
-            setRoleOptions(rolesResponse.data);
+            setRoleOptions(rolesResponse.data.filter((role) => role.name !== 'Admin'));
 
         } catch (error) {
             console.error("Error fetching roles and faculties:", error);
@@ -204,7 +204,7 @@ const Accounts = () => {
                     JSON.parse(roleLocal).length !== 0
                 ) {
                     const facultiesFromStorage = JSON.parse(faLocal);
-                    const rolesFromStorage = JSON.parse(roleLocal);
+                    const rolesFromStorage = JSON.parse(roleLocal.filter((role) => role.name !== 'Admin'));
                     setFacultyOptions(facultiesFromStorage);
                     setRoleOptions(rolesFromStorage);
                 } else {

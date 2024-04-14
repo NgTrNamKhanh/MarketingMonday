@@ -141,6 +141,7 @@ const AccountForm = ({
     const onChangeRole = (e) => {
         setRole(e.target.value);
     };
+    console.log(roleOptions)
     return (
         <Dialog open={true} onClose={handleDefaultCloseEditDialog}>
         <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>
