@@ -55,13 +55,17 @@ export default function Profile() {
                 </div>
                 <div className="profileRight">
                     <h4 className="profileInfoName">{currentUser.firstName} {currentUser.lastName}</h4>
-                    <h5>Phone Number</h5>
-                    <span>{currentUser.phoneNumber}</span>
-                    <h5>Email</h5>
+                    <h5>Email Address</h5>
                     <span>{currentUser.email}</span>
                     <h5>Faculty</h5>
                     <span>{getFacultyName(currentUser.facultyId)}</span>
-                    <button onClick={()=>handleOpenChangePassword()}>Change password</button>
+                    <h5>Change password</h5>
+                    <div className="changePassword">
+                        <span>Password must be at least 8 characters long</span>
+                        <button className="changePasswordBtn" onClick={()=>handleOpenChangePassword()}>Change</button>
+                    </div>
+                    <h5>Number</h5>
+                    <span>{currentUser.phoneNumber}</span>
                 </div>
                 
             </div>

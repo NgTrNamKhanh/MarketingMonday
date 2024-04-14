@@ -22,7 +22,7 @@ import { ToastContainer } from "react-toastify";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 export default function Home() {
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
         const fetchCurrentUser = async () => {
@@ -55,8 +55,8 @@ export default function Home() {
     //     }
     //     connect()
     // }, []);
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if(isLoading){
+        return <>Loading...</>
     }
     return (
         <Router> 
@@ -81,7 +81,7 @@ export default function Home() {
                             <Route
                                 path="/"
                                 element={
-                                    currentUser ? (
+                                    currentUser  ? (
                                         currentUser.roles.includes('Admin') ? (
                                             <Navigate to="/accounts" />
                                         ) : currentUser.roles.includes('Manager') ? (

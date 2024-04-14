@@ -86,9 +86,11 @@ export default function Feed({userId}) {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(false)
     useEffect(() => {
+        setLoading(true)
         const user = authService.getCurrentUser();
         if (user) {
             setCurrentUser(user);
+            setLoading(false)
         }
     }, []);
     const [filteredPosts, setFilteredPosts] = useState([]);
@@ -226,7 +228,7 @@ export default function Feed({userId}) {
                             </select>
                         </div>
                 )}
-                {loading ? (
+                {(loading && currentUser) ? (
                 <Box style={{ width: "100vh" }}>
                     {Array(10)
                     .fill()
@@ -238,7 +240,7 @@ export default function Feed({userId}) {
                     ))}
                 </Box>
                 ) : error ? (
-                <p>Error: {error.message}</p>
+                <p>{error}</p>
                 ) : (
                     filteredPosts.map(post => (
                         <Post
