@@ -35,6 +35,7 @@ namespace UnitTest
         private Mock<ILikeService> _likeServiceMock;
         private Mock<IDislikeService> _dislikeServiceMock;
         private Mock<Cloudinary> _cloudinaryMock;
+        private Mock<IEmailService> _emailServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -49,6 +50,7 @@ namespace UnitTest
             _dislikeServiceMock = new Mock<IDislikeService>();
             var cloudinaryUrl = "cloudinary://API_KEY:API_SECRET@CLOUD_NAME";
             _cloudinaryMock = new Mock<Cloudinary>(cloudinaryUrl);
+            _emailServiceMock = new Mock<IEmailService>();
 
             _articleController = new ArticlesController(
                 _articleServiceMock.Object,
@@ -61,7 +63,8 @@ namespace UnitTest
                 _likeServiceMock.Object,
                 _dislikeServiceMock.Object,
                 _cloudinaryMock.Object,
-                null
+                null,
+                _emailServiceMock.Object
                 );
         }
 
@@ -407,11 +410,13 @@ namespace UnitTest
 
 
             var article = new Article();
+            var userId = "absbad";
             var articleDto = new AddArticleDTO
             {
                 ImageFiles = listImageFile,
                 DocFiles = imageFile1,
             };
+            
             var uploadImgResultMock = new ImageUploadResult { Uri = new Uri("http://example.com/image.jpg") };
             var uploadFileResultMock = new RawUploadResult { Uri = new Uri("http://example.com/image.jpg") };
             _mapperMock.Setup(m => m.Map<Article>(articleDto)).Returns(article);
@@ -421,6 +426,7 @@ namespace UnitTest
             _articleServiceMock.Setup(a => a.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
             _articleServiceMock.Setup(a => a.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
             _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
+            //_userManagerMock.Setup(u => u.FindByIdAsync(userId)).Returns()
 
             var result = await _articleController.AddArticle(articleDto);
             //assert
