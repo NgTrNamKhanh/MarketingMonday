@@ -530,9 +530,14 @@ namespace Comp1640_Final.Controllers
             //xoá comment gốc
             var commentToDelete = _commentService.GetCommentById(commentId);
 
-            var parentComment = _commentService.GetCommentById((Guid)commentToDelete.ParentCommentId);
-            var commentResponse = _mapper.Map<CommentResponse>(parentComment);
-
+           
+            if (commentToDelete.ParentCommentId != null)
+            {
+                var parentComment = _commentService.GetCommentById((Guid)commentToDelete.ParentCommentId);
+                var commentResponse = _mapper.Map<CommentResponse>(parentComment);
+                commentResponse.hasReplies = await _commentService.HasReplies(parentComment.Id);
+                return Ok(commentResponse);
+            }
             
 
             if (commentToDelete != null)
@@ -542,12 +547,13 @@ namespace Comp1640_Final.Controllers
             }
             var result = await _commentService.Save(); //save vào db
 
-            commentResponse.hasReplies = await _commentService.HasReplies(parentComment.Id);
+          
             if (!result)
             {
                 return BadRequest("Failed");
             }
-            return Ok(commentResponse);
+            return Ok("Delete successful");
+
         }
 
     }
