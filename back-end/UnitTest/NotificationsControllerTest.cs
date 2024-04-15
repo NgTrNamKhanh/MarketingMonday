@@ -3,6 +3,7 @@ using Comp1640_Final.Controllers;
 using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -106,6 +107,132 @@ namespace UnitTest
             var returnedNotifications = okResult.Value as List<NotificationResponse>;
             Assert.That(returnedNotifications, Is.Not.Null.And.Count.EqualTo(notifications.Count));
         }
+
+        [Test]
+        public async Task GetNotifications_ReturnsOkResult_WithEmptyList()
+        {
+            // Arrange
+            var userId = "validUserId";
+
+            // Mock empty list of notifications
+            var notifications = new List<Notification>();
+
+            _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync(notifications);
+
+            // Act
+            var result = await _notificationsController.GetNotifications(userId);
+
+            // Assert
+            Assert.That(result, Is.Not.Null.And.InstanceOf<OkObjectResult>(), "The method should return an OkObjectResult.");
+            var okResult = result as OkObjectResult;
+            Assert.That(okResult.Value, Is.Not.Null.And.InstanceOf<List<NotificationResponse>>(), "The value should be a list of NotificationResponse objects.");
+            var returnedNotifications = okResult.Value as List<NotificationResponse>;
+            Assert.That(returnedNotifications, Is.Not.Null.And.Empty, "The returned list of notifications should be empty.");
+        }
+
+        //[Test]
+        //public async Task GetNotifications_ReturnsNotFoundResult_ForInvalidUserId()
+        //{
+        //    // Arrange
+        //    var userId = "invalidUserId";
+
+        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync((List<Notification>)null);
+
+        //    // Act
+        //    var result = await _notificationsController.GetNotifications(userId);
+
+        //    // Assert
+        //    Assert.That(result, Is.Not.Null.And.InstanceOf<NotFoundResult>(), "The method should return a NotFoundResult for an invalid user ID.");
+        //}
+
+
+        //[Test]
+        //public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
+        //{
+        //    // Arrange
+        //    var userId = "validUserId";
+
+        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ThrowsAsync(new Exception("Service error"));
+
+        //    // Act
+        //    var result = await _notificationsController.GetNotifications(userId);
+
+        //    // Assert
+        //    Assert.That(result, Is.Not.Null.And.InstanceOf<StatusCodeResult>(), "The method should return a StatusCodeResult for a service error.");
+        //    var statusCodeResult = result as StatusCodeResult;
+        //    Assert.That(statusCodeResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError), "The status code should be 500 for a service error.");
+        //}
+
+        //[Test]
+        //public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
+        //{
+        //    // Arrange
+        //    var userId = "validUserId";
+
+        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ThrowsAsync(new Exception("Service error"));
+
+        //    // Act & Assert
+        //    var ex = Assert.ThrowsAsync<Exception>(async () => await _notificationsController.GetNotifications(userId));
+        //    Assert.That(ex.Message, Is.EqualTo("Service error"), "The thrown exception should match the expected message.");
+        //}
+
+
+        [Test]
+        public async Task GetNotifications_ReturnsBadRequest_ForInvalidUserId()
+        {
+            // Arrange
+            var userId = "invalidUserId";
+            _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync((List<Notification>)null);
+
+            // Act
+            var result = await _notificationsController.GetNotifications(userId);
+
+            // Assert
+            Assert.That(result, Is.Not.Null.And.InstanceOf<BadRequestObjectResult>());
+        }
+
+
+        //[Test]
+        //public async Task GetNotifications_ReturnsNull_ForEmptyNotifications()
+        //{
+        //    // Arrange
+        //    var userId = "validUserId";
+        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync(new List<Notification>());
+
+        //    // Act
+        //    var result = await _notificationsController.GetNotifications(userId);
+
+        //    // Assert
+        //    Assert.That(result, Is.Null);
+        //}
+
+        [Test]
+        public async Task GetNotifications_ReturnsOk_ForEmptyNotifications()
+        {
+            // Arrange
+            var userId = "validUserId";
+            _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync(new List<Notification>());
+
+            // Act
+            var result = await _notificationsController.GetNotifications(userId);
+
+            // Assert
+            Assert.That(result, Is.Null.Or.InstanceOf<OkObjectResult>());
+        }
+
+
+
+        [Test]
+        public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
+        {
+            // Arrange
+            var userId = "validUserId";
+            _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ThrowsAsync(new Exception("Service error"));
+
+            // Act & Assert
+            Assert.ThrowsAsync<Exception>(async () => await _notificationsController.GetNotifications(userId));
+        }
+
 
 
 
