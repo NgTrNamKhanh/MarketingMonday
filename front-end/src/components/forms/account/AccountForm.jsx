@@ -65,16 +65,23 @@ const AccountForm = ({
     const userSchema = yup.object().shape({
         firstName: yup.string().required("required"),
         lastName: yup.string().required("required"),
-        password: isEdit ? yup.string() : yup.string().required("This field must not be empty"),
+        password: isEdit 
+            ? yup.string() 
+            : yup.string()
+                .required("This field must not be empty")
+                .matches(
+                    /^(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*\d).*$/,
+                    "Password must contain at least one symbol, one capital letter, and one number"
+                ),
         confirm_password: isEdit 
             ? yup.string() 
-            : yup
-                .string()
+            : yup.string()
                 .required("This field must not be empty")
                 .oneOf([yup.ref("password"), null], "Confirm password does not match"),
         phoneNumber: yup.string().required("required").matches(phoneRegExp, "Phone number is not valid"),
         email: yup.string().required("required").email("Please enter an email"),
     });
+    
 
     const handleSubmit = async (values) => {
         const FormData = require('form-data');
@@ -134,6 +141,7 @@ const AccountForm = ({
     const onChangeRole = (e) => {
         setRole(e.target.value);
     };
+    console.log(roleOptions)
     return (
         <Dialog open={true} onClose={handleDefaultCloseEditDialog}>
         <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>

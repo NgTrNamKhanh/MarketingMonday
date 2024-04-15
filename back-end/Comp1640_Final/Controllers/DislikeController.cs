@@ -30,6 +30,7 @@ namespace Comp1640_Final.Controllers
         private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private static IWebHostEnvironment _webHostEnvironment;
+        private static IEmailService _emailService;
 
         public DislikeController(ProjectDbContext context, 
             IMapper mapper, 
@@ -41,7 +42,7 @@ namespace Comp1640_Final.Controllers
             IHubContext<NotificationHub> hubContext,
             INotificationService notificationService,
             IUserService userService,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment, IEmailService emailService)
         {
             _context = context;
             _mapper = mapper;
@@ -54,6 +55,7 @@ namespace Comp1640_Final.Controllers
             _notificationService = notificationService;
             _userService = userService;
             _webHostEnvironment = webHostEnvironment;
+            _emailService = emailService;
         }
         //[HttpGet("count/article/{articleId}")]
         //public async Task<IActionResult> GetArticleDislikesCount(Guid articleId)
@@ -140,6 +142,7 @@ namespace Comp1640_Final.Controllers
 
                 var article = _aritcleService.GetArticleByID(dislikeDto.ArticleId); //tìm article được tương tác
                 var user = await _userManager.FindByIdAsync(dislikeDto.UserId); // tìm thằng tương tác với article đó
+                var author = await _userManager.FindByIdAsync(article.StudentId); //tìm thg tác giả của article
                 var sampleMessage = "disliked your post";
                 var oldNoti = await _notificationService.GetNotiByUserAndArticle(article.StudentId, dislikeDto.ArticleId, sampleMessage);
                 if (oldNoti != null)
@@ -162,7 +165,15 @@ namespace Comp1640_Final.Controllers
                     Message = message,
                     IsAnonymous = false
                 };
+
                 await _notificationService.PostNotification(notification);
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one disliked your post!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 //await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);
@@ -222,6 +233,7 @@ namespace Comp1640_Final.Controllers
                 //------------------ noti -------------------
                 var comment = _commentService.GetCommentById(dislikeDto.CommentId); // tìm comment
                 var user = await _userManager.FindByIdAsync(dislikeDto.UserId); // tìm user tương tác
+                var author = await _userManager.FindByIdAsync(comment.UserId); //tìm thg tác giả của article
                 var sampleMessage = "disliked your comment";
                 var oldNoti = await _notificationService.GetNotiByUserAndComment(comment.UserId, dislikeDto.CommentId, sampleMessage);
                 if (oldNoti != null)
@@ -244,7 +256,13 @@ namespace Comp1640_Final.Controllers
                     IsAnonymous = false
                 };
                 await _notificationService.PostNotification(notification);
-
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one disliked your comment!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 //await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);
 
                 var notiResponse = _mapper.Map<NotificationResponse>(notification);

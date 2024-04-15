@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 50px;
 }
 
 .profileInformation {
@@ -20,8 +20,8 @@
 }
 
 .profileCover {
-    width: 200px; 
-    height: 200px;
+    width: 300px; 
+    height: 300px;
     overflow: hidden;
     border-radius: 50%;
 }
@@ -35,10 +35,12 @@
 .profileRight {
     display: flex;
     flex-direction: column;
+    flex: auto;
     gap: 5px;
     justify-content: start;
     margin-top: 20px;
     margin-left: 40px;
+    margin-right: 100px;
 }
 
 .profileInfoName {
@@ -77,4 +79,28 @@
 
 .dropdownContentItemLink:hover {
     background-color: #cbcbcb;
+}
+.profileRight h4{
+    font-size: 30px;
+    font-weight: 600;
+    padding: 5px 0;
+}
+.profileRight h5{
+    font-size: 20px;
+    padding: 5px 0;
+    font-weight: 500;
+}
+.changePassword{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.changePasswordBtn{
+    font-size: 14px;
+    border: 1px solid grey;
+    border-radius: 30px;
+    width: 100px;
+    height: 30px;
+    background-color: transparent;
+    cursor: pointer;
 }

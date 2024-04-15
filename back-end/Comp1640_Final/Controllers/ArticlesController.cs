@@ -24,6 +24,11 @@ using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 using DW = DocumentFormat.OpenXml.Drawing.Wordprocessing;
 using A = DocumentFormat.OpenXml.Drawing;
 using PIC = DocumentFormat.OpenXml.Drawing.Pictures;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
+using Drawing = DocumentFormat.OpenXml.Wordprocessing.Drawing;
+
 namespace Comp1640_Final.Controllers
 {
     [Route("api/[controller]")]
@@ -41,6 +46,7 @@ namespace Comp1640_Final.Controllers
         private readonly IDislikeService _dislikeService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly Cloudinary _cloudinary;
+        private readonly IEmailService _emailService;
 
         public ArticlesController(IArticleService articleService,
             IMapper mapper,
@@ -52,7 +58,8 @@ namespace Comp1640_Final.Controllers
             ILikeService likeService,
             IDislikeService dislikeService,
             Cloudinary cloudinary,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,
+            IEmailService emailService)
         {
             _articleService = articleService;
             _mapper = mapper;
@@ -65,6 +72,7 @@ namespace Comp1640_Final.Controllers
             _dislikeService = dislikeService;
             _cloudinary = cloudinary;
             _httpContextAccessor = httpContextAccessor;
+            _emailService = emailService;
         }
         [HttpGet]
         public async Task<IActionResult> GetArticles(string userId)
@@ -702,7 +710,19 @@ namespace Comp1640_Final.Controllers
             {
                 return BadRequest("Failed to add article.");
             }
-
+            var student = await _userManager.FindByIdAsync(articleAdd.StudentId); // tìm student
+            var coordinators = await _userService.FindCoordinatorInFaculty(articleAdd.FacultyId);
+            string message = student.FirstName + " " + student.LastName + " submit an article";
+            foreach (var coordinator in coordinators) 
+            {
+                var email = new EmailDTO
+                {
+                    Email = coordinator.Email,
+                    Subject = "A Student submit a post",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
+            }
             return Ok("Successfully added");
         }
 

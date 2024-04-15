@@ -34,7 +34,7 @@ const headerText = (
         <p>Before this submission can be assessed, there are a few Terms and Conditions:</p>
     </>
 );
-export default function  Submission ({ submission, reFetch }) {
+export default function  Submission ({ submission, reFetch, currentUser }) {
     console.log(submission)
     const formatDate = (dateString) => {
         const options = {
@@ -266,34 +266,39 @@ export default function  Submission ({ submission, reFetch }) {
                         </span>
                     </div>
                     <div className="submissionTopRight">
-                    <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
-                    {optionsOpen && (
-                        <div className="submissionDropdownContent" ref={optionsRef}>
-                            {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                            <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
-                                    Comment
-                            </a>
-                            {/* </Link> */}
-                            {/* <Link to="/settings" className="dropdownContentItemLink"> */}
-                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>
-                                        <span>Confirm</span> 
-                            </div>
-                            {/* </Link> */}
-                            {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(2)}>
-                                        <span>Reject</span>
-                            </div>
-                            {/* </Link> */}
-                            {/* <Link to="/settings" className="dropdownContentItemLink"> */}
-                            <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(3)}>
-                                        <span>Put On Hold</span> 
-                            </div>
-                            {/* </Link> */}
-                            <div className="submissionDropdownContentItem" onClick={()=>handleDownload()}>
-                                        <span>Download</span> 
-                            </div>
-                        </div>
-                    )}
+                        {currentUser.roles.includes("Coordinator") && (
+                            <>
+                                <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
+                                {optionsOpen && (
+                                    <div className="submissionDropdownContent" ref={optionsRef}>
+                                        {/* <Link to="/profile" className="dropdownContentItemLink"> */}
+                                        <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
+                                                Comment
+                                        </a>
+                                        {/* </Link> */}
+                                        {/* <Link to="/settings" className="dropdownContentItemLink"> */}
+                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>
+                                                    <span>Confirm</span> 
+                                        </div>
+                                        {/* </Link> */}
+                                        {/* <Link to="/profile" className="dropdownContentItemLink"> */}
+                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(2)}>
+                                                    <span>Reject</span>
+                                        </div>
+                                        {/* </Link> */}
+                                        {/* <Link to="/settings" className="dropdownContentItemLink"> */}
+                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(3)}>
+                                                    <span>Put On Hold</span> 
+                                        </div>
+                                        {/* </Link> */}
+                                        <div className="submissionDropdownContentItem" onClick={()=>handleDownload()}>
+                                                    <span>Download</span> 
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    
                     </div>
                 </div>
                 <div className="submissionCenter">

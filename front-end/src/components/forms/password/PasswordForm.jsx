@@ -33,7 +33,12 @@ const PasswordForm = ({
     const isNonMobile = useMediaQuery("(min-width:60vh)");
 
     const userSchema = yup.object().shape({
-        password:  yup.string().required("This field must not be empty"),
+        password: yup.string()
+                .required("This field must not be empty")
+                .matches(
+                    /^(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*\d).*$/,
+                    "Password must contain at least one symbol, one capital letter, and one number"
+                ),
         confirm_password: 
                 yup
                 .string()

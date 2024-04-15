@@ -69,6 +69,7 @@ namespace Comp1640_Final.Services
 
         public async Task<bool> PostNotification(Notification notification)
         {
+
             _context.Notifications.Add(notification);
             return await Save();
         }

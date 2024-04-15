@@ -137,7 +137,7 @@ export default function Topbar({user, setCurrentUser}) {
                                     </div>
                                 </Link>
                                 <hr className="dropdownHr"/>
-                                <Link to="/settings" className="dropdownContentItemLink">
+                                {/* <Link to="/settings" className="dropdownContentItemLink">
                                     <div className="dropdownContentItem">
                                             <Settings className="linkIcon" />
                                             <span>Settings</span> 
@@ -156,7 +156,7 @@ export default function Topbar({user, setCurrentUser}) {
                                             <Feedback className="linkIcon" />
                                             <span>Feedback</span> 
                                     </div>
-                                </Link>
+                                </Link> */}
                                 {/* <Link className="dropdownContentItemLink" > */}
                                 <a className="dropdownContentItemLink">   
                                     <div className="dropdownContentItem" onClick={handleLogOut}>

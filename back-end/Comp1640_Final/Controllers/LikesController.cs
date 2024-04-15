@@ -30,6 +30,7 @@ namespace Comp1640_Final.Controllers
         private readonly INotificationService _notificationService;
         private readonly IUserService _userService;
         private static IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailService _emailService;
 
         public LikesController(ProjectDbContext context, 
             IMapper mapper,
@@ -41,7 +42,7 @@ namespace Comp1640_Final.Controllers
             IHubContext<NotificationHub> hubContext,
             INotificationService notificationService,
             IUserService userService,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment, IEmailService emailServivce)
         {
             _context = context;
             _mapper = mapper;
@@ -54,6 +55,7 @@ namespace Comp1640_Final.Controllers
             _notificationService = notificationService;
             _userService = userService;
             _webHostEnvironment = webHostEnvironment;
+            _emailService = emailServivce;
         }
         //[HttpGet("count/article/{articleId}")]
         //public async Task<IActionResult> GetArticleLikesCount(Guid articleId)
@@ -137,7 +139,7 @@ namespace Comp1640_Final.Controllers
                 //---------------- noti -----------------
                 var article = _aritcleService.GetArticleByID(likeDto.ArticleId); //tìm article được tương tác
                 var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm thằng tương tác với article đó
-                //var author = await _userManager.FindByIdAsync(article.StudentId); //tìm thg tác giả của article
+                var author = await _userManager.FindByIdAsync(article.StudentId); //tìm thg tác giả của article
                 var sampleMessage = "liked your post";
                 var oldNoti = await _notificationService.GetNotiByUserAndArticle(article.StudentId, likeDto.ArticleId, sampleMessage);
                 // xóa noti cũ
@@ -161,6 +163,13 @@ namespace Comp1640_Final.Controllers
                     Message = message,
                     IsAnonymous = false
                 };
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one liked your post!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 await _notificationService.PostNotification(notification);
                 //await _hubContext.Clients.User(article.StudentId).SendAsync("ReceiveNotification", message);
 
@@ -218,6 +227,7 @@ namespace Comp1640_Final.Controllers
                 //------------------ noti -------------------
                 var comment = _commentService.GetCommentById(likeDto.CommentId); // tìm comment
                 var user = await _userManager.FindByIdAsync(likeDto.UserId); // tìm user tương tác
+                var author = await _userManager.FindByIdAsync(comment.UserId); //tìm thg tác giả của article
                 var sampleMessage = "liked your comment";
                 var oldNoti = await _notificationService.GetNotiByUserAndComment(comment.UserId, likeDto.CommentId, sampleMessage);
                 // xóa noti cũ
@@ -241,6 +251,13 @@ namespace Comp1640_Final.Controllers
                     Message = message,
                     IsAnonymous = false
                 };
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one liked your comment!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 await _notificationService.PostNotification(notification);
 
                 //await _hubContext.Clients.User(comment.UserId).SendAsync("ReceiveNotification", message);

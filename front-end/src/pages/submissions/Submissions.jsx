@@ -149,17 +149,17 @@ export default function Submissions () {
                     <>
                         {filteredSubmissions.map((submission) => (
                             <div key={submission.id}>
-                                {submission.publishStatusId === 1 && (
+                                {currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 && (
                                     <label>
-                                    <input
-                                        type="checkbox"
-                                        checked={submission.publishStatusId === 1 && submission.coordinatorStatus === true}
-                                        onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
-                                    />
-                                    {submission.title}
-                                </label>
+                                        <input
+                                            type="checkbox"
+                                            checked={submission.publishStatusId === 1 && submission.coordinatorStatus === true}
+                                            onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
+                                        />
+                                        {submission.title}
+                                    </label>
                                 )}
-                                <Submission submission={submission} />
+                                <Submission submission={submission} currentUser={currentUser}/>
                             </div>
                         ))}
                     </>

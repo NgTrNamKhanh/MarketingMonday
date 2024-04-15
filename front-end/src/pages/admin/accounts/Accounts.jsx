@@ -3,7 +3,7 @@ import "./accounts.css";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { Delete, EditOutlined, Visibility } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import { Box, Skeleton, useTheme } from "@mui/material";
 import AccountForm from "../../../components/forms/account/AccountForm";
 import DeleteConfirm from "../../../components/dialogs/deleteConfirm/DeleteConfirm";
 import useFetch from "../../../hooks/useFetch";
@@ -185,7 +185,7 @@ const Accounts = () => {
             localStorage.setItem("faculties", JSON.stringify(facultiesResponse.data));
             localStorage.setItem("roles", JSON.stringify(rolesResponse.data));
             setFacultyOptions(facultiesResponse.data);
-            setRoleOptions(rolesResponse.data);
+            setRoleOptions(rolesResponse.data.filter((role) => role.name !== 'Admin'));
 
         } catch (error) {
             console.error("Error fetching roles and faculties:", error);
@@ -206,7 +206,7 @@ const Accounts = () => {
                     const facultiesFromStorage = JSON.parse(faLocal);
                     const rolesFromStorage = JSON.parse(roleLocal);
                     setFacultyOptions(facultiesFromStorage);
-                    setRoleOptions(rolesFromStorage);
+                    setRoleOptions(rolesFromStorage.filter((role) => role.name !== 'Admin'));
                 } else {
                     await fetchRolesAndFaculties();
                 }
@@ -224,7 +224,20 @@ const Accounts = () => {
     return (
         <div className="account">
             <h1 className="title">Accounts</h1>
-            <button className="addButton" onClick={() => handleOpenEditDialog()}>Add Account</button>
+            {loading ? (
+                <Box style={{ width: "100vh" }}>
+                {Array(10)
+                .fill()
+                .map((_, i) => (
+                    <>
+                    <Skeleton />
+                    <Skeleton animation={i % 2 === 0 ? "wave" : false} />
+                    </>
+                ))}
+            </Box>
+            ):(
+                <>
+                <button className="addButton" onClick={() => handleOpenEditDialog()}>Add Account</button>
             {/* <Box m="2vh">
                 <h1 className="title">
                     Accounts
@@ -325,17 +338,12 @@ const Accounts = () => {
                     <img src={`data:image/jpeg;base64,${imageBytes}`} alt="Rendered Image"/>
                 ))}
             {/* </Box> */}
+                </>
+            )}
+            
         </div>
     );
-    function arrayBufferToBase64(buffer) {
-        let binary = '';
-        const bytes = new Uint8Array(buffer);
-        const len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
-            binary += String.fromCharCode(bytes[i]);
-            }
-            return window.btoa(binary);
-        }
+    
 };
 
 export default Accounts;
