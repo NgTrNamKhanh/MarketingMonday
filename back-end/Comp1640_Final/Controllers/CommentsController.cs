@@ -29,11 +29,12 @@ namespace Comp1640_Final.Controllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IArticleService _articleService;
         private readonly INotificationService _notificationService;
+        private readonly IEmailService _emailService;
 
         public CommentsController(ProjectDbContext context, IMapper mapper, UserManager<ApplicationUser> userManager, 
             ICommentService commentService, IWebHostEnvironment webHostEnvironment, IUserService userService, ILikeService likeService, 
             IDislikeService dislikeService, IHttpContextAccessor httpContextAccessor,
-            IArticleService articleService, INotificationService notificationService)
+            IArticleService articleService, INotificationService notificationService, IEmailService emailService)
         {
             _context = context;
             _mapper = mapper;
@@ -46,6 +47,7 @@ namespace Comp1640_Final.Controllers
             _httpContextAccessor = httpContextAccessor;
             _articleService = articleService;
             _notificationService = notificationService;
+            _emailService = emailService;
 
         }
 
@@ -276,6 +278,7 @@ namespace Comp1640_Final.Controllers
                 // notification
                 var article = _articleService.GetArticleByID(commentDto.ArticleId); //tìm article
                 var user = await _userManager.FindByIdAsync(commentDto.UserId);
+                var author = await _userManager.FindByIdAsync(article.StudentId); //tìm thg tác giả của article
                 var sampleMessage = "other have commented on your post";
                 // delete old noti
                 var oldNoti = await _notificationService.GetNotiByUserAndArticle(article.StudentId, commentDto.ArticleId, sampleMessage);
@@ -307,6 +310,13 @@ namespace Comp1640_Final.Controllers
                     IsAnonymous = commentDto.IsAnonymous,
                 };
                 await _notificationService.PostNotification(notification);
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one liked your post!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 // dữ liệu trả về khi post
                 var commentResult =  _commentService.GetCommentById(comment.Id);
 
@@ -362,6 +372,7 @@ namespace Comp1640_Final.Controllers
             {
                 //noti
 				var user = await _userManager.FindByIdAsync(commentDto.UserId);
+                var author = await _userManager.FindByIdAsync(parentComment.UserId); //tìm thg tác giả của article
                 var sampleMessage = "other have replied your comment";
                 var oldNoti = await _notificationService.GetNotiByUserAndComment(parentComment.UserId, parentCommentId, sampleMessage);
                 if (oldNoti != null)
@@ -392,9 +403,15 @@ namespace Comp1640_Final.Controllers
                     IsAnonymous = commentDto.IsAnonymous,
                 };
                 await _notificationService.PostNotification(notification);
-
+                var email = new EmailDTO
+                {
+                    Email = author.Email,
+                    Subject = "Some one replied to your comment!",
+                    Body = message,
+                };
+                _emailService.SendEmail(email);
                 // dữ liệu trả về
-				var replyResult = _commentService.GetCommentById(reply.Id);
+                var replyResult = _commentService.GetCommentById(reply.Id);
                 var replyResponse = _mapper.Map<CommentResponse>(replyResult);
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
                 var firstName = user.FirstName;

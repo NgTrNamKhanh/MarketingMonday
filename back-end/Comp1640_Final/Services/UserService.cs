@@ -14,6 +14,8 @@ namespace Comp1640_Final.Services
         string GetPublicIdFromImageUrl(string imageUrl);
         Task<string> GetCloudinaryAvatarImagePath(string userId);
 
+        Task<ICollection<ApplicationUser>> FindCoordinatorInFaculty(int facultyId);
+
 
     }
     public class UserService : IUserService
@@ -104,7 +106,16 @@ namespace Comp1640_Final.Services
             var publicId = fileName.Substring(0, fileName.LastIndexOf('.')); // Remove the file extension
             return publicId;
         }
+        public async Task<ICollection<ApplicationUser>> FindCoordinatorInFaculty(int facultyId)
+        {
+            // Find users who are coordinators and belong to the specified faculty
+            var coordinators = await _userManager.GetUsersInRoleAsync("Coordinator");
 
+            // Filter the coordinators by faculty
+            var coordinatorsInFaculty = coordinators.Where(u => u.FacultyId == facultyId).ToList();
+
+            return coordinatorsInFaculty;
+        }
 
     }
 }

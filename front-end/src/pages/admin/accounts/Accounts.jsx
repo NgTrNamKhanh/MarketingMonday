@@ -204,9 +204,9 @@ const Accounts = () => {
                     JSON.parse(roleLocal).length !== 0
                 ) {
                     const facultiesFromStorage = JSON.parse(faLocal);
-                    const rolesFromStorage = JSON.parse(roleLocal.filter((role) => role.name !== 'Admin'));
+                    const rolesFromStorage = JSON.parse(roleLocal);
                     setFacultyOptions(facultiesFromStorage);
-                    setRoleOptions(rolesFromStorage);
+                    setRoleOptions(rolesFromStorage.filter((role) => role.name !== 'Admin'));
                 } else {
                     await fetchRolesAndFaculties();
                 }

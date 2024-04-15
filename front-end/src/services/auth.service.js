@@ -8,17 +8,22 @@ class AuthService {
         this.cookies = new Cookies();
     }
     login(email, password) {
+        // Check if "CMU-user" cookie exists and delete it if it does
+        if (this.cookies.get("CMU-user")) {
+            this.cookies.remove("CMU-user");
+        }
+    
         return axios.post(`${apis.normal}login?email=${encodeURIComponent(email)}&passWord=${encodeURIComponent(password)}`)
         .then((response) => {
-            // console.log(response.data);
             // Set cookie
             const decodedToken = jwtDecode(response.data.jwt_token);
             this.cookies.set("CMU-user", response.data, {
                 expires: new Date(decodedToken.exp * 1000)
-            })
+            });
             return response.data;
         });
     }
+    
 
 
     logout() {
@@ -44,7 +49,6 @@ class AuthService {
                     return null;
                 }
             }
-            console.log(user)
             return user;
         }
         return null;

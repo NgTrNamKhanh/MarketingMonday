@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Checkbox, FormControlLabel } from "@mui/material";
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
-
+import { ScaleLoader } from "react-spinners";
 export default function CommentForm ({ currentUser, isSubmitting, setIsSubmitting, setComments,setCommentCount, post }){
     const [commentValue, setCommentValue] = useState('');
     const [isAnonymous, setIsAnonymous] = useState(false);
@@ -60,7 +60,11 @@ export default function CommentForm ({ currentUser, isSubmitting, setIsSubmittin
                     type="submit" 
                     className="commentButton"
                 >
+                    {isSubmitting ?(
+                        <ScaleLoader/>
+                    ):(
                         <Send/>
+                    )}
                 </button>
             </form>
         </div>

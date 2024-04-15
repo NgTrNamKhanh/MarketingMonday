@@ -86,7 +86,7 @@ export default function Home() {
                                             <Navigate to="/accounts" />
                                         ) : currentUser.roles.includes('Manager') ? (
                                             <Navigate to="/dashboard" />
-                                        ) : currentUser.roles.includes('Student', 'Guest') ? (
+                                        ) : (currentUser.roles.includes('Student') ||currentUser.roles.includes('Guest') ) ? (
                                             <Navigate to={`/feed/${currentUser.facultyId}`} />
                                         ) : currentUser.roles.includes('Coordinator') ? (
                                             <Navigate to={`/submissions/${currentUser.facultyId}`} />
