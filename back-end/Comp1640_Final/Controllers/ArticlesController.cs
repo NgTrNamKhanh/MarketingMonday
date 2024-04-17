@@ -828,8 +828,8 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully change article status");
         }
 
-        [HttpPut("updateListCoordinatorStatus")]
-        public async Task<ActionResult> UpdateListCoordinatorStatusArticle([FromForm] List<Guid> articleIds)
+        [HttpPut("ApproveListArticlesForGuest")]
+        public async Task<ActionResult> ApproveListArticlesForGuest([FromForm] List<Guid> articleIds)
         {
             if (articleIds == null || articleIds.Count == 0)
                 return BadRequest("No article IDs provided.");
@@ -853,6 +853,30 @@ namespace Comp1640_Final.Controllers
             return Ok("Successfully changed coordinator status for all articles.");
         }
 
+        [HttpPut("UnapproveListArticlesForGuest")]
+        public async Task<ActionResult> UnapproveListArticlesForGuest([FromForm] List<Guid> articleIds)
+        {
+            if (articleIds == null || articleIds.Count == 0)
+                return BadRequest("No article IDs provided.");
+
+            foreach (var articleId in articleIds)
+            {
+                if (!_articleService.ArticleExists(articleId))
+                    return NotFound($"Article with ID {articleId} not found.");
+
+                var article = _articleService.GetArticleByID(articleId);
+
+                // Toggle the coordinator status for each article
+                article.CoordinatorStatus = false;
+
+                if (!await _articleService.UpdateArticle(article))
+                {
+                    return BadRequest($"Failed to update coordinator status for article with ID {articleId}.");
+                }
+            }
+
+            return Ok("Successfully changed coordinator status for all articles.");
+        }
 
         [HttpPut("addComment/{articleId}")]
         public async Task<ActionResult<Article>> AddCommentArticle(Guid articleId, string comment)
