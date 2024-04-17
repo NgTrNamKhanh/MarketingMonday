@@ -28,6 +28,7 @@ namespace UnitTest
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
         private Mock<INotificationService> _notiServiceMock;
         private Mock<IUserService> _userServiceMock;
+        private Mock<IEmailService> _emailServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -41,6 +42,7 @@ namespace UnitTest
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
             _notiServiceMock = new Mock<INotificationService>();
             _userServiceMock = new Mock<IUserService>();
+            _emailServiceMock = new Mock<IEmailService>();
 
             _commentController = new CommentsController(
                 null,
@@ -53,7 +55,8 @@ namespace UnitTest
                 _dislikeServiceMock.Object,
                 null,
                 _articleServiceMock.Object,
-                _notiServiceMock.Object
+                _notiServiceMock.Object,
+                _emailServiceMock.Object
                 );
         }
 

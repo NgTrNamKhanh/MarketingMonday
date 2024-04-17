@@ -1,4 +1,5 @@
-﻿using Comp1640_Final.IServices;
+﻿using Comp1640_Final.Data;
+using Comp1640_Final.IServices;
 using Comp1640_Final.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +14,12 @@ namespace Comp1640_Final.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ProjectDbContext _context;
 
-        public AuthService(UserManager<ApplicationUser> userManager)
+        public AuthService(UserManager<ApplicationUser> userManager, ProjectDbContext context)
         {
             _userManager = userManager;
+            _context = context;
         }
         public async Task<bool> CreateAccountUser(Account account)
         {
@@ -75,6 +78,7 @@ namespace Comp1640_Final.Services
             return changeRole.Succeeded && changeEmail.Succeeded;
         }
 
+
         public  IEnumerable<ApplicationUser> GetAllUsers()
         {
             return  _userManager.Users.ToList();
@@ -90,7 +94,11 @@ namespace Comp1640_Final.Services
             return await _userManager.CheckPasswordAsync(identityUser, passWord);
         }
 
-        
+        public async Task<IEnumerable<ApplicationUser>> GetAccountByName(string name)
+        {
+            return await _context.Users.Where(u => u.FirstName.Contains(name) || u.LastName.Contains(name)).ToListAsync();
+        }
+
 
     }
 }

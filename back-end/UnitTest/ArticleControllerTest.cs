@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -408,15 +409,37 @@ namespace UnitTest
                 imageFile2,
             };
 
+            var facultyId = 1;
 
-            var article = new Article();
             var userId = "absbad";
+            var article = new Article
+            {
+                StudentId = userId,
+                FacultyId = facultyId
+            };
             var articleDto = new AddArticleDTO
             {
                 ImageFiles = listImageFile,
                 DocFiles = imageFile1,
+                
             };
-            
+            var user = new ApplicationUser
+            {
+                Id = userId,
+                FirstName = "Viet",
+                LastName = "Vi"
+            };
+            var listUsers = new List<ApplicationUser>
+            {
+                user
+            };
+            var email = new EmailDTO
+            {
+                Email = user.Email,
+                Subject = "A Student submit a post",
+                Body = "message",
+            };
+
             var uploadImgResultMock = new ImageUploadResult { Uri = new Uri("http://example.com/image.jpg") };
             var uploadFileResultMock = new RawUploadResult { Uri = new Uri("http://example.com/image.jpg") };
             _mapperMock.Setup(m => m.Map<Article>(articleDto)).Returns(article);
@@ -426,7 +449,9 @@ namespace UnitTest
             _articleServiceMock.Setup(a => a.UploadImage(It.IsAny<ImageUploadParams>())).ReturnsAsync(uploadImgResultMock);
             _articleServiceMock.Setup(a => a.UploadFile(It.IsAny<RawUploadParams>())).ReturnsAsync(uploadFileResultMock);
             _articleServiceMock.Setup(a => a.IsValidDocFile(articleDto.DocFiles)).Returns(true);
-            //_userManagerMock.Setup(u => u.FindByIdAsync(userId)).Returns()
+            _userManagerMock.Setup(u => u.FindByIdAsync(articleDto.StudentId)).ReturnsAsync(user);
+            _userServiceMock.Setup(u => u.FindCoordinatorInFaculty(articleDto.FacultyId)).ReturnsAsync(listUsers);
+            _emailServiceMock.Setup(e => e.SendEmail(email)).ReturnsAsync(true);
 
             var result = await _articleController.AddArticle(articleDto);
             //assert

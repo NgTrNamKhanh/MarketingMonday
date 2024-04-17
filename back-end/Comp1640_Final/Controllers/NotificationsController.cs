@@ -90,6 +90,7 @@ namespace Comp1640_Final.Controllers
                     LastName = lastName
                 };
                 notiResponse.UserNoti = userNoti;
+                notiResponse.IsRead = true;
                 notiResponses.Add(notiResponse);
             }
             return Ok(notiResponses);

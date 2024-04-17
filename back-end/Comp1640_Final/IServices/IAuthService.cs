@@ -9,5 +9,7 @@ namespace Comp1640_Final.IServices
 
         Task<bool> EditAccount(EditAccountDTO account, string userId);
         IEnumerable<ApplicationUser> GetAllUsers();
+
+        Task<IEnumerable<ApplicationUser>> GetAccountByName(string name);
     }
 }

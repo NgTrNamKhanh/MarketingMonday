@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Comp1640_Final.Controllers
 {
@@ -142,6 +143,33 @@ namespace Comp1640_Final.Controllers
 
             return Ok(accountDto);
         }
+
+        [HttpGet("getByName")]
+        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUserByName(string name)
+        {
+            var users = await _authService.GetAccountByName(name);
+            var accountDto = new List<object>();
+
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+
+                accountDto.Add(new
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    PhoneNumber = user.PhoneNumber,
+                    Email = user.Email,
+                    Role = roles,
+                    FacultyId = user.FacultyId,
+                    CloudAvatarImagePath = user.CloudAvatarImagePath,
+                });
+            }
+            return Ok(accountDto);
+        }
+
+
 
         //[HttpDelete("{userId}")]
         //public async Task<IActionResult> DeleteUser(string userId)

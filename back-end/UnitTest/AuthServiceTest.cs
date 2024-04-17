@@ -22,7 +22,7 @@ namespace UnitTest
         {
             var userStoreMock = new Mock<IUserStore<ApplicationUser>>();
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
-            _authService = new AuthService(_userManagerMock.Object);
+            _authService = new AuthService(_userManagerMock.Object,null);
         }
 
         [Test]

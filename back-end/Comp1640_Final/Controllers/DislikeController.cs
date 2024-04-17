@@ -195,6 +195,7 @@ namespace Comp1640_Final.Controllers
                 if (notiResponse != null)
                 {
                     notiResponse.UserNoti = userNoti;
+                    notiResponse.IsRead = false;
                 }
                 //---------------- end noti -----------------
                 return Ok(notiResponse);
@@ -284,6 +285,7 @@ namespace Comp1640_Final.Controllers
                 if (notiResponse != null)
                 {
                     notiResponse.UserNoti = userNoti;
+                    notiResponse.IsRead = false;
                 }
 
                 //-------------------- end noti --------------------

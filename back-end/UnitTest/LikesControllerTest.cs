@@ -28,6 +28,8 @@ namespace UnitTest
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
         private Mock<INotificationService> _notiServiceMock;
         private Mock<IUserService> _userServiceMock;
+        private Mock<IEmailService> _emailServiceMock;
+
 
         [SetUp]
         public void SetUp()
@@ -41,6 +43,7 @@ namespace UnitTest
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
             _notiServiceMock = new Mock<INotificationService>();
             _userServiceMock = new Mock<IUserService>();
+            _emailServiceMock = new Mock<IEmailService>();
 
             _likeController = new LikesController(
                 null,
@@ -53,7 +56,8 @@ namespace UnitTest
                 null,
                 _notiServiceMock.Object,
                 _userServiceMock.Object,
-                null
+                null,
+                _emailServiceMock.Object
                 );
         }
 
@@ -169,17 +173,26 @@ namespace UnitTest
             {
                 UserNoti = userNoti
             };
+            var email = new EmailDTO
+            {
+                Email = user.Email,
+                Subject = "Some one disliked your post!",
+                Body = message,
+            };
 
             _likeServiceMock.Setup(l => l.GetLikeByArticleAndUser(likeDto.ArticleId, likeDto.UserId)).ReturnsAsync((Like)null);
             _mapperMock.Setup(m => m.Map<Like>(likeDto)).Returns(like);
             _likeServiceMock.Setup(l => l.PostLike(like)).ReturnsAsync(true);
             _articleServiceMock.Setup(a => a.GetArticleByID(likeDto.ArticleId)).Returns(article);
             _userManagerMock.Setup(u => u.FindByIdAsync(likeDto.UserId)).ReturnsAsync(user);
+            _userManagerMock.Setup(u => u.FindByIdAsync(article.StudentId)).ReturnsAsync(user);
+
             _notiServiceMock.Setup(n => n.GetNotiByUserAndArticle(article.StudentId, likeDto.ArticleId, message)).ReturnsAsync((Notification)null);
             _likeServiceMock.Setup(l => l.GetArticleLikesCount(likeDto.ArticleId)).ReturnsAsync(2);
             _notiServiceMock.Setup(n => n.PostNotification(notification)).ReturnsAsync(true);
             _mapperMock.Setup(m => m.Map<NotificationResponse>(notification)).Returns(notiResponse);
             _userServiceMock.Setup(u => u.GetCloudinaryAvatarImagePath(likeDto.UserId)).ReturnsAsync(cloudinaryUrl);
+            _emailServiceMock.Setup(e => e.SendEmail(email)).ReturnsAsync(true);
 
             var result = await _likeController.PostArticleLike(likeDto);
 
@@ -282,17 +295,25 @@ namespace UnitTest
             {
                 UserNoti = userNoti
             };
+            var email = new EmailDTO
+            {
+                Email = user.Email,
+                Subject = "Some one disliked your post!",
+                Body = message,
+            };
 
             _likeServiceMock.Setup(l => l.GetLikeByCommentAndUser(likeDto.CommentId, likeDto.UserId)).ReturnsAsync((Like)null);
             _mapperMock.Setup(m => m.Map<Like>(likeDto)).Returns(like);
             _likeServiceMock.Setup(l => l.PostLike(like)).ReturnsAsync(true);
             _commentServiceMock.Setup(c => c.GetCommentById(likeDto.CommentId)).Returns(comment);
             _userManagerMock.Setup(u => u.FindByIdAsync(likeDto.UserId)).ReturnsAsync(user);
+            _userManagerMock.Setup(u => u.FindByIdAsync(comment.UserId)).ReturnsAsync(user);
             _notiServiceMock.Setup(n => n.GetNotiByUserAndComment(comment.UserId, likeDto.CommentId, message)).ReturnsAsync((Notification)null);
             _likeServiceMock.Setup(l => l.GetCommentLikesCount(likeDto.CommentId)).ReturnsAsync(2);
             _notiServiceMock.Setup(n => n.PostNotification(notification)).ReturnsAsync(true);
             _mapperMock.Setup(m => m.Map<NotificationResponse>(notification)).Returns(notiResponse);
             _userServiceMock.Setup(u => u.GetCloudinaryAvatarImagePath(likeDto.UserId)).ReturnsAsync(cloudinaryUrl);
+            _emailServiceMock.Setup(e => e.SendEmail(email)).ReturnsAsync(true);
 
             var result = await _likeController.PostCommentLike(likeDto);
 

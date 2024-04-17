@@ -28,6 +28,7 @@ namespace UnitTest
         private Mock<UserManager<ApplicationUser>> _userManagerMock;
         private Mock<INotificationService> _notiServiceMock;
         private Mock<IUserService> _userServiceMock;
+        private Mock<IEmailService> _emailServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -41,6 +42,7 @@ namespace UnitTest
             _userManagerMock = new Mock<UserManager<ApplicationUser>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
             _notiServiceMock = new Mock<INotificationService>();
             _userServiceMock = new Mock<IUserService>();
+            _emailServiceMock = new Mock<IEmailService>();
 
             _dislikeController = new DislikeController(
                 null,
@@ -53,7 +55,8 @@ namespace UnitTest
                 null,
                 _notiServiceMock.Object,
                 _userServiceMock.Object,
-                null
+                null,
+                _emailServiceMock.Object
                 );
         }
 
@@ -147,7 +150,8 @@ namespace UnitTest
             var user = new ApplicationUser
             {
                 FirstName = "Viet",
-                LastName = "Vi"
+                LastName = "Vi",
+                Email = "AAAAAAAAAA"
             };
             var message = "1212";
             var notification = new Notification
@@ -168,18 +172,25 @@ namespace UnitTest
             {
                 UserNoti = userNoti
             };
+            var email = new EmailDTO
+            {
+                Email = user.Email,
+                Subject = "Some one disliked your post!",
+                Body = message,
+            };
 
             _dislikeServiceMock.Setup(l => l.GetDislikeByArticleAndUser(dislikeDto.ArticleId, dislikeDto.UserId)).ReturnsAsync((Dislike)null);
             _mapperMock.Setup(m => m.Map<Dislike>(dislikeDto)).Returns(dislike);
             _dislikeServiceMock.Setup(l => l.PostDislike(dislike)).ReturnsAsync(true);
             _articleServiceMock.Setup(a => a.GetArticleByID(dislikeDto.ArticleId)).Returns(article);
             _userManagerMock.Setup(u => u.FindByIdAsync(dislikeDto.UserId)).ReturnsAsync(user);
+            _userManagerMock.Setup(u => u.FindByIdAsync(article.StudentId)).ReturnsAsync(user);
             _notiServiceMock.Setup(n => n.GetNotiByUserAndArticle(article.StudentId, dislikeDto.ArticleId, message)).ReturnsAsync((Notification)null);
             _dislikeServiceMock.Setup(l => l.GetArticleDislikesCount(dislikeDto.ArticleId)).ReturnsAsync(2);
             _notiServiceMock.Setup(n => n.PostNotification(notification)).ReturnsAsync(true);
             _mapperMock.Setup(m => m.Map<NotificationResponse>(notification)).Returns(notiResponse);
             _userServiceMock.Setup(u => u.GetCloudinaryAvatarImagePath(dislikeDto.UserId)).ReturnsAsync(cloudinaryUrl);
-
+            _emailServiceMock.Setup(e => e.SendEmail(email)).ReturnsAsync(true);
             var result = await _dislikeController.PostArticleDislike(dislikeDto);
 
             Assert.That(result.Result, Is.Not.Null);
@@ -280,12 +291,19 @@ namespace UnitTest
             {
                 UserNoti = userNoti
             };
+            var email = new EmailDTO
+            {
+                Email = user.Email,
+                Subject = "Some one disliked your post!",
+                Body = message,
+            };
 
             _dislikeServiceMock.Setup(l => l.GetDislikeByCommentAndUser(dislikeDto.CommentId, dislikeDto.UserId)).ReturnsAsync((Dislike)null);
             _mapperMock.Setup(m => m.Map<Dislike>(dislikeDto)).Returns(dislike);
             _dislikeServiceMock.Setup(l => l.PostDislike(dislike)).ReturnsAsync(true);
             _commentServiceMock.Setup(c => c.GetCommentById(dislikeDto.CommentId)).Returns(comment);
             _userManagerMock.Setup(u => u.FindByIdAsync(dislikeDto.UserId)).ReturnsAsync(user);
+            _userManagerMock.Setup(u => u.FindByIdAsync(comment.UserId)).ReturnsAsync(user);
             _notiServiceMock.Setup(n => n.GetNotiByUserAndComment(comment.UserId, dislikeDto.CommentId, message)).ReturnsAsync((Notification)null);
             _likeServiceMock.Setup(l => l.GetCommentLikesCount(dislikeDto.CommentId)).ReturnsAsync(2);
             _notiServiceMock.Setup(n => n.PostNotification(notification)).ReturnsAsync(true);
