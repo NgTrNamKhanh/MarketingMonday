@@ -3,7 +3,6 @@ import Feed from "../../components/feed/Feed"
 import "./profile.css"
 import authService from "../../services/auth.service";
 import { ScaleLoader } from "react-spinners";
-import { Modal } from "@mui/material";
 import AvatarForm from "../../components/forms/avatar/AvatarForm";
 import PasswordForm from "../../components/forms/password/PasswordForm";
 
@@ -25,11 +24,12 @@ export default function Profile() {
         setChangePasswordOpen(false)
     }
     useEffect(() => {
-        const user = authService.getCurrentUser();
-        if (user) {
-            setCurrentUser(user);
-        }
+            const user = authService.getCurrentUser();
+            if (user) {
+                setCurrentUser(user);
+            }
     }, []);
+    console.log(currentUser)
     if (!currentUser) {
         return (<ScaleLoader/>);
     }
@@ -60,18 +60,22 @@ export default function Profile() {
                     <h5>Faculty</h5>
                     <span>{getFacultyName(currentUser.facultyId)}</span>
                     <h5>Change password</h5>
-                    <div className="changePassword">
-                        <span>Password must be at least 8 characters long</span>
-                        <button className="changePasswordBtn" onClick={()=>handleOpenChangePassword()}>Change</button>
-                    </div>
+                    {!currentUser.roles.includes("Guest") && (
+                        <div className="changePassword">
+                            <span>Password must be at least 8 characters long</span>
+                            <button className="changePasswordBtn" onClick={()=>handleOpenChangePassword()}>Change</button>
+                        </div>
+                    )}
                     <h5>Number</h5>
                     <span>{currentUser.phoneNumber}</span>
                 </div>
                 
             </div>
-            <div className="profileSubmissions">
+            {!currentUser.roles.includes("Guest") && (
+                <div className="profileSubmissions">
                 <Feed userId = {currentUser.id}/>
             </div>
+            )}
             {editAvatarOpen && (
                 <AvatarForm
                     userId={currentUser.id}

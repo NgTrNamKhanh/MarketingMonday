@@ -14,6 +14,7 @@ export default function Topbar({user, setCurrentUser}) {
     const [closedByInteraction, setClosedByInteraction] = useState(true);
     const [notifications, setNotifications] = useState([]);
     const [loading ,setLoading] = useState()
+    const [notificationCount, setNotificationCount] = useState(0);
     
 
     const navigator = useNavigate();
@@ -53,9 +54,12 @@ export default function Topbar({user, setCurrentUser}) {
             }
             setLoading(false);
         };
+
         fetchData();
-    }, [user]);
-    
+    }, [notifications, user]);
+    useEffect(() => {
+        setNotificationCount(notifications.filter(notification => !notification.isRead).length);
+    }, [notifications]);
     const optionsRef = useRef(null);
     useEffect(() => {
         function handleClickOutside(event) {
@@ -100,7 +104,7 @@ export default function Topbar({user, setCurrentUser}) {
                     <a className="topbarIconItem" onClick={handleNotificationToggle} >
                         <Notifications />
                         <span className="topbarIconBadge">
-                            1
+                            {notificationCount}
                         </span>
                     </a>
                     {notificationOpen && (
@@ -116,6 +120,8 @@ export default function Topbar({user, setCurrentUser}) {
                                     <div className="notificationsWrapper" style={{ fontWeight: "smaller" }}>
                                         {notifications.map(notification => (
                                             <Notification
+                                                notificationCount={notificationCount}
+                                                setNotificationCount={setNotificationCount}
                                                 notification = {notification}
                                             />
                                         ))}

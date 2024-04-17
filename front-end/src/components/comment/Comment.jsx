@@ -6,6 +6,9 @@ import DeleteConfirm from "../dialogs/deleteConfirm/DeleteConfirm";
 import { MoreVert, ThumbDown, ThumbUp } from "@mui/icons-material";
 import CommentForm from "../commentForm/CommentForm";
 import Comments from "../comments/Comments"
+import { Link } from "react-router-dom";
+
+import "./comment.css"
 export default function CommentBlock ({comment, currentUser, post, formatDate}){
     const [selectedComment, setSelectedComment] = useState(comment);
     console.log(selectedComment)
@@ -131,10 +134,18 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
     }
     return (
         <div key={selectedComment.id} className="comment" >
-            <img src={selectedComment.userComment.userAvatar} className="commentProfileImg" alt="profile" />
+            <Link
+                to={`/account/${selectedComment.userComment.id}`}
+            >
+                <img src={selectedComment.userComment.userAvatar} className="commentProfileImg" alt="profile" />
+            </Link>
             <div className="commentTop">
                 <div className="commentTopLeft">
-                    <span className="commentUsername">{selectedComment.userComment.firstName} {selectedComment.userComment.lastName}</span>
+                    <Link
+                        to={`/account/${selectedComment.userComment.id}`}
+                    >
+                        <span className="commentUsername">{selectedComment.userComment.firstName} {selectedComment.userComment.lastName}</span>
+                    </Link>
                     <span className="commentDate">{formatDate(selectedComment.createOn)}</span>
                 </div>
             </div>

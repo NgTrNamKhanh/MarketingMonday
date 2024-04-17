@@ -1,9 +1,21 @@
-import { AttachFile, ChatBubble, MoreVert, PermMedia } from '@mui/icons-material'
+import { MoreVert, } from '@mui/icons-material'
 import "./notification.css"
+import authHeader from '../../services/auth.header';
+import apis from '../../services/apis.service';
 
-export default function Notification({notification}) {
+export default function Notification({notification,notificationCount, setNotificationCount}) {
+    const handleNotification =async()=>{
+        try {
+            if(!notification.isRead){
+                const url = `${apis.notification}markasread?notificationId=${notification.id}`;
+                const response = await authHeader().post(url);
+                setNotificationCount(notificationCount-1)
+            }
+        } catch (error) {
+        }
+    }
     return (
-        <div class="notification">
+        <div class="notification" onClick={handleNotification}>
             <div class="user-pic">
                 <img src={notification.userNoti.userAvatar} className="topbarImg" alt="profile" />
                 {/* <div class="notification-type">

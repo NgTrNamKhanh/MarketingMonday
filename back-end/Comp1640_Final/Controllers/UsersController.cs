@@ -43,7 +43,7 @@ namespace Comp1640_Final.Controllers
             _cloudinary = cloudinary;
             _cloudinaryService = cloudinaryService;
         }
-        [HttpGet("accounts/{Id}")]
+        [HttpGet()]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUserById(string Id)
         {
             var user = await _userManager.FindByIdAsync(Id);

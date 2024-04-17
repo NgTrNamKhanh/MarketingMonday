@@ -119,7 +119,7 @@ export default function Submissions () {
     return (
         <div className="submissions">
             <div className="postFilter">
-                        <select value={selectedFilter} onChange={handleFilterChange}>
+                        <select value={selectedFilter} onChange={handleFilterChange} disabled={loading} className='filter'>
                         <option value="all">All</option>
                         <option value="approved">Approved</option>
                         <option value="guest approved">Guest Approved</option>
@@ -131,15 +131,15 @@ export default function Submissions () {
             <h1>Submissions</h1>
             {loading ? (
                 <Box style={{ width: "100vh" }}>
-                {Array(10)
-                .fill()
-                .map((_, i) => (
-                    <>
-                    <Skeleton />
-                    <Skeleton animation={i % 2 === 0 ? "wave" : false} />
-                    </>
-                ))}
-            </Box>
+                    {Array(10)
+                    .fill()
+                    .map((_, i) => (
+                        <>
+                        <Skeleton />
+                        <Skeleton animation={i % 2 === 0 ? "wave" : false} />
+                        </>
+                    ))}
+                </Box>
             ):(
                 <div className="submissionsWrapper">
                     

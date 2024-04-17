@@ -1,0 +1,8 @@
+.commentProfileImg{
+    border-radius: 50%;
+    object-fit: cover;
+}
+.comment a{
+    text-decoration: none;
+    color: inherit;
+}

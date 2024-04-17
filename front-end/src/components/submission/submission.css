@@ -241,3 +241,21 @@
 .commentSection button:hover {
     background-color: #0056b3;
 }
+
+.submissionFile{
+    margin: 20px 0;
+    width: 200px;
+}
+.submissionFileContainer{
+
+}
+.submissionFileLink{
+    display: inline-block;
+    padding: 8px 12px;
+    width: 200px;
+    background-color: #f0f0f0;
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(55, 55, 255);
+    border-radius: 10px; 
+}

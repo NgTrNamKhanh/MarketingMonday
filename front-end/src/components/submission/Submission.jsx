@@ -266,34 +266,40 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                         </span>
                     </div>
                     <div className="submissionTopRight">
-                        {currentUser.roles.includes("Coordinator") && (
+                        {currentUser.roles && currentUser.roles.some(role => role === "Coordinator" || role === "Manager") && (
                             <>
                                 <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
                                 {optionsOpen && (
                                     <div className="submissionDropdownContent" ref={optionsRef}>
-                                        {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                                        <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
-                                                Comment
-                                        </a>
-                                        {/* </Link> */}
-                                        {/* <Link to="/settings" className="dropdownContentItemLink"> */}
-                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>
-                                                    <span>Confirm</span> 
-                                        </div>
-                                        {/* </Link> */}
-                                        {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(2)}>
-                                                    <span>Reject</span>
-                                        </div>
-                                        {/* </Link> */}
-                                        {/* <Link to="/settings" className="dropdownContentItemLink"> */}
-                                        <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(3)}>
-                                                    <span>Put On Hold</span> 
-                                        </div>
-                                        {/* </Link> */}
-                                        <div className="submissionDropdownContentItem" onClick={()=>handleDownload()}>
+                                        {currentUser.roles.includes("Coordinator") && (
+                                            <>
+                                                {/* <Link to="/profile" className="dropdownContentItemLink"> */}
+                                                <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
+                                                        Comment
+                                                </a>
+                                                {/* </Link> */}
+                                                {/* <Link to="/settings" className="dropdownContentItemLink"> */}
+                                                <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>
+                                                            <span>Confirm</span> 
+                                                </div>
+                                                {/* </Link> */}
+                                                {/* <Link to="/profile" className="dropdownContentItemLink"> */}
+                                                <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(2)}>
+                                                            <span>Reject</span>
+                                                </div>
+                                                {/* </Link> */}
+                                                {/* <Link to="/settings" className="dropdownContentItemLink"> */}
+                                                <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(3)}>
+                                                            <span>Put On Hold</span> 
+                                                </div>
+                                                {/* </Link> */}
+                                            </>
+                                        )}
+                                        {currentUser.roles.includes("Manager") && (
+                                            <div className="submissionDropdownContentItem" onClick={()=>handleDownload()}>
                                                     <span>Download</span> 
                                         </div>
+                                        )}
                                     </div>
                                 )}
                             </>
@@ -311,6 +317,11 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                     ))} */}
                 </div>
                 {pictureLayout}
+                <div className="submissionFile">
+                        <div className="submissionFileContainer">
+                            <a href={submission.cloudDocPath} className="submissionFileLink">File</a>
+                        </div>
+                </div>
                 <div className="commentSection" id='comment'>
                     <form onSubmit={handleComment}>
                         <textarea 

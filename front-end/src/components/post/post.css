@@ -19,6 +19,11 @@
     align-items: center;
 
 }
+.postTopLeft a {
+    text-decoration: none;
+    color: inherit;
+
+}
 .postProfileImg{
     width: 32px;
     height: 32px;
@@ -425,4 +430,22 @@
 }
 .commentDropdownContentItem:hover {
     background-color: #cbcbcb;
+}
+
+.postFile{
+    margin: 20px 0;
+    width: 200px;
+}
+.postFileContainer{
+
+}
+.postFileLink{
+    display: inline-block;
+    padding: 8px 12px;
+    width: 200px;
+    background-color: #f0f0f0;
+    text-decoration: none;
+    font-weight: 500;
+    color: rgb(55, 55, 255);
+    border-radius: 10px; 
 }

@@ -20,6 +20,7 @@ import { ProtectedRoute } from "../../common/with-router";
 import Unauthorized from "../errors/unauthorized/Unauthorized";
 import { ToastContainer } from "react-toastify";
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import Account from "../account/Account";
 export default function Home() {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -108,6 +109,7 @@ export default function Home() {
                             <Route path="/profile" element={<Profile/>} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/login" element={<Login  setCurrentUser={setCurrentUser}/>} />
+                            <Route path="/account/:userId" element={<Account/>} />
                             <Route path="/dashboard" element=
                                 {<ProtectedRoute
                                     element={<Dashboard />}

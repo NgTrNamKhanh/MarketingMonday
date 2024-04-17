@@ -30,6 +30,8 @@
         public DateTime UploadDate { get; set; }
         public int FacultyId { get; set; }
         public string StudentAvatar { get; set; }
+
+        public string StudentId { get; set; }
         public string StudentName { get; set; }
         public int PublishStatusId { get; set; }
         public List<string> ListCloudImagePath { get; set; }

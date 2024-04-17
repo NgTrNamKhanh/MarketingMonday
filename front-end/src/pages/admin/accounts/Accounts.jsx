@@ -10,7 +10,6 @@ import useFetch from "../../../hooks/useFetch";
 import apis from "../../../services/apis.service";
 import authService from "../../../services/auth.service";
 import authHeader from "../../../services/auth.header";
-import axios from "axios";
 
 
 const Accounts = () => {
@@ -21,7 +20,6 @@ const Accounts = () => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [selectedAccount, setSelectedAccount] = useState(null);
-    const image = useFetch(apis.article+"GetImages/6EDD3D33-8DDF-485A-988C-4FC3CD17E519").data
 
     const user = authService.getCurrentUser();
     
@@ -144,24 +142,28 @@ const Accounts = () => {
             headerName: "Actions",
             flex: 2,
             cellClassName: "data-cell",
-            renderCell: ({ row }) => (
-            <Box p="1vh" display="flex" justifyContent="center">
-                <Link
-                style={{ marginRight: "2vh" }}
-                >
-                <Visibility />
-                </Link>
-                <Link
-                onClick={() => handleOpenEditDialog(row)}
-                style={{ marginRight: "2vh" }}
-                >
-                <EditOutlined />
-                </Link>
-                <Link>
-                <Delete onClick={() => handleOpenDeleteDialog(row)} />
-                </Link>
-            </Box>
-            ),
+            renderCell: ({ row }) => {
+                // Serialize and encode the row object
+                return (
+                    <Box p="1vh" display="flex" justifyContent="center">
+                        <Link
+                            style={{ marginRight: "2vh" }} 
+                            to={`/account/${row.id}`}
+                        >
+                            <Visibility />
+                        </Link>
+                        <Link
+                            onClick={() => handleOpenEditDialog(row)}
+                            style={{ marginRight: "2vh" }}
+                        >
+                            <EditOutlined />
+                        </Link>
+                        <Link>
+                            <Delete onClick={() => handleOpenDeleteDialog(row)} />
+                        </Link>
+                    </Box>
+                );
+            },
             headerClassName: "header-text",
         },
     ];
@@ -334,9 +336,6 @@ const Accounts = () => {
                     />
                 )}
                 </div>
-                {image.map((imageBytes, index) => (
-                    <img src={`data:image/jpeg;base64,${imageBytes}`} alt="Rendered Image"/>
-                ))}
             {/* </Box> */}
                 </>
             )}

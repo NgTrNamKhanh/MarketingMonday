@@ -5,6 +5,7 @@ import apis from '../../services/apis.service';
 import authHeader from '../../services/auth.header';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import PostModal from "../modal/postModal/PostModal"
+import { Link } from 'react-router-dom';
 export default function Post({ post, isProfile, currentUser}) {
     console.log(post)
     // const [message, setMessage] = useState()
@@ -193,8 +194,16 @@ export default function Post({ post, isProfile, currentUser}) {
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <img src={post.studentAvatar} className="postProfileImg" alt="profile" />
-                        <span className="postUsername">{post.studentName}</span>
+                        <Link
+                            to={`/account/${post.studentId}`}
+                        >
+                            <img src={post.studentAvatar} className="postProfileImg" alt="profile" />
+                        </Link>
+                        <Link
+                            to={`/account/${post.studentId}`}
+                        >
+                            <span className="postUsername">{post.studentName}</span>
+                        </Link>
                         <span className="postDate">{formatDate(post.uploadDate)}</span>
                         {!isProfile &&  (
                             (<span style={{ color: getStatusColor(status) }}>
@@ -202,11 +211,8 @@ export default function Post({ post, isProfile, currentUser}) {
                             </span>)
                             )
                         }
-                        
                     </div>
-                    <div className="postTopRight">
-                        <MoreVert/>
-                    </div>
+                    
                 </div>
                 <div className="postCenter">
                     <h2 className='postTitle'>{post.title}</h2>
@@ -219,6 +225,11 @@ export default function Post({ post, isProfile, currentUser}) {
                     ))} */}
                 </div>
                 {pictureLayout}
+                <div className="postFile">
+                        <div className="postFileContainer">
+                            <a href={post.cloudDocPath} className="postFileLink">File</a>
+                        </div>
+                </div>
                 {(status === 'approved' || !isProfile) && 
                     (
                         <>

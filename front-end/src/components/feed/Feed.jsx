@@ -210,7 +210,7 @@ export default function Feed({userId}) {
         <div className="feed">
             <div className="feedWrapper">
                 <div className="postFilter">
-                    <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange}>
+                    <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
                         <option value="recent">Most Recent</option>
                         <option value="views">Most Viewed</option>
                         <option value="likes">More Liked</option>
@@ -219,7 +219,7 @@ export default function Feed({userId}) {
                 </div>
                 {userId && (
                         <div className="postFilter">
-                            <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange}>
+                            <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange} className="filter" disabled={loading}>
                             <option value="all">All</option>
                             <option value="approved">Approved</option>
                             <option value="not commented">Not Commented</option>
