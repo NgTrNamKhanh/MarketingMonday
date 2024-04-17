@@ -90,13 +90,27 @@ namespace Comp1640_Final.Controllers
                     LastName = lastName
                 };
                 notiResponse.UserNoti = userNoti;
-                notiResponse.IsRead = true;
                 notiResponses.Add(notiResponse);
             }
             return Ok(notiResponses);
         }
 
+        [HttpPost("markasread")]
+        public async Task<IActionResult> MarkNotificationAsRead(int notificationId)
+        {
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            if (notification == null)
+            {
+                return NotFound();
+            }
+            var notiResponse = new NotificationResponse();
+            var notiMap = _mapper.Map<NotificationResponse>(notification);
+            notiMap.IsRead = true;
+            return Ok(notiMap);
+        }
 
+
+        //} 
         //[HttpGet("likeNoti/{articleId}")]
         //public async Task<IActionResult> GetArticleNotifications(Guid articleId)
         //{

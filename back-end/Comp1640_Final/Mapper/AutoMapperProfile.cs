@@ -39,6 +39,7 @@ namespace Comp1640_Final.Mapper
 
             //Notification
             CreateMap<Notification, NotificationResponse>();
+            CreateMap<NotificationResponse, Notification>();
         }
     }
 }
