@@ -3,10 +3,13 @@
     public class NotificationResponse
     {
         public int Id { get; set; }
+        public Guid? ArticleId { get; set; }
+        public Guid? CommentId { get; set; }
         public string Message { get; set; }
         public DateTime CreatedAt { get; set; }
         public UserNoti UserNoti { get; set; }
         public bool IsRead { get; set; }
+
     }
 
     public class UserNoti
