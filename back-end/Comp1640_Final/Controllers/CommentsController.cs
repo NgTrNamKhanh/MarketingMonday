@@ -308,6 +308,7 @@ namespace Comp1640_Final.Controllers
                     ArticleId = commentDto.ArticleId,
                     Message = message,
                     IsAnonymous = commentDto.IsAnonymous,
+                    IsRead = false,
                 };
                 await _notificationService.PostNotification(notification);
                 var email = new EmailDTO
@@ -401,6 +402,7 @@ namespace Comp1640_Final.Controllers
                     CommentId = parentCommentId,
                     Message = message,
                     IsAnonymous = commentDto.IsAnonymous,
+                    IsRead = false,
                 };
                 await _notificationService.PostNotification(notification);
                 var email = new EmailDTO

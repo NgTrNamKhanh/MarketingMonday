@@ -161,7 +161,8 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = likeDto.UserId,
                     ArticleId = likeDto.ArticleId,
                     Message = message,
-                    IsAnonymous = false
+                    IsAnonymous = false,
+                    IsRead = false,
                 };
                 var email = new EmailDTO
                 {
@@ -192,7 +193,6 @@ namespace Comp1640_Final.Controllers
                 if (notiResponse != null)
                 {
                     notiResponse.UserNoti = userNoti;
-                    notiResponse.IsRead = false;
                 }
                 //---------------- end noti -----------------
                 return Ok(notiResponse);
@@ -250,7 +250,8 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = likeDto.UserId,
                     CommentId = likeDto.CommentId,
                     Message = message,
-                    IsAnonymous = false
+                    IsAnonymous = false,
+                    IsRead = false,
                 };
                 var email = new EmailDTO
                 {

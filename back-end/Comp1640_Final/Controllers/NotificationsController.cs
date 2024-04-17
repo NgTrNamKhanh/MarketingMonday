@@ -4,6 +4,7 @@ using Comp1640_Final.DTO.Response;
 using Comp1640_Final.Migrations;
 using Comp1640_Final.Models;
 using Comp1640_Final.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -103,10 +104,27 @@ namespace Comp1640_Final.Controllers
             {
                 return NotFound();
             }
-            var notiResponse = new NotificationResponse();
-            var notiMap = _mapper.Map<NotificationResponse>(notification);
-            notiMap.IsRead = true;
-            return Ok(notiMap);
+            notification.IsRead = true;
+            await _context.SaveChangesAsync();
+            var notiResponse = _mapper.Map<NotificationResponse>(notification);
+            var user = await _userManager.FindByIdAsync(notification.UserInteractionId);
+            var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); 
+
+            // If imageBytes is null, read the default image file
+            if (cloudUserImage == null)
+            {
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                cloudUserImage = defaultImageFileName;
+            }
+            UserNoti userNoti = new UserNoti
+            {
+                Id = user.Id,
+                UserAvatar = cloudUserImage,
+                FirstName = user.FirstName,
+                LastName = user.LastName
+            };
+            notiResponse.UserNoti = userNoti;
+            return Ok(notiResponse);
         }
 
 

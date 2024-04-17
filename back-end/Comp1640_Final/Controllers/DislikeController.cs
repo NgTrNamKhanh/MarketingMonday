@@ -163,7 +163,8 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = dislikeDto.UserId,
                     ArticleId = dislikeDto.ArticleId,
                     Message = message,
-                    IsAnonymous = false
+                    IsAnonymous = false,
+                    IsRead = false,
                 };
 
                 await _notificationService.PostNotification(notification);
@@ -195,7 +196,6 @@ namespace Comp1640_Final.Controllers
                 if (notiResponse != null)
                 {
                     notiResponse.UserNoti = userNoti;
-                    notiResponse.IsRead = false;
                 }
                 //---------------- end noti -----------------
                 return Ok(notiResponse);
@@ -254,7 +254,8 @@ namespace Comp1640_Final.Controllers
                     UserInteractionId = dislikeDto.UserId,
                     CommentId = dislikeDto.CommentId,
                     Message = message,
-                    IsAnonymous = false
+                    IsAnonymous = false,
+                    IsRead = false,
                 };
                 await _notificationService.PostNotification(notification);
                 var email = new EmailDTO
@@ -285,7 +286,6 @@ namespace Comp1640_Final.Controllers
                 if (notiResponse != null)
                 {
                     notiResponse.UserNoti = userNoti;
-                    notiResponse.IsRead = false;
                 }
 
                 //-------------------- end noti --------------------
