@@ -4,3 +4,29 @@
 .submissionsWrapper{
     padding: 20px;
 }
+.guestBtn{
+    position: fixed;
+    bottom: 20px;
+    right: 20px; 
+    z-index: 1000; 
+    cursor: pointer;
+	border-radius: 40px;
+	background-color: #cdcdcd;
+	border: none;
+	width: 170px;
+	height: 50px;
+    transition: background-color 0.3s ease; 
+}
+.guestBtn:hover {
+    background-color: #999999;
+}
+.checkbox{
+    display: flex;
+    align-items: center;
+
+}
+.checkboxBtn{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}

@@ -35,7 +35,6 @@ const headerText = (
     </>
 );
 export default function  Submission ({ submission, reFetch, currentUser }) {
-    console.log(submission)
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -86,8 +85,8 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
         setSubmitStatus(submitStatus)
         setTnCOpen(true);
     };
-    const handleSubmit = () =>{
-        handleVerifyOrReject();
+    const handleSubmit = async () =>{
+        await handleVerifyOrReject();
     };
     const handleComment = async(e) => {
         e.preventDefault();
@@ -112,32 +111,6 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
         }
     };
 
-    const handleVerifyOrReject = async () => {
-        try {
-            console.log(submitStatus)
-            setIsSubmitting(true);
-            const url = `${apis.article}updatePublishStatus/${submission.id}?publicStatus=${submitStatus}`;
-
-            const res = await authHeader().put(url, {});
-            if (res.status === 200) {
-                const updatedData = await reFetch();
-                if (submitStatus === 1) {
-                    setStatus('approved');
-                }  else if (submitStatus === 2) {
-                    setStatus('reject');
-                }
-                // localStorage.setItem("accounts", JSON.stringify(updatedData));
-                setIsSubmitting(false);
-                // setMessage("Account edited successfully.");
-            } else {
-                setIsSubmitting(false);
-                // setMessage(`An error occurred: ${res.data}`);
-            }
-        } catch (error) {
-            setIsSubmitting(false);
-            // setMessage(error.response.data);
-        }
-    };
     
     let pictureLayout;
     if (submission.listCloudImagePath == null){
@@ -183,7 +156,10 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
     const [status, setStatus] = useState('');
 
     useEffect(() => {
-        if (submission.publishStatusId === 1) {
+        if (submission.publishStatusId === 1 && submission.coordinatorStatus == true) {
+            setStatus('guest approved');
+        }
+        else if (submission.publishStatusId === 1) {
             setStatus('approved');
         }  else if (submission.publishStatusId === 2) {
             setStatus('reject');
@@ -194,10 +170,12 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
             setStatus('commented');
         }
         
-    }, [submission.coordinatorComment, submission.publishStatusId]);
+    }, []);
     function getStatusColor(status) {
         switch (status) {
             case 'approved':
+                return 'green';
+            case 'guest approved':
                 return 'green';
             case 'reject':
                 return 'red';
@@ -207,6 +185,36 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                 return 'orange';
         }
     }
+    const handleVerifyOrReject = async () => {
+        try {
+            setIsSubmitting(true);
+            const url = `${apis.article}updatePublishStatus/${submission.id}?publicStatus=${submitStatus}`;
+
+            const res = await authHeader().put(url, {});
+            if (res.status === 200) {
+                const updatedData = await reFetch();
+                if (submitStatus === 1) {
+                    setStatus('approved');
+                }  else if (submitStatus === 2) {
+                    setStatus('reject');
+                } else if (submitStatus === 3 ) {
+                    console.log("hi")
+                    setStatus('commented');
+                }
+
+                // localStorage.setItem("accounts", JSON.stringify(updatedData));
+                setIsSubmitting(false);
+                // setMessage("Account edited successfully.");
+            } else {
+                setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+            }
+        } catch (error) {
+            setIsSubmitting(false);
+            // setMessage(error.response.data);
+        }
+    };
+    
     const [isDownloading, setIsDownloading] = useState(false);
     const handleDownload = async () => {
         setIsDownloading(true);

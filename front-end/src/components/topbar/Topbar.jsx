@@ -56,10 +56,10 @@ export default function Topbar({user, setCurrentUser}) {
         };
 
         fetchData();
-    }, [notifications, user]);
+    }, [ user]);
     useEffect(() => {
         setNotificationCount(notifications.filter(notification => !notification.isRead).length);
-    }, [notifications]);
+    }, []);
     const optionsRef = useRef(null);
     useEffect(() => {
         function handleClickOutside(event) {
@@ -101,12 +101,14 @@ export default function Topbar({user, setCurrentUser}) {
             </div>
             <div className="topbarRight">
                 <div className="topbarIcons">
-                    <a className="topbarIconItem" onClick={handleNotificationToggle} >
+                    {user.roles.includes("Student")&&(
+                        <a className="topbarIconItem" onClick={handleNotificationToggle} >
                         <Notifications />
                         <span className="topbarIconBadge">
                             {notificationCount}
                         </span>
                     </a>
+                    )}
                     {notificationOpen && (
                             <div className="dropdownContent" ref={optionsRef}>
                                 <Link to="/notifications" className="dropdownContentItemLink">

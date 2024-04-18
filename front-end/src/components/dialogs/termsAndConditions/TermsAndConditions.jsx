@@ -28,7 +28,6 @@ export default function TermsAndConditions({ open, handleClose, handleConfirm,te
                 setLoading(true);
                 setChecked(false)
                 await handleConfirm();
-
                 setLoading(false);
                 handleClose()
 

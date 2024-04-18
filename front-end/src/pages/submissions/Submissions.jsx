@@ -16,6 +16,7 @@ export default function Submissions () {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const [selectedSubmissions, setSelectedSubmissions] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     useEffect(() => {
         const fetchCurrentUser = async () => {
             setLoading(true)
@@ -27,26 +28,26 @@ export default function Submissions () {
         };
         fetchCurrentUser();
     }, []);
-    useEffect(()=>{
-        const fetchSubmissions = async () => {
-            if (facultyId && currentUser) {
-                setLoading(true)
-                try {
-                    setError(null)
-                    const response = await authHeader().get(apis.article + "faculty/" + facultyId, {params:{userId: currentUser.id}});
-                    setSubmissions(response.data)
-                    setFilteredSubmissions(response.data);
-                    setLoading(false)
+    const fetchSubmissions = async () => {
+        if (facultyId && currentUser) {
+            setLoading(true)
+            try {
+                setError(null)
+                const response = await authHeader().get(apis.article + "faculty/" + facultyId, {params:{userId: currentUser.id}});
+                setSubmissions(response.data)
+                setFilteredSubmissions(response.data);
+                setLoading(false)
 
-                }catch (error) {
-                    setSubmissions([])
-                    setFilteredSubmissions([])
-                    setError(error.response.data)
-                    console.error(error.response.data);
-                    setLoading(false)
-                }
+            }catch (error) {
+                setSubmissions([])
+                setFilteredSubmissions([])
+                setError(error.response.data)
+                console.error(error.response.data);
+                setLoading(false)
             }
         }
+    }
+    useEffect(()=>{
         fetchSubmissions();
     },[facultyId,currentUser])
 
@@ -54,15 +55,17 @@ export default function Submissions () {
         setSelectedFilter(event.target.value);
         // Call function to sort posts based on selected filter
         filterSubmissions(event.target.value);
+        console.log()
     };
     const filterSubmissions = (filter) => {
+        console.log(filter)
         let filteredSubmissions = [...submissions];
         switch (filter) {
             case "all":
                 filteredSubmissions = submissions;
                 break;
             case "approved":
-                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1);
+                filteredSubmissions = filteredSubmissions.filter(submission => submission.publishStatusId === 1 && submission.coordinatorStatus === false);
                 break;
             case "not commented":
                 filteredSubmissions = filteredSubmissions.filter(submission => submission.coordinatorComment === null && submission.publishStatusId === 3);
@@ -90,31 +93,62 @@ export default function Submissions () {
             setSelectedSubmissions(prevState => prevState.filter(id => id !== submissionId));
         }
     };
-    const handleGuestApprove = async() => {
+    const handleGuestUnApprove = async() => {
         try {
+            setIsSubmitting(true)
             const FormData = require('form-data');
             const formData = new FormData();
             selectedSubmissions.forEach(articleId => {
                 formData.append('articleIds', articleId);
             });
             // setIsSubmitting(true);
-            const url = `${apis.article}updateListCoordinatorStatus`;
+            const url = `${apis.article}UnapproveListArticlesForGuest`;
 
             const res = await authHeader().put(url, formData);
             if (res.status === 200) {
-
-                // localStorage.setItem("accounts", JSON.stringify(updatedData));
-                // setIsSubmitting(false);
-                // setMessage("Account edited successfully.");
+                setSelectedFilter("approved"); 
+                await fetchSubmissions()
+                filterSubmissions("approved")
+                setIsSubmitting(false)
             } else {
                 // setIsSubmitting(false);
                 // setMessage(`An error occurred: ${res.data}`);
+                setIsSubmitting(false)
             }
         } catch (error) {
             // setIsSubmitting(false);
             // setMessage(error.response.data);
+            setIsSubmitting(false)
         }
         console.log("Guest approved submissions:", selectedSubmissions);
+    };
+    const handleGuestApprove = async() => {
+        try {
+            setIsSubmitting(true)
+            const FormData = require('form-data');
+            const formData = new FormData();
+            selectedSubmissions.forEach(articleId => {
+                formData.append('articleIds', articleId);
+            });
+            // setIsSubmitting(true);
+            const url = `${apis.article}ApproveListArticlesForGuest`;
+
+            const res = await authHeader().put(url, formData);
+            if (res.status === 200) {
+                setSelectedFilter("guest approved"); 
+                await fetchSubmissions();
+                filterSubmissions("guest approved")
+                setIsSubmitting(false)
+            } else {
+                // setIsSubmitting(false);
+                // setMessage(`An error occurred: ${res.data}`);
+                setIsSubmitting(false)
+            }
+        } catch (error) {
+            // setIsSubmitting(false);
+            // setMessage(error.response.data);
+            setIsSubmitting(false)
+        }
     };
     return (
         <div className="submissions">
@@ -149,22 +183,36 @@ export default function Submissions () {
                     <>
                         {filteredSubmissions.map((submission) => (
                             <div key={submission.id}>
-                                {currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 && (
-                                    <label>
+                                {(currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 && (selectedFilter === "approved" || selectedFilter === "guest approved")) && (
+                                    <label className='checkbox'>
                                         <input
+                                            className='checkboxBtn'
                                             type="checkbox"
-                                            checked={submission.publishStatusId === 1 && submission.coordinatorStatus === true}
                                             onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
                                         />
                                         {submission.title}
                                     </label>
                                 )}
+                                {/* {(currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 && selectedFilter === "guest approved") && (
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            onChange={(e) => handleCheckboxChange(submission.id, e.target.checked)}
+                                        />
+                                        {submission.title}
+                                    </label>
+                                )} */}
                                 <Submission submission={submission} currentUser={currentUser}/>
                             </div>
                         ))}
                     </>
                     )}
-                    <button onClick={handleGuestApprove}>Guest Approve Selected</button>
+                    {selectedFilter === "approved" && (
+                        <button className='guestBtn' onClick={handleGuestApprove} disabled={isSubmitting}>{isSubmitting? 'Loading...':"Confirm Guest Approve"}</button>
+                    )}
+                    {selectedFilter === "guest approved" && (
+                        <button className='guestBtn' onClick={handleGuestUnApprove} disabled={isSubmitting}>{isSubmitting? 'Loading...':"Confirm Remove Guest Approve"}</button>
+                    )}
                 </div>
             )}
         </div>
