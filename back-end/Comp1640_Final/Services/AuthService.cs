@@ -83,6 +83,10 @@ namespace Comp1640_Final.Services
         {
             return  _userManager.Users.ToList();
         }
+        public async Task<IEnumerable<ApplicationUser>> GetAccountByName(string name)
+        {
+            return await _context.Users.Where(u => u.FirstName.Contains(name) || u.LastName.Contains(name)).ToListAsync();
+        }
 
         public async Task<bool> Login(string email, string passWord)
         {
@@ -94,10 +98,6 @@ namespace Comp1640_Final.Services
             return await _userManager.CheckPasswordAsync(identityUser, passWord);
         }
 
-        public async Task<IEnumerable<ApplicationUser>> GetAccountByName(string name)
-        {
-            return await _context.Users.Where(u => u.FirstName.Contains(name) || u.LastName.Contains(name)).ToListAsync();
-        }
 
 
     }
