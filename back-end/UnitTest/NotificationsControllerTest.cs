@@ -123,59 +123,12 @@ namespace UnitTest
             var result = await _notificationsController.GetNotifications(userId);
 
             // Assert
-            Assert.That(result, Is.Not.Null.And.InstanceOf<OkObjectResult>(), "The method should return an OkObjectResult.");
+            Assert.That(result, Is.Not.Null.And.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
-            Assert.That(okResult.Value, Is.Not.Null.And.InstanceOf<List<NotificationResponse>>(), "The value should be a list of NotificationResponse objects.");
+            Assert.That(okResult.Value, Is.Not.Null.And.InstanceOf<List<NotificationResponse>>());
             var returnedNotifications = okResult.Value as List<NotificationResponse>;
-            Assert.That(returnedNotifications, Is.Not.Null.And.Empty, "The returned list of notifications should be empty.");
+            Assert.That(returnedNotifications, Is.Not.Null.And.Empty);
         }
-
-        //[Test]
-        //public async Task GetNotifications_ReturnsNotFoundResult_ForInvalidUserId()
-        //{
-        //    // Arrange
-        //    var userId = "invalidUserId";
-
-        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync((List<Notification>)null);
-
-        //    // Act
-        //    var result = await _notificationsController.GetNotifications(userId);
-
-        //    // Assert
-        //    Assert.That(result, Is.Not.Null.And.InstanceOf<NotFoundResult>(), "The method should return a NotFoundResult for an invalid user ID.");
-        //}
-
-
-        //[Test]
-        //public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
-        //{
-        //    // Arrange
-        //    var userId = "validUserId";
-
-        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ThrowsAsync(new Exception("Service error"));
-
-        //    // Act
-        //    var result = await _notificationsController.GetNotifications(userId);
-
-        //    // Assert
-        //    Assert.That(result, Is.Not.Null.And.InstanceOf<StatusCodeResult>(), "The method should return a StatusCodeResult for a service error.");
-        //    var statusCodeResult = result as StatusCodeResult;
-        //    Assert.That(statusCodeResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError), "The status code should be 500 for a service error.");
-        //}
-
-        //[Test]
-        //public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
-        //{
-        //    // Arrange
-        //    var userId = "validUserId";
-
-        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ThrowsAsync(new Exception("Service error"));
-
-        //    // Act & Assert
-        //    var ex = Assert.ThrowsAsync<Exception>(async () => await _notificationsController.GetNotifications(userId));
-        //    Assert.That(ex.Message, Is.EqualTo("Service error"), "The thrown exception should match the expected message.");
-        //}
-
 
         [Test]
         public async Task GetNotifications_ReturnsBadRequest_ForInvalidUserId()
@@ -190,21 +143,6 @@ namespace UnitTest
             // Assert
             Assert.That(result, Is.Not.Null.And.InstanceOf<BadRequestObjectResult>());
         }
-
-
-        //[Test]
-        //public async Task GetNotifications_ReturnsNull_ForEmptyNotifications()
-        //{
-        //    // Arrange
-        //    var userId = "validUserId";
-        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync(new List<Notification>());
-
-        //    // Act
-        //    var result = await _notificationsController.GetNotifications(userId);
-
-        //    // Assert
-        //    Assert.That(result, Is.Null);
-        //}
 
         [Test]
         public async Task GetNotifications_ReturnsOk_ForEmptyNotifications()
@@ -221,7 +159,6 @@ namespace UnitTest
         }
 
 
-
         [Test]
         public async Task GetNotifications_ReturnsInternalServerError_ForServiceError()
         {
@@ -232,45 +169,6 @@ namespace UnitTest
             // Act & Assert
             Assert.ThrowsAsync<Exception>(async () => await _notificationsController.GetNotifications(userId));
         }
-
-
-
-
-
-        //[Test]
-        //public async Task GetNotifications_ReturnsOkResult_WithUserAvatarImages()
-        //{
-        //    // Arrange
-        //    var userId = "validUserId";
-        //    var cloudinaryUrl = "cloudinary://API_KEY:API_SECRET@CLOUD_NAME";
-        //    var user = new ApplicationUser { Id = userId, FirstName = "John", LastName = "Doe", CloudAvatarImagePath = cloudinaryUrl };
-        //    var notification1 = new Notification { UserId = userId, UserInteractionId = "userInteractionId1" };
-        //    var notification2 = new Notification { UserId = userId, UserInteractionId = "userInteractionId2" };
-        //    var notifications = new List<Notification> { notification1, notification2 };
-
-        //    // Mocking the necessary dependencies
-        //    _userManagerMock.Setup(x => x.FindByIdAsync(userId)).ReturnsAsync(user);
-        //    _notificationServiceMock.Setup(x => x.GetNotifications(userId)).ReturnsAsync(notifications);
-        //    _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(user.Id)).ReturnsAsync(cloudinaryUrl);
-        //    _userServiceMock.Setup(x => x.GetCloudinaryAvatarImagePath(user.Id)).ReturnsAsync(cloudinaryUrl);
-        //    _mapperMock.Setup(m => m.Map<NotificationResponse>(notification1)).Returns(new NotificationResponse { });
-        //    _mapperMock.Setup(m => m.Map<NotificationResponse>(notification2)).Returns(new NotificationResponse { });
-
-        //    // Act
-        //    var result = await _notificationsController.GetNotifications(userId);
-
-        //    // Assert
-        //    Assert.That(result, Is.Not.Null.And.InstanceOf<OkObjectResult>());
-        //    var okResult = result as OkObjectResult;
-        //    Assert.That(okResult.Value, Is.Not.Null.And.InstanceOf<List<NotificationResponse>>());
-        //    var returnedNotifications = okResult.Value as List<NotificationResponse>;
-        //    Assert.That(returnedNotifications, Is.Not.Null.And.Count.EqualTo(notifications.Count));
-        //    foreach (var notificationResponse in returnedNotifications)
-        //    {
-        //        Assert.That(notificationResponse.UserNoti, Is.Not.Null);
-        //        Assert.That(notificationResponse.UserNoti.UserAvatar, Is.Not.Null.And.Not.Empty);
-        //    }
-        //}
 
     }
 }
