@@ -3,7 +3,7 @@ import "./notification.css"
 import authHeader from '../../services/auth.header';
 import apis from '../../services/apis.service';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Notification({notification,setNotifications, notifications}) {
     const [optionsOpen, setOptionsOpen] = useState(false);
@@ -36,13 +36,21 @@ export default function Notification({notification,setNotifications, notificatio
     return (
         <div className={`notification ${!notification.isRead ? 'read' : ''}`} onClick={handleNotification}>
             <div class="user-pic">
-                <img src={notification.userNoti.userAvatar} className="topbarImg" alt="profile" />
+                <Link
+                    to={`/account/${notification.userNoti.id}`}
+                >
+                    <img src={notification.userNoti.userAvatar} className="topbarImg" alt="profile" />
+                </Link>
                 {/* <div class="notification-type">
                     <ChatBubble className='notification-type-icon'/>
                 </div> */}
             </div>
             <div class="notification-content">
-                <div class="username">{notification.userNoti.firstName} {notification.userNoti.lastName}</div>
+                <Link
+                    to={`/account/${notification.userNoti.id}`}
+                >
+                    <div class="username">{notification.userNoti.firstName} {notification.userNoti.lastName}</div>
+                </Link>
                 <p>{notification.message}</p>
                 <div class="date">February 23, 2024</div>
             </div>

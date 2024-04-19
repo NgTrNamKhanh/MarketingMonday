@@ -7,7 +7,7 @@ import apis from '../../services/apis.service';
 import authService from '../../services/auth.service';
 import Skeleton from "@mui/material/Skeleton";
 import { Box} from "@mui/material";
-export default function Submissions () {
+export default function Submissions ({userId}) {
     const { facultyId } = useParams();
     const [submissions, setSubmissions] = useState([]);
     const  [filteredSubmissions, setFilteredSubmissions] = useState([]);
@@ -51,6 +51,30 @@ export default function Submissions () {
         fetchSubmissions();
     },[facultyId,currentUser])
 
+
+    useEffect(()=>{
+        const fetchPosts = async () => {
+            if (userId && currentUser) {
+                setLoading(true)
+                try {
+                    setError(null)
+                    let url;
+                    url = apis.article + "profile/submission"
+                    const response = await authHeader().get(url, {params: {userId: userId}});
+                    setSubmissions(response.data)
+                    setFilteredSubmissions(response.data)
+                    setLoading(false)
+                }catch (error) {
+                    // setError(error.response.data)
+                    setSubmissions([])
+                    setFilteredSubmissions([])
+                    console.error("Error fetching post data:", error);
+                    setLoading(false)
+                }
+            }
+        }
+        fetchPosts();
+    },[userId, currentUser])
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
         // Call function to sort posts based on selected filter

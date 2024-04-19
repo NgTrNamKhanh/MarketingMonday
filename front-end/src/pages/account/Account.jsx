@@ -6,25 +6,35 @@ import { useLocation, useParams } from "react-router-dom";
 import authHeader from "../../services/auth.header";
 import apis from "../../services/apis.service";
 import { Box, Skeleton } from "@mui/material";
+import Submissions from "../submissions/Submissions";
 
 export default function Account() {
     const { userId } = useParams();
     const [loading, setLoading] = useState(true)
+    const [user, setUser] = useState(null);
     const [currentUser, setCurrentUser] = useState(null);
-    useEffect(() => {
-        const fetchUser = async () =>{
-            try {
-                const response = await authHeader().get(apis.user, {params:{Id: userId}});
-                setCurrentUser(response.data)
-                setLoading(false)
-            }catch (error) {
-                console.error(error.response.data);
-                setLoading(false)
+    const fetchCurrentUsereAndUser = async () => {
+        setLoading(true);
+        try {
+            const user = authService.getCurrentUser();
+            if (user) {
+                setCurrentUser(user);
             }
+            if (user) {
+                const response = await authHeader().get(apis.user, {params:{Id: userId}});
+                setUser(response.data)
+            }
+        } catch (error) {
+            setLoading(false)
+            console.error(error.response.data);
+        } finally {
+            setLoading(false);
         }
-        fetchUser()
-    }, []);
-    console.log(currentUser)
+    };
+    useEffect(()=>{
+        fetchCurrentUsereAndUser();
+    },[])
+    console.log(user)
     const faculties = JSON.parse(localStorage.getItem("faculties"));
     const getFacultyName = (facultyId) => {
         const faculty = faculties.find(faculty => faculty.id === facultyId);
@@ -49,23 +59,27 @@ export default function Account() {
                     <div className="profileInformation">
                         <div className="profileLeft">
                             <div className="profileCover">
-                                <img src={currentUser.cloudAvatar} className="profileUserImg" alt="profile"  />
+                                <img src={user.cloudAvatar} className="profileUserImg" alt="profile"  />
                             </div>
                             
                         </div>
                         <div className="profileRight">
-                            <h4 className="profileInfoName">{currentUser.firstName} {currentUser.lastName}</h4>
+                            <h4 className="profileInfoName">{user.firstName} {user.lastName}</h4>
                             <h5>Email Address</h5>
-                            <span>{currentUser.email}</span>
+                            <span>{user.email}</span>
                             <h5>Faculty</h5>
-                            <span>{getFacultyName(currentUser.facultyId)}</span>
+                            <span>{getFacultyName(user.facultyId)}</span>
                             <h5>Number</h5>
-                            <span>{currentUser.phoneNumber}</span>
+                            <span>{user.phoneNumber}</span>
                         </div>
                         
                     </div>
                     <div className="profileSubmissions">
-                        <Feed userId = {currentUser.id}/>
+                        {currentUser.roles.some(role => role === "Coordinator" || role === "Manager" || role === "Admin")? (
+                            <Submissions userId = {user.id}/>
+                        ):(
+                            <Feed userId = {user.id}/>
+                        )}
                     </div>
                 </>
             )}

@@ -7,25 +7,6 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import PostModal from "../modal/postModal/PostModal"
 import { Link } from 'react-router-dom';
 export default function Post({ post, isProfile, currentUser}) {
-    console.log(post)
-    // const [message, setMessage] = useState()
-    // const [connection, setConnection] = useState()
-    // useEffect(() => {
-    //     const connect = async ()=>{
-    //         const connection = new HubConnectionBuilder()
-    //         .withUrl(apis.normal+"notificationHub")
-    //         .build();
-    //         connection.on("ReceiveNotification", (message)=>{
-    //             console.log(message)
-    //             setMessage(message)
-    //         })
-
-    //         await connection.start();
-    //         setConnection(connection)
-    //     }
-    //     connect()
-    // }, []);
-
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -39,13 +20,8 @@ export default function Post({ post, isProfile, currentUser}) {
     
         return new Date(dateString).toLocaleString(undefined, options);
     };
-
-    
-
     const [likeCount, setLikeCount] = useState(post.likeCount)
 
-    
-    
     useEffect(() => {
         setLikeCount(post.likeCount);
     }, [post.likeCount]);
@@ -155,13 +131,6 @@ export default function Post({ post, isProfile, currentUser}) {
     const closeModal = () => {
         setIsModalOpen(false);
     };
-    
-    
-    
-    
-
-    
-    
     function getStatusColor(status) {
         switch (status) {
             case 'approved':

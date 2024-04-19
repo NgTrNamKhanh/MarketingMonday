@@ -9,7 +9,6 @@ import { Button, TextField, Checkbox, FormControlLabel } from "@mui/material";
 import * as yup from "yup";
 import authService from "../../services/auth.service";
 import { useNavigate } from "react-router-dom";
-import useFetch from "../../hooks/useFetch";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 const termsAndConditionsText = (
@@ -93,13 +92,11 @@ export default function Article() {
             const currentDate = new Date();
             const timeDifference = endDateConverted.getTime() - currentDate.getTime();
             if (timeDifference >= 0) {
-                // Calculate remaining time components
                 const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
         
-                // Format the remaining time into a readable string
                 const remainingTimeStr = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`;
                 setRemainingTime(remainingTimeStr);
             } else {
