@@ -127,6 +127,18 @@ namespace Comp1640_Final.Controllers
             return Ok(notiResponse);
         }
 
+        [HttpDelete("deletenoti")]
+        public async Task<IActionResult> DeleteNoti(int notificationId)
+        {
+            var notification = await _context.Notifications.FindAsync(notificationId);
+            var result = await _notificationService.DeleteNoti(notification);
+            if (!result)
+            {
+                return BadRequest("Delete failed");
+            }
+            return Ok("Delete successful");
+        }
+
 
         //} 
         //[HttpGet("likeNoti/{articleId}")]
