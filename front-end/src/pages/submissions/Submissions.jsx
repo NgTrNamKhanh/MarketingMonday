@@ -14,7 +14,7 @@ export default function Submissions () {
     const [selectedFilter, setSelectedFilter] = useState("all");
     const [error, setError] = useState()
     const [currentUser, setCurrentUser] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [selectedSubmissions, setSelectedSubmissions] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     useEffect(() => {

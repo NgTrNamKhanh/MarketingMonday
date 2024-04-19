@@ -124,7 +124,7 @@ namespace Comp1640_Final.Controllers
             return Ok(articleDTOs);
         }
 
-        [HttpGet("id/{articleId}")]
+        [HttpGet("id/")]
         public async Task<IActionResult> GetArticleByID(Guid articleId, string userId)
         {
             if (!_articleService.ArticleExists(articleId))
@@ -133,7 +133,7 @@ namespace Comp1640_Final.Controllers
 
             }
             var article = _articleService.GetArticleByID(articleId);
-            var articleDTO = _mapper.Map<SubmissionResponse>(article);
+            var articleDTO = _mapper.Map<ArticleResponse>(article);
             var user = await _userManager.FindByIdAsync(article.StudentId);
             var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
             var currentUser = await _userManager.FindByIdAsync(userId);

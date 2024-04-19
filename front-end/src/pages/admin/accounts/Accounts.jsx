@@ -325,16 +325,15 @@ const Accounts = () => {
                     handleClose={handleCloseDeleteDialog}
                     handleConfirm={handleDelete}
                 />
-                {editDialogOpen && (
-                    <AccountForm
-                        handleCloseDialog={handleCloseEditDialog}
-                        handleDefaultCloseEditDialog={handleDefaultCloseEditDialog}
-                        account={selectedAccount}
-                        reFetch={reFetch}
-                        facultyOptions ={facultyOptions}
-                        roleOptions={roleOptions}
-                    />
-                )}
+                <AccountForm
+                    handleCloseDialog={handleCloseEditDialog}
+                    open = {editDialogOpen}
+                    handleDefaultCloseEditDialog={handleDefaultCloseEditDialog}
+                    account={selectedAccount}
+                    reFetch={reFetch}
+                    facultyOptions ={facultyOptions}
+                    roleOptions={roleOptions}
+                />
                 </div>
             {/* </Box> */}
                 </>

@@ -7,8 +7,11 @@
     box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
     -webkit-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
     -moz-box-shadow: 0px 0px 16px -8px rgba(0,0,0,0.68);
+    cursor: pointer;
 }
-
+.notification.read {
+    background-color: #b2b2b2; 
+}
 .user-pic {
     position: relative;
     flex: 0 0 auto;
@@ -49,5 +52,28 @@
 .date {
     color: #777;
     font-size: 0.8em;
+}
+
+.notificationDropdownContent{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 25px !important;
+    border-radius: 10px;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 50px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+.notificationDropdownContentItem{
+    display: flex;
+    align-items: center;
+    margin: 10px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.notificationDropdownContentItem:hover {
+    background-color: #cbcbcb;
 }
 
