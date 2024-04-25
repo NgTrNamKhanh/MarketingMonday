@@ -25,16 +25,12 @@ export default function CommentForm ({ currentUser, isSubmitting, setIsSubmittin
                 console.log(res)
                 setComments((prevComments) => [res.data,...prevComments ]);
                 setCommentCount((prevCount) => prevCount + 1)
-                // localStorage.setItem("accounts", JSON.stringify(updatedData));
                 setIsSubmitting(false);
-                // setMessage("Account edited successfully.");
             } else {
                 setIsSubmitting(false);
-                // setMessage(`An error occurred: ${res.data}`);
             }
         } catch (error) {
             setIsSubmitting(false);
-            // setMessage(error.response.data);
         }
 
     }

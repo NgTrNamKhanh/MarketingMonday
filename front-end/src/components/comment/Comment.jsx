@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import "./comment.css"
 export default function CommentBlock ({comment, currentUser, post, formatDate}){
     const [selectedComment, setSelectedComment] = useState(comment);
-    console.log(selectedComment)
     const [deleted, setDeleted] = useState(false);
     const [editCmtOpen, setEditCmtCOpen] = useState(false);
     const handleCloseEditCmtCDialog = () => {
@@ -29,25 +28,20 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
         setDeleteCmtCOpen(true);
     };
 
-    const [reportCmtOpen, setReportCmtCOpen] = useState(false);
-    const handleCloseReportCmtCDialog = () => {
-        setReportCmtCOpen(false);
-    };
-    const handleOpenReportCmtCDialog = () => {
-        setReportCmtCOpen(true);
-    };
     const [replies, setReplies] = useState([]);
     const [repLoading, setRepLoading] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
-            setRepLoading(true)
-            try {
-                const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id, userId: currentUser.id }});
-                setReplies(response.data);
-                setRepLoading(false);
-            } catch (error) {
-                console.error("Error fetching comments:", error);
-                setRepLoading(false);
+            if(selectedComment.hasReplies){
+                setRepLoading(true)
+                try {
+                    const response = await authHeader().get(apis.comment + "getReplies", { params: { parentId: comment.id, userId: currentUser.id }});
+                    setReplies(response.data);
+                    setRepLoading(false);
+                } catch (error) {
+                    console.error("Error fetching comments:", error);
+                    setRepLoading(false);
+                }
             }
         };
 
@@ -104,13 +98,8 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
             const res = await authHeader().post(apis.comment+"createReply", reply, {params:{parentCommentId:selectedComment.id }});
             if (res.status === 200) {
                 setReplies(prevComments => [...prevComments, res.data]);
-                // localStorage.setItem("accounts", JSON.stringify(updatedData));
-                // setMessage("Account edited successfully.");
-            } else {
-                // setMessage(`An error occurred: ${res.data}`);
-            }
+            } 
         } catch (error) {
-            // setMessage(error.response.data);
         }
 
     }
@@ -119,8 +108,7 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
         if (selectedComment) {
             const url = apis.comment;
             try {
-                await authHeader().delete(url, {params:{commentId: selectedComment.id}});
-                //delete this component
+                const response = await authHeader().delete(url, {params:{commentId: selectedComment.id}});
                 setDeleted(true)
                 handleCloseDeleteCmtCDialog()
             } catch (err) {
@@ -183,39 +171,34 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
                 <CommentForm handleComment={handleReply} />
                 )}
             </div>
-            <div className="commentTopRight">
-                <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
-                {optionsOpen && (
-                    <div className="commentDropdownContent" >
-                        <div className="commentDropdownContentItem" onClick={()=>handleCloseReportCmtCDialog(1)}>
-                                    <span>Report</span> 
+            {currentUser.id === selectedComment.userComment.id && (
+                <div className="commentTopRight">
+                    <MoreVert className='moreIcon' onClick={()=>setOptionsOpen(!optionsOpen)}/>
+                    {optionsOpen && (
+                        <div className="commentDropdownContent" >
+                            <div className="commentDropdownContentItem" onClick={()=>handleOpenEditCmtCDialog(comment)}>
+                                    <span>Edit</span>
+                            </div>
+                            <div className="commentDropdownContentItem" onClick={()=>handleOpenDeleteCmtCDialog(comment)}>
+                                        <span>Delete</span>
+                            </div>
                         </div>
-                        {currentUser.id === selectedComment.userComment.id && (
-                            <>
-                                <div className="commentDropdownContentItem" onClick={()=>handleOpenEditCmtCDialog(comment)}>
-                                        <span>Edit</span>
-                                </div>
-                                <div className="commentDropdownContentItem" onClick={()=>handleOpenDeleteCmtCDialog(comment)}>
-                                            <span>Delete</span>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                )}
+                    )}
                 </div>
-                {editCmtOpen && (
-                <EditComment
-                    open={editCmtOpen}
-                    handleClose={handleCloseEditCmtCDialog}
-                    comment = {selectedComment}
-                    setSelectedComment={setSelectedComment}
-                />
-                )}
-                <DeleteConfirm
-                    open={deleteCmtOpen}
-                    handleClose={handleCloseDeleteCmtCDialog}
-                    handleConfirm={handleDeleteCmt}
-                />
+            )}
+            {editCmtOpen && (
+            <EditComment
+                open={editCmtOpen}
+                handleClose={handleCloseEditCmtCDialog}
+                comment = {selectedComment}
+                setSelectedComment={setSelectedComment}
+            />
+            )}
+            <DeleteConfirm
+                open={deleteCmtOpen}
+                handleClose={handleCloseDeleteCmtCDialog}
+                handleConfirm={handleDeleteCmt}
+            />
         </div>
         
     )

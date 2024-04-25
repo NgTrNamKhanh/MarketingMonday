@@ -199,7 +199,6 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                 }  else if (submitStatus === 2) {
                     setStatus('reject');
                 } else if (submitStatus === 3 ) {
-                    console.log("hi")
                     setStatus('commented');
                 }
 

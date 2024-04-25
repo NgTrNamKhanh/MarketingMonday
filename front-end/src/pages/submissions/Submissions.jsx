@@ -207,7 +207,9 @@ export default function Submissions ({userId}) {
                     <>
                         {filteredSubmissions.map((submission) => (
                             <div key={submission.id}>
-                                {(currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 && (selectedFilter === "approved" || selectedFilter === "guest approved")) && (
+                                {(currentUser.roles.includes("Coordinator") && submission.publishStatusId === 1 
+                                    && (selectedFilter === "approved" 
+                                    || selectedFilter === "guest approved")) && (
                                     <label className='checkbox'>
                                         <input
                                             className='checkboxBtn'

@@ -8,20 +8,22 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Notification({notification,setNotifications, notifications}) {
     const [optionsOpen, setOptionsOpen] = useState(false);
     const navigator = useNavigate();
+    const handleNotificationClicked = async () => {
+        await handleNotification;
+        navigator(`/post/${notification.articleId}`)
+    }
     const handleNotification =async()=>{
         try {
             if(!notification.isRead){
-                const url = `${apis.notification}markasread?notificationId=${notification.id}`;
-                const response = await authHeader().post(url);
+                const url = `${apis.notification}markasread`;
+                const response = await authHeader().post(url, {params:{notificationId: notification.id}});
                 markAsRead();
             }
-            navigator(`/post/${notification.articleId}`)
-
         } catch (error) {
         }
     }
 
-    const markAsRead =()=> {
+    const markAsRead = ()=> {
         const updatedNotifications = notifications.map(notif => {
             if (notif.id === notification.id) {
                 return { ...notif, isRead: true };
@@ -30,11 +32,21 @@ export default function Notification({notification,setNotifications, notificatio
         });
         setNotifications(updatedNotifications);
     }
-    const handleDeleteNotification=()=>{
+    const handleDeleteNotification=async()=>{
+        try {
+            const url = `${apis.notification}deletenoti`;
+            const response = await authHeader().delete(url, {params:{notificationId: notification.id}});
+            deleteNotification(notification.id)
+        } catch (error) {
+        }
         
     }
+    const deleteNotification = (notificationId) => {
+        const updatedNotifications = notifications.filter(notif => notif.id !== notificationId);
+        setNotifications(updatedNotifications);
+    };
     return (
-        <div className={`notification ${!notification.isRead ? 'read' : ''}`} onClick={handleNotification}>
+        <div className={`notification ${!notification.isRead ? 'read' : ''}`} >
             <div class="user-pic">
                 <Link
                     to={`/account/${notification.userNoti.id}`}
@@ -45,7 +57,7 @@ export default function Notification({notification,setNotifications, notificatio
                     <ChatBubble className='notification-type-icon'/>
                 </div> */}
             </div>
-            <div class="notification-content">
+            <div class="notification-content" onClick={handleNotificationClicked}>
                 <Link
                     to={`/account/${notification.userNoti.id}`}
                 >
@@ -58,12 +70,14 @@ export default function Notification({notification,setNotifications, notificatio
                 <MoreVert />
                     {optionsOpen && (
                         <div className="notificationDropdownContent" >
-                                    <div className="notificationDropdownContentItem" onClick={()=>markAsRead()}>
+                            {!notification.isRead && (
+                                <div className="notificationDropdownContentItem" onClick={()=>handleNotification()}>
                                                 <span>Mark as read</span> 
                                     </div>
-                                    <div className="notificationDropdownContentItem" onClick={()=>handleDeleteNotification()}>
-                                                <span>Delete</span> 
-                                    </div>
+                            )}
+                            <div className="notificationDropdownContentItem" onClick={()=>handleDeleteNotification()}>
+                                        <span>Delete</span> 
+                            </div>
                         </div>
                     )}
             </div>
