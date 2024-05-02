@@ -66,17 +66,14 @@ const AccountForm = ({
     const userSchema = yup.object().shape({
         firstName: yup.string().required("required"),
         lastName: yup.string().required("required"),
-        password: yup.string().when("isEdit", {
-            is: false,
-            then: yup.string()
+        password: isEdit 
+            ? yup.string() 
+            : yup.string()
                 .required("This field must not be empty")
                 .matches(
                     /^(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*\d).*$/,
                     "Password must contain at least one symbol, one capital letter, and one number"
-                )
-                .min(6, "Password must be at least 6 characters long"),
-            otherwise: yup.string()
-        }),
+                ),
         confirm_password: yup.string().when("isEdit", {
             is: false,
             then: yup.string()
