@@ -66,22 +66,28 @@ const AccountForm = ({
     const userSchema = yup.object().shape({
         firstName: yup.string().required("required"),
         lastName: yup.string().required("required"),
-        password: isEdit 
-            ? yup.string() 
-            : yup.string()
+        password: yup.string().when("isEdit", {
+            is: false,
+            then: yup.string()
                 .required("This field must not be empty")
                 .matches(
                     /^(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*\d).*$/,
                     "Password must contain at least one symbol, one capital letter, and one number"
-                ),
-        confirm_password: isEdit 
-            ? yup.string() 
-            : yup.string()
+                )
+                .min(6, "Password must be at least 6 characters long"),
+            otherwise: yup.string()
+        }),
+        confirm_password: yup.string().when("isEdit", {
+            is: false,
+            then: yup.string()
                 .required("This field must not be empty")
                 .oneOf([yup.ref("password"), null], "Confirm password does not match"),
+            otherwise: yup.string()
+        }),
         phoneNumber: yup.string().required("required").matches(phoneRegExp, "Phone number is not valid"),
         email: yup.string().required("required").email("Please enter an email"),
     });
+    
     
 
     const handleSubmit = async (values) => {
