@@ -94,7 +94,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -143,7 +143,7 @@ namespace Comp1640_Final.Controllers
             // If image is null, set to the default image file
             if (cloudUserImage == null)
             {
-                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                 cloudUserImage = defaultImageFileName;
             }
             if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -197,7 +197,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -250,7 +250,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -301,7 +301,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -354,7 +354,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -407,7 +407,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -463,7 +463,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -517,7 +517,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
@@ -572,7 +572,7 @@ namespace Comp1640_Final.Controllers
                 // If imageBytes is null, read the default image file
                 if (cloudUserImage == null)
                 {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1714641917/fqq5evw0vicuxg8dlonr.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
                 if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
