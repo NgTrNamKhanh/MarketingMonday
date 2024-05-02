@@ -1,4 +1,4 @@
-const endpoint = 'http://cmu.somee.com/api/';
+const endpoint = 'https://cmu.somee.com/api/';
 // const endpoint = 'https://localhost:7218/api/';
 const apis = {
     account: endpoint + "account/",
