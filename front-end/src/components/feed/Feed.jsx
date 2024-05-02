@@ -11,7 +11,7 @@ import { Box} from "@mui/material";
 export default function Feed({userId}) {
     const { facultyId } = useParams();
     const [approvedSelectedFilter, setApprovedSelectedFilter] = useState("recent");
-    const [isProfile, setIsProfile] = useState(false);
+    const [isProfile, setIsProfile] = useState();
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState()
     const [currentUser, setCurrentUser] = useState(null);
@@ -100,15 +100,17 @@ export default function Feed({userId}) {
     
     useEffect(()=>{
         const fetchPosts = async () => {
-            if (userId && currentUser) {
+            if (userId && currentUser && isProfile) {
                 setLoading(true)
                 try {
                     setError(null)
                     let url;
                     if(isProfile){
                         url = apis.article + "profile/submission"
-                    }else if (currentUser.roles.some(role => role === "Guest" || role === "Student")){
+                    }else if (currentUser.roles.some(role => role === "Guest" || role === "Student") && !isProfile){
                         url = apis.article + "profile/article"
+                    }else{
+                        url = apis.article + "profile/submission"
                     }
                     const response = await authHeader().get(url, {params: {userId: userId}});
                     setPosts(response.data)

@@ -26,10 +26,13 @@ export default function CommentForm ({ currentUser, isSubmitting, setIsSubmittin
                 setComments((prevComments) => [res.data,...prevComments ]);
                 setCommentCount((prevCount) => prevCount + 1)
                 setIsSubmitting(false);
+                setCommentValue("")
             } else {
+                setCommentValue("")
                 setIsSubmitting(false);
             }
         } catch (error) {
+            setCommentValue("")
             setIsSubmitting(false);
         }
 

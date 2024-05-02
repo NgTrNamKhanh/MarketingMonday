@@ -218,15 +218,15 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
     const [isDownloading, setIsDownloading] = useState(false);
     const handleDownload = async () => {
         setIsDownloading(true);
-        const downloadData = {
-            studentName: submission.studentName,
-            title: submission.title,
-            description: submission.description,
-            imageFiles: submission.listCloudImagePath
-        }
+        // const downloadArticle = {
+        //     studentName: submission.studentName,
+        //     title: submission.title,
+        //     description: submission.description,
+        //     imageFiles: submission.listCloudImagePath
+        // }
         try {
-            const response = await authHeader().post(apis.article+"download", downloadData, {
-                responseType: 'blob' // Ensure the response type is set to 'blob' to handle binary data
+            const response = await authHeader().post(apis.article+"download", null, { params: {articleId: submission.id},
+                responseType: 'blob' 
             });
 
             // Create a blob URL from the response data

@@ -28,6 +28,7 @@ using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using Drawing = DocumentFormat.OpenXml.Wordprocessing.Drawing;
+using System.Net;
 
 namespace Comp1640_Final.Controllers
 {
@@ -1125,10 +1126,16 @@ namespace Comp1640_Final.Controllers
         //    return null;
         //}
         [HttpPost("download")]
-		public async Task<IActionResult> DownloadSubmission([FromBody] DownloadArticleDTO downloadArticle)
+		public async Task<IActionResult> DownloadSubmission(Guid articleId)
 		{
-			// Create a memory stream to hold the generated Word document
-			using (MemoryStream stream = new MemoryStream())
+            var article = _articleService.GetArticleByID(articleId);
+            var user = await _userManager.FindByIdAsync(article.StudentId);
+            if (article == null)
+            {
+                return NotFound("Article not found");
+            }
+            // Create a memory stream to hold the generated Word document
+            using (MemoryStream stream = new MemoryStream())
 			{
 				// Create a WordprocessingDocument
 				using (WordprocessingDocument wordDocument = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document))
@@ -1143,31 +1150,46 @@ namespace Comp1640_Final.Controllers
 					// Add student name to the Word document
 					Paragraph studentNameParagraph = body.AppendChild(new Paragraph());
 					Run studentNameRun = studentNameParagraph.AppendChild(new Run());
-					studentNameRun.AppendChild(new Text(downloadArticle.StudentName));
+					studentNameRun.AppendChild(new Text(user.FirstName+ user.LastName));
 
 					// Add content to the Word document
 					Paragraph titleParagraph = body.AppendChild(new Paragraph());
 					Run titleRun = titleParagraph.AppendChild(new Run());
-					titleRun.AppendChild(new Text(downloadArticle.Title));
+					titleRun.AppendChild(new Text(article.Title));
 
 					Paragraph descriptionParagraph = body.AppendChild(new Paragraph());
 					Run descriptionRun = descriptionParagraph.AppendChild(new Run());
-					descriptionRun.AppendChild(new Text(downloadArticle.Description));
+					descriptionRun.AppendChild(new Text(article.Description));
 
-					// Add images to the Word document
-					foreach (var imageBytes in downloadArticle.ImageFiles)
-					{
-						ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
-						using (MemoryStream imageStream = new MemoryStream(imageBytes))
-						{
-							imagePart.FeedData(imageStream);
-						}
+                    List<string> pathList = new List<string>();
+                    if (article.CloudImagePath != null)
+                    {
+                        string cloudImagePath = article.CloudImagePath;
+                        string[] paths = cloudImagePath.Split(';');
+                        pathList.AddRange(paths);
+                    }
+                    foreach (var imageUrl in pathList)
+                    {
+                        // Download the image data from the URL
+                        byte[] imageBytes;
+                        using (var webClient = new WebClient())
+                        {
+                            imageBytes = webClient.DownloadData(imageUrl);
+                        }
 
-						AddImageToBody(mainPart.GetIdOfPart(imagePart), body);
-					}
+                        // Add the image to the document
+                        ImagePart imagePart = mainPart.AddImagePart(ImagePartType.Jpeg);
+                        using (MemoryStream imageStream = new MemoryStream(imageBytes))
+                        {
+                            imagePart.FeedData(imageStream);
+                        }
 
-					// Save changes to the Word document
-					wordDocument.Save();
+                        AddImageToBody(mainPart.GetIdOfPart(imagePart), body);
+                    }
+
+
+                    // Save changes to the Word document
+                    wordDocument.Save();
 				}
 
 				// Reset the stream position to start

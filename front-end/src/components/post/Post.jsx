@@ -7,6 +7,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 import PostModal from "../modal/postModal/PostModal"
 import { Link } from 'react-router-dom';
 export default function Post({ post, isProfile, currentUser}) {
+    console.log(post)
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -174,6 +175,13 @@ export default function Post({ post, isProfile, currentUser}) {
                             <span className="postUsername">{post.studentName}</span>
                         </Link>
                         <span className="postDate">{formatDate(post.uploadDate)}</span>
+                        <span className="submissionDate">
+                        (
+                        <span style={{ color: getStatusColor(status) }}>
+                            {status}
+                        </span>
+                        )
+                    </span>
                         {!isProfile &&  (
                             (<span style={{ color: getStatusColor(status) }}>
                             {status}

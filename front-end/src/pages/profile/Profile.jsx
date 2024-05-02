@@ -47,7 +47,7 @@ export default function Profile() {
                             onClick={()=>setOptionsOpen(!optionsOpen)}
                         />
                     </div>
-                    {optionsOpen && (
+                    {optionsOpen && !currentUser.roles.includes("Guest") &&(
                         <div className="profileDropdownContent" >
                             <div className="profileDropdownContentItem" onClick={()=>handleOpenEditAvatar()}>
                                         <span className="dropdownContentItemLink">Change profile picture</span>

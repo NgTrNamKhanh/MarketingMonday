@@ -50,8 +50,11 @@ const AccountForm = ({
     initialValues.lastName = account ? account.lastName : "";
     initialValues.email = account ? account.email : "";
     initialValues.phoneNumber = account ? account.phoneNumber : "";
-    const [faculty, setFaculty] = useState(account ? account.facultyId : "");
-    const [role, setRole] = useState(account ? account.role[0] : "");
+    console.log(account)
+    const [faculty, setFaculty] = useState(isEdit ? account.facultyId : "");
+
+    console.log(faculty)
+    const [role, setRole] = useState(isEdit ? account.role[0] : "");
     // const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");
