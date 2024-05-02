@@ -233,10 +233,10 @@ export default function Submissions ({userId}) {
                         ))}
                     </>
                     )}
-                    {selectedFilter === "approved" && (
+                    {(currentUser.roles.includes("Coordinator") &&selectedFilter === "approved") && (
                         <button className='guestBtn' onClick={handleGuestApprove} disabled={isSubmitting}>{isSubmitting? 'Loading...':"Confirm Guest Approve"}</button>
                     )}
-                    {selectedFilter === "guest approved" && (
+                    {(currentUser.roles.includes("Coordinator") &&selectedFilter === "guest approved") && (
                         <button className='guestBtn' onClick={handleGuestUnApprove} disabled={isSubmitting}>{isSubmitting? 'Loading...':"Confirm Remove Guest Approve"}</button>
                     )}
                 </div>
