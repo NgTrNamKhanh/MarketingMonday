@@ -158,9 +158,6 @@ const Accounts = () => {
                         >
                             <EditOutlined />
                         </Link>
-                        <Link>
-                            <Delete onClick={() => handleOpenDeleteDialog(row)} />
-                        </Link>
                     </Box>
                 );
             },
