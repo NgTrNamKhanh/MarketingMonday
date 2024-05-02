@@ -22,6 +22,7 @@ import { ToastContainer } from "react-toastify";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import Account from "../account/Account";
 import PostPage from "../post/PostPage";
+import SearchPosts from "../searchPosts/SearchPosts";
 export default function Home() {
 
     const [isLoading, setIsLoading] = useState(true);
@@ -138,6 +139,7 @@ export default function Home() {
                                     requiredRoles={['Admin', 'Manager', 'Coordinator']}
                                 />} 
                             />
+                            <Route path="/search/:search" element={<SearchPosts/>} />
                             <Route path="/accounts" element=
                                 {<ProtectedRoute
                                     element={<Accounts />}

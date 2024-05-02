@@ -90,6 +90,16 @@ export default function Topbar({user, setCurrentUser}) {
             document.removeEventListener("scroll", handleScrollOutside);
         };
     }, [closedByInteraction]);
+
+    const [searchTerm, setSearchTerm] = useState('');
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        navigator(`/search/${searchTerm}`);
+        setSearchTerm('');
+    };
+    
+
     return (
         <div className="topbarContainer">
             <div className="topbarLeft">
@@ -97,8 +107,16 @@ export default function Topbar({user, setCurrentUser}) {
             </div>
             <div className="topbarCenter">
                 <div className="searchBar">
-                    <Search className="searchIcon"/>
-                    <input placeholder="Search for ..." className="searchInput" />
+                    <form onSubmit={handleSubmit}>
+                    <Search className="searchIcon" />
+                    <input
+                        type="text"
+                        placeholder="Search for ..."
+                        className="searchInput"
+                        value={searchTerm}
+                        onChange={(event) => setSearchTerm(event.target.value)}
+                        />
+                    </form>
                 </div>
             </div>
             <div className="topbarRight">

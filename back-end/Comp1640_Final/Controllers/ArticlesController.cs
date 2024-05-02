@@ -129,7 +129,7 @@ namespace Comp1640_Final.Controllers
         {
             if (!_articleService.ArticleExists(articleId))
             {
-                return NotFound();
+                return BadRequest("There is no submission here"); ;
 
             }
             var article = _articleService.GetArticleByID(articleId);
@@ -181,7 +181,8 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetArticlesByTitle(articleTitle);
 
             if (articles == null || !articles.Any())
-                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
+                return BadRequest("There is no submission here");
+            var articleDTOs = new List<SubmissionResponse>();
 
             var currentUser = await _userManager.FindByIdAsync(userId);
             var currentUserRole = await _userManager.GetRolesAsync(currentUser);
@@ -236,7 +237,8 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetApprovedArticlesByTitle(articleTitle, faculty);
 
             if (articles == null || !articles.Any())
-                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
+                return BadRequest("There is no submission here");
+            var articleDTOs = new List<ArticleResponse>();
 
             var currentUserRole = await _userManager.GetRolesAsync(currentUser);
             var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
@@ -244,7 +246,7 @@ namespace Comp1640_Final.Controllers
             foreach (var article in articles)
             {
                 var user = await _userManager.FindByIdAsync(article.StudentId);
-                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                var articleDTO = _mapper.Map<ArticleResponse>(article);
                 //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
                 var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
 
@@ -290,7 +292,8 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetGuestApprovedArticlesByTitle(articleTitle, faculty);
 
             if (articles == null || !articles.Any())
-                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
+                return BadRequest("There is no submission here");
+            var articleDTOs = new List<SubmissionResponse>();
 
             var currentUserRole = await _userManager.GetRolesAsync(currentUser);
             var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
@@ -714,7 +717,7 @@ namespace Comp1640_Final.Controllers
             var articles = await _articleService.GetArticleByPublishStatus(publishStatusId);
 
             if (articles == null || !articles.Any())
-                return NotFound();
+                return BadRequest("There is no submission here");
 
             var articleDTOs = new List<SubmissionResponse>();
             var currentUser = await _userManager.FindByIdAsync(userId);
