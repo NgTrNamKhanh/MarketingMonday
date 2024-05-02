@@ -228,6 +228,114 @@ namespace Comp1640_Final.Controllers
             return Ok(articleDTOs);
         }
 
+        [HttpGet("approved/title/{articleTitle}")]
+        public async Task<IActionResult> GetApprovedArticleByTitle(string articleTitle, string userId)
+        {
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var faculty = currentUser.FacultyId;
+            var articles = await _articleService.GetApprovedArticlesByTitle(articleTitle, faculty);
+
+            if (articles == null || !articles.Any())
+                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
+
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
+            foreach (var article in articles)
+            {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
+                    cloudUserImage = defaultImageFileName;
+                }
+                articleDTO.StudentAvatar = cloudUserImage;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTOs.Add(articleDTO);
+            }
+
+            return Ok(articleDTOs);
+        }
+
+        [HttpGet("guest/approved/title/{articleTitle}")]
+        public async Task<IActionResult> GetGuestApprovedArticleByTitle(string articleTitle, string userId)
+        {
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var faculty = currentUser.FacultyId;
+            var articles = await _articleService.GetGuestApprovedArticlesByTitle(articleTitle, faculty);
+
+            if (articles == null || !articles.Any())
+                return NotFound(); var articleDTOs = new List<SubmissionResponse>();
+
+            var currentUserRole = await _userManager.GetRolesAsync(currentUser);
+            var isGuestOrStudent = currentUserRole.Contains("Guest") || currentUserRole.Contains("Student");
+
+            foreach (var article in articles)
+            {
+                var user = await _userManager.FindByIdAsync(article.StudentId);
+                var articleDTO = _mapper.Map<SubmissionResponse>(article);
+                //articleDTO.UploadDate = article.UploadDate.ToString("dd/MM/yyyy");
+                var cloudUserImage = await _userService.GetCloudinaryAvatarImagePath(user.Id); // Await the method call
+
+                // If imageBytes is null, read the default image file
+                if (cloudUserImage == null)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712939986/tbzbwhyipuf7b4ep6dlm.jpg";
+                    cloudUserImage = defaultImageFileName;
+                }
+                if (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent)
+                {
+                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
+                    cloudUserImage = defaultImageFileName;
+                }
+                articleDTO.StudentAvatar = cloudUserImage;
+                articleDTO.CommmentCount = await _commentService.GetCommentsCount(article.Id);
+                articleDTO.LikeCount = await _likeService.GetArticleLikesCount(article.Id);
+                articleDTO.DislikeCount = await _dislikeService.GetArticleDislikesCount(article.Id);
+                articleDTO.IsLiked = await _likeService.IsArticleLiked(userId, article.Id);
+                articleDTO.IsDisliked = await _dislikeService.IsArticleDisLiked(userId, article.Id);
+                articleDTO.ViewCount = article.ViewCount;
+                articleDTO.IsViewed = article.ViewCount >= 1;
+                if (article.CloudImagePath != null)
+                {
+                    string cloudImagePath = article.CloudImagePath;
+                    string[] paths = cloudImagePath.Split(';');
+                    List<string> pathList = new List<string>(paths);
+                    articleDTO.ListCloudImagePath = pathList;
+                }
+                //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
+                articleDTOs.Add(articleDTO);
+            }
+
+            return Ok(articleDTOs);
+        }
+
         [HttpGet("faculty/{facultyId}")]
         public async Task<IActionResult> GetArticleByFacultyId(int facultyId, string userId)
         {

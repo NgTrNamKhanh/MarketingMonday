@@ -129,6 +129,7 @@ namespace UnitTest
                 CloudImagePath = cloudinaryUrl,
             };
             var expectedResponse = new SubmissionResponse();
+            var expectedArticleResponse = new ArticleResponse();
             var curentRoles = new List<string> { "Guest", "Student" };
 
             _articleServiceMock.Setup(x => x.ArticleExists(articleId)).Returns(true);
@@ -142,6 +143,8 @@ namespace UnitTest
             _likeServiceMock.Setup(x => x.IsArticleLiked(userId, article.Id)).ReturnsAsync(true);
             _dislikeServiceMock.Setup(x => x.IsArticleDisLiked(userId, article.Id)).ReturnsAsync(true);
             _mapperMock.Setup(x => x.Map<SubmissionResponse>(article)).Returns(expectedResponse);
+            _mapperMock.Setup(x => x.Map<ArticleResponse>(article)).Returns(expectedArticleResponse);
+            
 
             var result = await _articleController.GetArticleByID(articleId, userId);
 
@@ -150,7 +153,7 @@ namespace UnitTest
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
 
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.InstanceOf<SubmissionResponse>());
+            Assert.That(okResult.Value, Is.InstanceOf<ArticleResponse>());
         }
 
         [Test]

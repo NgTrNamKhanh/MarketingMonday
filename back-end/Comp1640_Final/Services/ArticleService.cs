@@ -14,6 +14,8 @@ namespace Comp1640_Final.Services
         ICollection<Article> GetArticles();
         Article GetArticleByID(Guid id);
         Task<IEnumerable<Article>> GetArticlesByTitle(string title);
+        Task<IEnumerable<Article>> GetApprovedArticlesByTitle(string title, int faculty);
+        Task<IEnumerable<Article>> GetGuestApprovedArticlesByTitle(string title, int faculty);
         Task<IEnumerable<Article>> GetArticlesByFacultyId(int facultyID);
         Task<IEnumerable<Article>> GetArticleByPublishStatusIdAndFacultyId(int publishStatusId, int facultyId);
         Task<IEnumerable<Article>> GetApprovedArticles(int facultyID);
@@ -279,5 +281,18 @@ namespace Comp1640_Final.Services
             await _cloudinaryService.DeleteResource(publicDocId);
         }
 
+        public async Task<IEnumerable<Article>> GetApprovedArticlesByTitle(string title, int faculty)
+        {
+            return await _context.Articles.Where(p => p.Title.Contains(title)
+            && p.FacultyId == faculty
+            && p.PublishStatusId == (int)EPublishStatus.Approval).ToListAsync();
+        }
+        public async Task<IEnumerable<Article>> GetGuestApprovedArticlesByTitle(string title, int faculty)
+        {
+            return await _context.Articles.Where(p => p.Title.Contains(title)
+            && p.FacultyId == faculty
+            && p.PublishStatusId == (int)EPublishStatus.Approval
+            && p.CoordinatorStatus == true).ToListAsync();
+        }
     }
 }
