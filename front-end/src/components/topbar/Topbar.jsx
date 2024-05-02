@@ -58,8 +58,10 @@ export default function Topbar({user, setCurrentUser}) {
         fetchData();
     }, [ user]);
     useEffect(() => {
-        setNotificationCount(notifications.filter(notification => !notification.isRead).length);
-    }, []);
+        if(notifications){
+            setNotificationCount(notifications.filter(notification => !notification.isRead).length);
+        }
+    }, [notifications]);
     const optionsRef = useRef(null);
     useEffect(() => {
         function handleClickOutside(event) {
@@ -122,8 +124,8 @@ export default function Topbar({user, setCurrentUser}) {
                                     <div className="notificationsWrapper" style={{ fontWeight: "smaller" }}>
                                         {notifications.map(notification => (
                                             <Notification
-                                                notificationCount={notificationCount}
-                                                setNotificationCount={setNotificationCount}
+                                                notifications={notifications}
+                                                setNotifications={setNotifications}
                                                 notification = {notification}
                                             />
                                         ))}

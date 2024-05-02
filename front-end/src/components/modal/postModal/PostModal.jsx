@@ -10,14 +10,12 @@ export default function Modal({
     likeCount, dislikeCount,
     setIsModalOpen, isLiked, isDisliked, handleLike, handleDislike,
     formatDate, pictureLayout}){
-        console.log(commentCount)
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false); 
     useEffect(() => {
         const fetchData = async () => {
             if(currentUser){
-                console.log("re render")
                 setLoading(true)
                 console.log(currentUser.id)
                 try {
@@ -33,35 +31,6 @@ export default function Modal({
 
         fetchData();
     }, []);
-    // const handleComment =  async (event) =>{
-    //     event.preventDefault();
-    //     setIsSubmitting(true);
-    //     try {
-    //         const comment = {
-    //             content: event.target.comment.value,
-    //             userId: currentUser.id,
-    //             articleId: post.id
-    //         }
-    //         const res = await authHeader().post(apis.comment+"createComment", comment);
-    //         if (res.status === 200) {
-    //             console.log(res)
-    //             setComments((prevComments) => [res.data,...prevComments ]);
-    //             setCommentCount((prevCount) => prevCount + 1)
-    //             // localStorage.setItem("accounts", JSON.stringify(updatedData));
-    //             setIsSubmitting(false);
-    //             console.log("6")
-    //             // setMessage("Account edited successfully.");
-    //         } else {
-    //             setIsSubmitting(false);
-    //             // setMessage(`An error occurred: ${res.data}`);
-    //         }
-    //     } catch (error) {
-    //         setIsSubmitting(false);
-    //         // setMessage(error.response.data);
-    //     }
-
-    // }
-    
     
     return(
         <div className="modal">

@@ -7,80 +7,11 @@ import apis from "../../services/apis.service";
 import authService from "../../services/auth.service";
 import Skeleton from "@mui/material/Skeleton";
 import { Box} from "@mui/material";
-// const postsData = [
-//     {
-//         id: 1,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         username: "user1",
-//         date: "February 20, 2024",
-//         title: "Post Title 1",
-//         content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-//         postimgs: [
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//             "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-//             "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-//         ],
-//         likes: 10,
-//         dislikes: 2,
-//         commentsCount: 5,
-//         files: [
-//             // {
-//             //     name: 'tut3-RADconcepts.doc',
-//             //     lastModified: 1706591705000,
-//             //     lastModifiedDate: new Date('Tue Jan 30 2024 12:15:05 GMT+0700 (Indochina Time)'),
-//             //     size: 30208,
-//             //     type: 'application/msword',
-//             //     webkitRelativePath: ''
-//             // }
-//         ]
-//     },
-//     {
-//         id: 2,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         username: "user2",
-//         date: "February 19, 2024",
-//         title: "Post Title 2",
-//         content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//         postimgs: [
-//             "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-//         ],
-//         likes: 20,
-//         dislikes: 1,
-//         commentsCount: 8,
-//         files: [
-//             // Add file objects here if needed
-//         ]
-//     },
-//     {
-//         id: 3,
-//         img: "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX",
-//         username: "user2",
-//         date: "February 22, 2024",
-//         title: "Post Title 3",
-//         content: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-//         postimgs: [
-//             "https://m.media-amazon.com/images/M/MV5BNmNkNWU5NzUtNmVkNS00ZDE2LTg0NjgtNTIxNWYxOWIyM2FlXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg",
-//             "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQo19mduM602yfQenqFCY0mcAVU-KFkgrnBJJ4O8F4gIM_SZIVX"
-//         ],
-//         likes: 1,
-//         dislikes: 10,
-//         commentsCount: 100,
-//         files: [
-//             // Add file objects here if needed
-//         ]
-//     }
-//     // Add more posts as needed
-// ];
 
 export default function Feed({userId}) {
     const { facultyId } = useParams();
     const [approvedSelectedFilter, setApprovedSelectedFilter] = useState("recent");
-    const isProfile = userId ? true : false;
+    const [isProfile, setIsProfile] = useState(false);
     const [posts, setPosts] = useState([]);
     const [error, setError] = useState()
     const [currentUser, setCurrentUser] = useState(null);
@@ -93,6 +24,13 @@ export default function Feed({userId}) {
             setLoading(false)
         }
     }, []);
+    useEffect(() => {
+        setLoading(true)
+        if (currentUser) {
+            setIsProfile(userId===currentUser.id);
+            setLoading(false)
+        }
+    }, [currentUser, userId]);
     const [filteredPosts, setFilteredPosts] = useState([]);
     const [unapprovedSelectedFilter, setSelectedFilter] = useState("all");
     const handleUnapprovedFilterChange = (event) => {
@@ -162,16 +100,22 @@ export default function Feed({userId}) {
     
     useEffect(()=>{
         const fetchPosts = async () => {
-            if (userId) {
+            if (userId && currentUser) {
                 setLoading(true)
                 try {
                     setError(null)
-                    const response = await authHeader().get(apis.article + "profile", {params: {userId: userId}});
+                    let url;
+                    if(isProfile){
+                        url = apis.article + "profile/submission"
+                    }else if (currentUser.roles.some(role => role === "Guest" || role === "Student")){
+                        url = apis.article + "profile/article"
+                    }
+                    const response = await authHeader().get(url, {params: {userId: userId}});
                     setPosts(response.data)
                     setFilteredPosts(response.data)
                     setLoading(false)
                 }catch (error) {
-                    setError(error.response.data)
+                    // setError(error.response.data)
                     setPosts([])
                     setFilteredPosts([])
                     console.error("Error fetching post data:", error);
@@ -180,7 +124,7 @@ export default function Feed({userId}) {
             }
         }
         fetchPosts();
-    },[userId])
+    },[userId, currentUser, isProfile])
     const handleApprovedFilterChange = (event) => {
         setSelectedFilter("all");
         setApprovedSelectedFilter(event.target.value);
@@ -210,12 +154,14 @@ export default function Feed({userId}) {
         <div className="feed">
             <div className="feedWrapper">
                 <div className="postFilter">
-                    <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
+                    {unapprovedSelectedFilter==='approved'&& (
+                        <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
                         <option value="recent">Most Recent</option>
                         <option value="views">Most Viewed</option>
                         <option value="likes">More Liked</option>
                         <option value="comments">Most Commented</option>
                     </select>
+                    )}
                 </div>
                 {userId && (
                         <div className="postFilter">

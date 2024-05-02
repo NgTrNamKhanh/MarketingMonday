@@ -1,6 +1,6 @@
 import { ScaleLoader } from "react-spinners";
 import Comment from "../comment/Comment"
-export default function RenderComments({ comments, loading, currentUser, post, formatDate}){
+export default function Comments({ comments, loading, currentUser, post, formatDate}){
     if (loading) {
         return (<ScaleLoader/>);
     }

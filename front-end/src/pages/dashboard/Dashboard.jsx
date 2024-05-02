@@ -4,7 +4,6 @@ import {
     Chart as ChartJS,
     registerables 
 } from 'chart.js';
-import useFetch from "../../hooks/useFetch";
 import apis from "../../services/apis.service";
 import { useEffect, useState } from "react";
 import authHeader from "../../services/auth.header";
@@ -12,24 +11,6 @@ ChartJS.register(
     ...registerables
 );
 const Dashboard = () => {
-    // const contributionsByYear = {
-    //     "2022": {
-    //         "Faculty A": 50,
-    //         "Faculty B": 30,
-    //         "Faculty C": 20
-    //     },
-    //     "2023": {
-    //         "Faculty A": 60,
-    //         "Faculty B": 40,
-    //         "Faculty C": 25
-    //     },
-    //     "2024": {
-    //         "Faculty A": 70,
-    //         "Faculty B": 45,
-    //         "Faculty C": 30
-    //     }
-    // };
-    // const {contributions, contributionsLoading, contributionsError, contributionsRefetch} = useFetch(apis.faculty+"contributions/by-year")
     const [contributorsByYear, setContributorsByYear] = useState(null)
     const [contributionsByYear, setContributionsByYear] = useState(null)
     const [percentageByFaculty, setPercentageByFaculty] = useState(null)
@@ -48,31 +29,6 @@ const Dashboard = () => {
         };
         fetchEvent();
     }, []);
-    console.log(percentageByFaculty)
-        // const percentageByFaculty = {
-        // "Faculty A": 40,
-        // "Faculty B": 30,
-        // "Faculty C": 20,
-        // "Faculty D": 10
-        // };
-        
-        // const contributorsByYear = {
-        // "2022": {
-        //     "Faculty A": 25,
-        //     "Faculty B": 15,
-        //     "Faculty C": 10
-        // },
-        // "2023": {
-        //     "Faculty A": 30,
-        //     "Faculty B": 20,
-        //     "Faculty C": 15
-        // },
-        // "2024": {
-        //     "Faculty A": 35,
-        //     "Faculty B": 25,
-        //     "Faculty C": 20
-        // }
-        // };
     const options = {
         plugins: {
             title: {
@@ -100,7 +56,6 @@ const Dashboard = () => {
             }]
         };
     }
-    console.log(percentageData)
     let contributionsResult = null;
     if (contributionsByYear) {
         contributionsResult = {
@@ -123,9 +78,7 @@ const Dashboard = () => {
             }, [])
         };
     }
-    console.log(contributionsResult)
 
-    // Convert data for contributors by year into datasets for chart
     let contributorsResult = null;
     if (contributorsByYear) {
         contributorsResult = {

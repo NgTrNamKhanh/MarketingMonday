@@ -68,14 +68,12 @@ namespace UnitTest
             eventServiceMock.Setup(x => x.GetFirstEventByFaculty(It.IsAny<int>())).ReturnsAsync(testEvent);
 
             // Act
-            //var result = await _eventsController.GetStudentEvent(userId);
             var actionResult = await eventsController.GetStudentEvent(userId);
 
             // Assert
             Assert.That(actionResult, Is.Not.Null);
             Assert.That(actionResult.Result, Is.InstanceOf<OkObjectResult>());
 
-            // Extract the value from the ActionResult
             var okObjectResult = actionResult.Result as OkObjectResult;
             Assert.That(okObjectResult.Value, Is.InstanceOf<EventDTO>());
         }
@@ -100,24 +98,6 @@ namespace UnitTest
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
-
-            //// Arrange
-            //var eventDto = new EventDTO { Id = 1, EventName = "Test Event" };
-            //var createdEvent = new Event { Id = 1, EventName = "Test Event" };
-
-            //eventServiceMock.Setup(x => x.CreateEvent(It.IsAny<Event>())).ReturnsAsync(true);
-
-            //var mapperMock = new Mock<IMapper>();
-            //mapperMock.Setup(m => m.Map<Event>(eventDto)).Returns(createdEvent);
-
-            ////mapper.Setup(m => m.Map<Event>(eventDto)).Returns(createdEvent);
-
-            //// Act
-            //var result = await eventsController.PostEvent(eventDto);
-
-            //// Assert
-            //Assert.That(result, Is.Not.Null);
-            //Assert.That(result.Result, Is.InstanceOf<OkObjectResult>());
         }
 
 

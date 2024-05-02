@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import TermsAndConditions from '../dialogs/termsAndConditions/TermsAndConditions';
 import apis from '../../services/apis.service';
 import authHeader from '../../services/auth.header';
+import { Link } from 'react-router-dom';
 const termsAndConditionsText = (
     <div>
         <p>
@@ -198,7 +199,6 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                 }  else if (submitStatus === 2) {
                     setStatus('reject');
                 } else if (submitStatus === 3 ) {
-                    console.log("hi")
                     setStatus('commented');
                 }
 
@@ -255,8 +255,16 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
             <div className="submissionWrapper">
                 <div className="submissionTop">
                     <div className="submissionTopLeft">
+                        <Link
+                            to={`/account/${submission.studentId}`}
+                        >
                         <img src={submission.studentAvatar} className="submissionProfileImg" alt="profile" />
+                        </Link>
+                        <Link
+                            to={`/account/${submission.studentId}`}
+                        >
                         <span className="submissionUsername">{submission.studentName}</span>
+                        </Link>
                         {
                             submission.isAnonymous && (
                                 <span className="submissionUsername">(Anonymous)</span>

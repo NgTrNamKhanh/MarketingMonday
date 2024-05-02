@@ -37,11 +37,8 @@ namespace UnitTest
             // Assert
             Assert.That(result, Is.Not.Null.And.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
-            //Assert.That(okResult.Value, Is.Not.Null.And.AssignableFrom<IEnumerable<Faculty>>());
             Assert.That(okResult.Value, Is.Not.Null.And.TypeOf<List<Faculty>>());
             var returnedFaculties = okResult.Value as IEnumerable<Faculty>;
-            //Assert.Equals(faculties.Count, returnedFaculties.Count);
-            //Assert.That(faculties.Count, Is.Not.Null.And.EqualTo(returnedFaculties.Count));
             Assert.That(returnedFaculties, Is.Not.Null.And.Count.EqualTo(faculties.Count));
         }
 

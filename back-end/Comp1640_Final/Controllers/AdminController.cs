@@ -30,25 +30,19 @@ namespace Comp1640_Final.Controllers
     {
         private readonly IAuthService _authService;
         private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly IMapper _mapper;
         private readonly IUserService _userService;
-        //private static IWebHostEnvironment _webHostEnvironment;
         private readonly Cloudinary _cloudinary;
 
         public AdminController(IAuthService authService,
             UserManager<ApplicationUser> userManager,
             IUserService userService,
-            //IWebHostEnvironment webHostEnvironment,
             Cloudinary cloudinary
-            //IMapper mapper
             )
         {
             _authService = authService;
             _userManager = userManager;
-            //_mapper = mapper;
             _userService = userService;
             _cloudinary = cloudinary;
-            //_webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost("createAccount")]
@@ -92,20 +86,6 @@ namespace Comp1640_Final.Controllers
             }
         }
 
-
-        //[HttpPut]
-        //public async Task<IActionResult> PutAccount(string email, string password)
-        //{
-        //    //name = account.Email;
-        //    var user = await _userManager.FindByEmailAsync(email);
-        //    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        //    var result = await _userManager.ResetPasswordAsync(user, token, password);
-        //    if (result.Succeeded)
-        //    {
-        //        return Ok("Successful");
-        //    }
-        //    return BadRequest("Failed");
-        //}
 
         [HttpPut("account")]
         public async Task<IActionResult> PutAccountForAdmin([FromForm] EditAccountDTO account, string userId)

@@ -10,6 +10,12 @@ export default function Profile() {
     const [currentUser, setCurrentUser] = useState(null);
     const [optionsOpen, setOptionsOpen] = useState(false);
     const [editAvatarOpen, setEditAvatarOpen] = useState(false);
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
     const handleOpenEditAvatar = () => {
         setEditAvatarOpen(true)
     }
@@ -23,13 +29,7 @@ export default function Profile() {
     const handleCloseChangePassword = () => {
         setChangePasswordOpen(false)
     }
-    useEffect(() => {
-            const user = authService.getCurrentUser();
-            if (user) {
-                setCurrentUser(user);
-            }
-    }, []);
-    console.log(currentUser)
+    
     if (!currentUser) {
         return (<ScaleLoader/>);
     }
@@ -43,7 +43,9 @@ export default function Profile() {
             <div className="profileInformation">
                 <div className="profileLeft">
                     <div className="profileCover">
-                        <img src={currentUser.avatar} className="profileUserImg" alt="profile"  onClick={()=>setOptionsOpen(!optionsOpen)}/>
+                        <img src={currentUser.avatar} className="profileUserImg" alt="profile"  
+                            onClick={()=>setOptionsOpen(!optionsOpen)}
+                        />
                     </div>
                     {optionsOpen && (
                         <div className="profileDropdownContent" >
@@ -63,13 +65,15 @@ export default function Profile() {
                     {!currentUser.roles.includes("Guest") && (
                         <div className="changePassword">
                             <span>Password must be at least 8 characters long</span>
-                            <button className="changePasswordBtn" onClick={()=>handleOpenChangePassword()}>Change</button>
+                            <button className="changePasswordBtn" 
+                                onClick={()=>handleOpenChangePassword()}>
+                                    Change
+                            </button>
                         </div>
                     )}
                     <h5>Number</h5>
                     <span>{currentUser.phoneNumber}</span>
                 </div>
-                
             </div>
             {!currentUser.roles.includes("Guest") && (
                 <div className="profileSubmissions">

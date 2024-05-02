@@ -39,6 +39,7 @@ const phoneRegExp =
 const AccountForm = ({
     handleCloseDialog,
     account,
+    open,
     reFetch,
     handleDefaultCloseEditDialog,
     facultyOptions,
@@ -143,7 +144,7 @@ const AccountForm = ({
     };
     console.log(roleOptions)
     return (
-        <Dialog open={true} onClose={handleDefaultCloseEditDialog}>
+        <Dialog open={open} onClose={handleDefaultCloseEditDialog}>
         <DialogTitle>{isEdit ? 'Edit Account' : 'Add Account'}</DialogTitle>
         <DialogContent>
             <Formik

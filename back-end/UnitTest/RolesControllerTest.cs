@@ -130,7 +130,6 @@ namespace UnitTest
             Assert.That(result, Is.Not.Null.And.InstanceOf<StatusCodeResult>());
             var statusCodeResult = result as StatusCodeResult;
             Assert.That(statusCodeResult.StatusCode, Is.EqualTo(StatusCodes.Status400BadRequest));
-            //Assert.That(statusCodeResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         }
 
         //[Test]
