@@ -139,7 +139,7 @@ export default function Post({ post, isProfile, currentUser}) {
             case 'reject':
                 return 'red';
             case 'commented':
-                return 'yellow';
+                return '#a89132';
             default:
                 return 'orange';
         }
@@ -176,11 +176,16 @@ export default function Post({ post, isProfile, currentUser}) {
                         </Link>
                         <span className="postDate">{formatDate(post.uploadDate)}</span>
                         <span className="submissionDate">
-                        (
-                        <span style={{ color: getStatusColor(status) }}>
-                            {status}
-                        </span>
-                        )
+                            {status&&(
+                                <>
+                                 (
+                                    <span style={{ color: getStatusColor(status) }}>
+                                        {status}
+                                    </span>
+                                )
+                                </>
+                            )}
+                        
                     </span>
                         {!isProfile &&  (
                             (<span style={{ color: getStatusColor(status) }}>

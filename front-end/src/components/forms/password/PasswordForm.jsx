@@ -38,7 +38,7 @@ const PasswordForm = ({
                 .matches(
                     /^(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*\d).*$/,
                     "Password must contain at least one symbol, one capital letter, and one number"
-                ),
+                ).min(6, "Password must be at least 6 characters long"),
         confirm_password: 
                 yup
                 .string()

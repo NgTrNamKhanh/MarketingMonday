@@ -9,7 +9,8 @@ import Comments from "../comments/Comments"
 import { Link } from "react-router-dom";
 
 import "./comment.css"
-export default function CommentBlock ({comment, currentUser, post, formatDate}){
+export default function CommentBlock ({comment, currentUser, post, formatDate, setCommentCount}){
+    console.log(comment)
     const [selectedComment, setSelectedComment] = useState(comment);
     const [deleted, setDeleted] = useState(false);
     const [editCmtOpen, setEditCmtCOpen] = useState(false);
@@ -109,6 +110,7 @@ export default function CommentBlock ({comment, currentUser, post, formatDate}){
             const url = apis.comment;
             try {
                 const response = await authHeader().delete(url, {params:{commentId: selectedComment.id}});
+                setCommentCount((prevCount) => prevCount - 1)
                 setDeleted(true)
                 handleCloseDeleteCmtCDialog()
             } catch (err) {

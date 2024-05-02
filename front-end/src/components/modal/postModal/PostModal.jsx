@@ -103,6 +103,7 @@ export default function Modal({
                                 currentUser={currentUser} 
                                 post={post}
                                 formatDate={formatDate}
+                                setCommentCount={setCommentCount}
                             />
                         </div>
                     </div>

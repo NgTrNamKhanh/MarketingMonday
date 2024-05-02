@@ -1,6 +1,6 @@
 import { ScaleLoader } from "react-spinners";
 import Comment from "../comment/Comment"
-export default function Comments({ comments, loading, currentUser, post, formatDate}){
+export default function Comments({ comments, loading, currentUser, post, formatDate, setCommentCount}){
     if (loading) {
         return (<ScaleLoader/>);
     }
@@ -10,7 +10,7 @@ export default function Comments({ comments, loading, currentUser, post, formatD
     return (
         <div>
             {comments.map(comment => (
-                <Comment comment={comment} currentUser={currentUser} post={post} formatDate={formatDate}/>
+                <Comment comment={comment} currentUser={currentUser} post={post} formatDate={formatDate} setCommentCount={setCommentCount}/>
             ))}
         </div>
     );

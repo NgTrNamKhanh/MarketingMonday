@@ -248,6 +248,7 @@ namespace Comp1640_Final.Controllers
                 {
                     UserId = comment.UserId,
                     UserInteractionId = likeDto.UserId,
+                    ArticleId = comment.ArticleId,
                     CommentId = likeDto.CommentId,
                     Message = message,
                     IsAnonymous = false,

@@ -181,7 +181,7 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
             case 'reject':
                 return 'red';
             case 'commented':
-                return 'yellow';
+                return '#a89132';
             default:
                 return 'orange';
         }

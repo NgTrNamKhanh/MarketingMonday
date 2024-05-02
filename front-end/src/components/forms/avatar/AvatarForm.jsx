@@ -4,6 +4,8 @@ import React, { useState } from 'react'
 import apis from '../../../services/apis.service';
 import authHeader from '../../../services/auth.header';
 import * as yup from "yup";
+import { jwtDecode } from 'jwt-decode';
+import Cookies from 'universal-cookie';
 const initialValues = {
     
 };
@@ -31,18 +33,33 @@ export default function AvatarForm({userId, handleClose}) {
                 withCredentials: true,
             });
             if (res.status === 200) {
-                const currentUser = JSON.parse(localStorage.getItem('CMU-user'));
-                currentUser.avatar = res.data;
-                localStorage.setItem('CMU-user', JSON.stringify(currentUser));
+                const cookies = new Cookies();
+                const user = cookies.get('CMU-user'); 
+            
+                if (user) {
+            
+                    if (user && user.avatar) {
+                        user.avatar = res.data; 
+                        cookies.remove('CMU-user'); 
+                        const decodedToken = jwtDecode(user.jwt_token);
+                        cookies.set("CMU-user", JSON.stringify(user), {
+                            expires: new Date(decodedToken.exp * 1000)
+                        });
+                        window.location.reload();
+                    }
+                }
+            
                 setIsSubmitting(false);
                 setMessage("Account edited successfully.");
                 handleClose();
-                window.location.reload();
-            } else {
+            }
+            else {
                 setIsSubmitting(false);
+                console.log(res.data)
                 setMessage(`An error occurred: ${res.data}`);
             }
         }catch (error) {
+            console.log(error)
             setIsSubmitting(false);
             setMessage(error.response.data);
             }

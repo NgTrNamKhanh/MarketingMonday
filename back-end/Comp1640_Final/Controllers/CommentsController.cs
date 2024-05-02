@@ -399,6 +399,7 @@ namespace Comp1640_Final.Controllers
                 {
                     UserId = parentComment.UserId,
                     UserInteractionId = commentDto.UserId,
+                    ArticleId = parentComment.ArticleId,
                     CommentId = parentCommentId,
                     Message = message,
                     IsAnonymous = commentDto.IsAnonymous,

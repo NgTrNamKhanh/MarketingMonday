@@ -32,9 +32,9 @@ export default function Feed({userId}) {
         }
     }, [currentUser, userId]);
     const [filteredPosts, setFilteredPosts] = useState([]);
-    const [unapprovedSelectedFilter, setSelectedFilter] = useState("all");
+    const [unapprovedSelectedFilter, setUnapprovedSelectedFilter] = useState("all");
     const handleUnapprovedFilterChange = (event) => {
-        setSelectedFilter(event.target.value);
+        setUnapprovedSelectedFilter(event.target.value);
         filterUnapprovedPosts(event.target.value);
     };
     const filterUnapprovedPosts = (filter) => {
@@ -128,7 +128,6 @@ export default function Feed({userId}) {
         fetchPosts();
     },[userId, currentUser, isProfile])
     const handleApprovedFilterChange = (event) => {
-        setSelectedFilter("all");
         setApprovedSelectedFilter(event.target.value);
         sortApprovedPosts(event.target.value);
     };
@@ -145,18 +144,22 @@ export default function Feed({userId}) {
             case "comments":
                 sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
                 break;
+            case "recent":
+                sortedPosts.sort((a, b) => new Date(b.uploadDate.replace(',', '')).getTime() - new Date(a.uploadDate.replace(',', '')).getTime());
+                break;
             default:
                 // Default to sort by most recent
-                sortedPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                sortedPosts.sort((a, b) => new Date(b.uploadDate.replace(',', '')).getTime() - new Date(a.uploadDate.replace(',', '')).getTime());
                 break;
         }
         setFilteredPosts(sortedPosts);
     };
+    
     return (
         <div className="feed">
             <div className="feedWrapper">
                 <div className="postFilter">
-                    {unapprovedSelectedFilter==='approved'&& (
+                    {(unapprovedSelectedFilter==='approved' || !userId )&& (
                         <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
                         <option value="recent">Most Recent</option>
                         <option value="views">Most Viewed</option>

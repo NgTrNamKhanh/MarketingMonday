@@ -61,8 +61,9 @@ export default function Profile() {
                     <span>{currentUser.email}</span>
                     <h5>Faculty</h5>
                     <span>{getFacultyName(currentUser.facultyId)}</span>
-                    <h5>Change password</h5>
                     {!currentUser.roles.includes("Guest") && (
+                        <>
+                        <h5>Change password</h5>
                         <div className="changePassword">
                             <span>Password must be at least 8 characters long</span>
                             <button className="changePasswordBtn" 
@@ -70,6 +71,7 @@ export default function Profile() {
                                     Change
                             </button>
                         </div>
+                        </>
                     )}
                     <h5>Number</h5>
                     <span>{currentUser.phoneNumber}</span>

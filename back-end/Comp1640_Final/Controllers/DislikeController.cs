@@ -201,6 +201,7 @@ namespace Comp1640_Final.Controllers
                 return Ok(notiResponse);
             }
 
+
         }
         [HttpPost("comment")]
         public async Task<ActionResult<Dislike>> PostCommentDislike(CommentInteractDTO dislikeDto)
@@ -252,6 +253,7 @@ namespace Comp1640_Final.Controllers
                 {
                     UserId = comment.UserId,
                     UserInteractionId = dislikeDto.UserId,
+                    ArticleId = comment.ArticleId,
                     CommentId = dislikeDto.CommentId,
                     Message = message,
                     IsAnonymous = false,

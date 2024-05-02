@@ -23,7 +23,8 @@ export default function CommentForm ({ currentUser, isSubmitting, setIsSubmittin
             const res = await authHeader().post(apis.comment+"createComment", comment);
             if (res.status === 200) {
                 console.log(res)
-                setComments((prevComments) => [res.data,...prevComments ]);
+                const newComment = res.data;
+                setComments(prevComments => [...prevComments,newComment]);
                 setCommentCount((prevCount) => prevCount + 1)
                 setIsSubmitting(false);
                 setCommentValue("")
