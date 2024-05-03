@@ -45,16 +45,22 @@ const AccountForm = ({
     facultyOptions,
     roleOptions
 }) => {
-    const isEdit = account? true: false;
-    initialValues.firstName = account ? account.firstName : "";
-    initialValues.lastName = account ? account.lastName : "";
-    initialValues.email = account ? account.email : "";
-    initialValues.phoneNumber = account ? account.phoneNumber : "";
-    console.log(account)
-    const [faculty, setFaculty] = useState(isEdit ? account.facultyId : "");
-
-    console.log(faculty)
-    const [role, setRole] = useState(isEdit ? account.role[0] : "");
+    const [isEdit, setIsEdit] = useState(false);
+    const [faculty, setFaculty] = useState("");
+    const [role, setRole] = useState("");
+    useEffect(() => {
+        if (account) {
+            setIsEdit(true);
+            initialValues.firstName = account.firstName || "";
+            initialValues.lastName = account.lastName || "";
+            initialValues.email = account.email || "";
+            initialValues.phoneNumber = account.phoneNumber || "";
+            setFaculty(account.facultyId || "");
+            setRole(account.role[0] || "");
+        } else {
+            setIsEdit(false);
+        }
+    }, [account]);
     // const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState("");

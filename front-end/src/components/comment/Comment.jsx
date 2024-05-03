@@ -124,18 +124,28 @@ export default function CommentBlock ({comment, currentUser, post, formatDate, s
     }
     return (
         <div key={selectedComment.id} className="comment" >
-            <Link
-                to={`/account/${selectedComment.userComment.id}`}
-            >
+            {selectedComment.userComment.id !== "0" ? (
+                <Link
+                    to={`/account/${selectedComment.userComment.id}`}
+                >
+                    <img src={selectedComment.userComment.userAvatar} className="commentProfileImg" alt="profile" />
+                </Link>
+            ) : (
                 <img src={selectedComment.userComment.userAvatar} className="commentProfileImg" alt="profile" />
-            </Link>
+            )}
+
+            
             <div className="commentTop">
                 <div className="commentTopLeft">
-                    <Link
-                        to={`/account/${selectedComment.userComment.id}`}
-                    >
+                    {selectedComment.userComment.id !== "0" ? (
+                        <Link
+                            to={`/account/${selectedComment.userComment.id}`}
+                        >
+                            <span className="commentUsername">{selectedComment.userComment.firstName} {selectedComment.userComment.lastName}</span>
+                        </Link>
+                    ) : (
                         <span className="commentUsername">{selectedComment.userComment.firstName} {selectedComment.userComment.lastName}</span>
-                    </Link>
+                    )}
                     <span className="commentDate">{formatDate(selectedComment.createOn)}</span>
                 </div>
             </div>

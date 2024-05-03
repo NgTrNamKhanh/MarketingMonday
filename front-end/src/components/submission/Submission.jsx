@@ -35,7 +35,7 @@ const headerText = (
         <p>Before this submission can be assessed, there are a few Terms and Conditions:</p>
     </>
 );
-export default function  Submission ({ submission, reFetch, currentUser }) {
+export default function  Submission ({ submission, currentUser, reFetch }) {
     const formatDate = (dateString) => {
         const options = {
             year: 'numeric',
@@ -89,7 +89,7 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
     const handleSubmit = async () =>{
         await handleVerifyOrReject();
     };
-    const handleComment = async(e) => {
+    const handleComment = async (e) => {
         e.preventDefault();
         setIsCommenting(false);
         setComment(e.target.value);
@@ -98,7 +98,7 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
             const url = apis.article+"addComment/"+submission.id+"?comment="+comment
             const res = await authHeader().put(url, {});
             if (res.status === 200) {
-                await reFetch();
+                await reFetch(currentUser.facultyId,currentUser);
                 // localStorage.setItem("accounts", JSON.stringify(updatedData));
                 setIsSubmitting(false);
                 // setMessage("Account edited successfully.");
@@ -107,6 +107,7 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                 // setMessage(`An error occurred: ${res.data}`);
             }
         } catch (error) {
+            console.log(error)
             setIsSubmitting(false);
             // setMessage(error.response.data);
         }
@@ -193,23 +194,17 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
 
             const res = await authHeader().put(url, {});
             if (res.status === 200) {
-                const updatedData = await reFetch();
-                if (submitStatus === 1) {
-                    setStatus('approved');
-                }  else if (submitStatus === 2) {
-                    setStatus('reject');
-                } else if (submitStatus === 3 ) {
-                    setStatus('commented');
-                }
-
+                await reFetch(currentUser.facultyId,currentUser);
                 // localStorage.setItem("accounts", JSON.stringify(updatedData));
                 setIsSubmitting(false);
                 // setMessage("Account edited successfully.");
             } else {
+                console.log(res)
                 setIsSubmitting(false);
                 // setMessage(`An error occurred: ${res.data}`);
             }
         } catch (error) {
+            console.log(error)
             setIsSubmitting(false);
             // setMessage(error.response.data);
         }
@@ -218,12 +213,6 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
     const [isDownloading, setIsDownloading] = useState(false);
     const handleDownload = async () => {
         setIsDownloading(true);
-        // const downloadArticle = {
-        //     studentName: submission.studentName,
-        //     title: submission.title,
-        //     description: submission.description,
-        //     imageFiles: submission.listCloudImagePath
-        // }
         try {
             const response = await authHeader().post(apis.article+"download", null, { params: {articleId: submission.id},
                 responseType: 'blob' 
@@ -290,9 +279,9 @@ export default function  Submission ({ submission, reFetch, currentUser }) {
                                         {currentUser.roles.includes("Coordinator") && (
                                             <>
                                                 {/* <Link to="/profile" className="dropdownContentItemLink"> */}
-                                                <a className="submissionDropdownContentItem" href="#comment" onClick={()=>setIsCommenting(true)}>
+                                                <div className="submissionDropdownContentItem" onClick={()=>setIsCommenting(true)}>
                                                         Comment
-                                                </a>
+                                                </div>
                                                 {/* </Link> */}
                                                 {/* <Link to="/settings" className="dropdownContentItemLink"> */}
                                                 <div className="submissionDropdownContentItem" onClick={()=>handleOpenTnCDialog(1)}>

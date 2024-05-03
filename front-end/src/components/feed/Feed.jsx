@@ -74,8 +74,9 @@ export default function Feed({userId}) {
                         url = `${apis.article}approved/faculty`;
                     }
                     const response = await authHeader().get(url, { params: { facultyId: facultyId, userId: currentUser.id }});
-                    setFilteredPosts(response.data)
-                    setPosts(response.data)
+                    
+                    setFilteredPosts(response.data.sort((a, b) => new Date(b.uploadDate.replace(',', '')).getTime() - new Date(a.uploadDate.replace(',', '')).getTime()))
+                    setPosts(response.data.sort((a, b) => new Date(b.uploadDate.replace(',', '')).getTime() - new Date(a.uploadDate.replace(',', '')).getTime()))
                     setLoading(false)
                 } catch (error) {
                     console.error("Error fetching post data:", error);
@@ -142,7 +143,7 @@ export default function Feed({userId}) {
                 sortedPosts.sort((a, b) => b.likeCount - a.likeCount);
                 break;
             case "comments":
-                sortedPosts.sort((a, b) => b.commentsCount - a.commentsCount);
+                sortedPosts.sort((a, b) => b.commmentCount - a.commmentCount);
                 break;
             case "recent":
                 sortedPosts.sort((a, b) => new Date(b.uploadDate.replace(',', '')).getTime() - new Date(a.uploadDate.replace(',', '')).getTime());
@@ -158,16 +159,6 @@ export default function Feed({userId}) {
     return (
         <div className="feed">
             <div className="feedWrapper">
-                <div className="postFilter">
-                    {(unapprovedSelectedFilter==='approved' || !userId )&& (
-                        <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
-                        <option value="recent">Most Recent</option>
-                        <option value="views">Most Viewed</option>
-                        <option value="likes">More Liked</option>
-                        <option value="comments">Most Commented</option>
-                    </select>
-                    )}
-                </div>
                 {userId && (
                         <div className="postFilter">
                             <select value={unapprovedSelectedFilter} onChange={handleUnapprovedFilterChange} className="filter" disabled={loading}>
@@ -179,6 +170,17 @@ export default function Feed({userId}) {
                             </select>
                         </div>
                 )}
+                <div className="postFilter">
+                    {(unapprovedSelectedFilter==='approved' || !userId )&& (
+                        <select value={approvedSelectedFilter} onChange={handleApprovedFilterChange} className="filter" disabled={loading}>
+                        <option value="recent">Most Recent</option>
+                        <option value="views">Most Viewed</option>
+                        <option value="likes">More Liked</option>
+                        <option value="comments">Most Commented</option>
+                    </select>
+                    )}
+                </div>
+                
                 {(loading && currentUser) ? (
                 <Box style={{ width: "100vh" }}>
                     {Array(10)

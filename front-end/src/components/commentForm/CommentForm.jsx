@@ -27,13 +27,16 @@ export default function CommentForm ({ currentUser, isSubmitting, setIsSubmittin
                 setComments(prevComments => [...prevComments,newComment]);
                 setCommentCount((prevCount) => prevCount + 1)
                 setIsSubmitting(false);
+                setIsAnonymous(false);
                 setCommentValue("")
             } else {
                 setCommentValue("")
+                setIsAnonymous(false);
                 setIsSubmitting(false);
             }
         } catch (error) {
             setCommentValue("")
+            setIsAnonymous(false);
             setIsSubmitting(false);
         }
 

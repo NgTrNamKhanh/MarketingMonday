@@ -164,16 +164,22 @@ export default function Post({ post, isProfile, currentUser}) {
             <div className="postWrapper">
                 <div className="postTop">
                     <div className="postTopLeft">
-                        <Link
-                            to={`/account/${post.studentId}`}
-                        >
+                    {post.studentId !== "0" ? (
+                        <Link to={`/account/${post.studentId}`}>
                             <img src={post.studentAvatar} className="postProfileImg" alt="profile" />
                         </Link>
-                        <Link
-                            to={`/account/${post.studentId}`}
-                        >
+                    ) : (
+                        <img src={post.studentAvatar} className="postProfileImg" alt="profile" />
+                    )}
+
+                    {post.studentId !== "0" ? (
+                        <Link to={`/account/${post.studentId}`}>
                             <span className="postUsername">{post.studentName}</span>
                         </Link>
+                    ) : (
+                        <span className="postUsername">{post.studentName}</span>
+                    )}
+
                         <span className="postDate">{formatDate(post.uploadDate)}</span>
                         <span className="submissionDate">
                             {status&&(

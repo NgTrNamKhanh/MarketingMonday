@@ -169,6 +169,7 @@ namespace Comp1640_Final.Controllers
                 articleDTO.ListCloudImagePath = pathList;
             }
             //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+            articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
             articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -223,6 +224,7 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -278,6 +280,7 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -333,6 +336,7 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -490,6 +494,8 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
+
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -542,6 +548,8 @@ namespace Comp1640_Final.Controllers
                     List<string> pathList = new List<string>(paths);
                     articleDTO.ListCloudImagePath = pathList;
                 }
+                articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
+
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -595,6 +603,8 @@ namespace Comp1640_Final.Controllers
                     List<string> pathList = new List<string>(paths);
                     articleDTO.ListCloudImagePath = pathList;
                 }
+                articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
+
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -651,6 +661,8 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
+
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -705,6 +717,8 @@ namespace Comp1640_Final.Controllers
                     articleDTO.ListCloudImagePath = pathList;
                 }
                 //articleDTO.StudentName = user.FirstName + " " + user.LastName;
+                //articleDTO.StudentId = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "0" : article.StudentId;
+
                 articleDTO.StudentName = (article.IsAnonymous == true && userId != article.StudentId && isGuestOrStudent) ? "Anonymous" : $"{user.FirstName} {user.LastName}";
                 articleDTOs.Add(articleDTO);
             }
@@ -960,6 +974,7 @@ namespace Comp1640_Final.Controllers
 
             article.Id = articleId;
             article.PublishStatusId = publicStatus;
+            article.CoordinatorStatus = false;
 
             if (!await _articleService.UpdateArticle(article))
             {

@@ -160,7 +160,7 @@ namespace Comp1640_Final.Controllers
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
-                            userIden = "";
+                            userIden = "0";
                         }
                         UserComment userComment = new UserComment
                         {
@@ -223,7 +223,7 @@ namespace Comp1640_Final.Controllers
                             cloudUserImage = defaultImageFileName;
                             firstName = "Anonymous";
                             lastName = "";
-                            userIden = "";
+                            userIden = "0";
                         }
                         UserComment userComment = new UserComment
                         {
@@ -332,14 +332,14 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712937035/ke2iqrl0rqnxozhxp378.png";
                     cloudUserImage = defaultImageFileName;
                 }
-                if (commentDto.IsAnonymous == true)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                    firstName = "Anonymous";
-                    lastName = "";
-                    userIden = "";
-                }
+                //if (commentDto.IsAnonymous == true)
+                //{
+                //    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                //    cloudUserImage = defaultImageFileName;
+                //    firstName = "Anonymous";
+                //    lastName = "";
+                //    userIden = "";
+                //}
                 UserComment userComment = new UserComment
                 {
                     Id = userIden,
@@ -426,14 +426,14 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
-                if (commentDto.IsAnonymous == true)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                    firstName = "Anonymous";
-                    lastName = "";
-                    userIden = "";
-                }
+                //if (commentDto.IsAnonymous == true)
+                //{
+                //    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                //    cloudUserImage = defaultImageFileName;
+                //    firstName = "Anonymous";
+                //    lastName = "";
+                //    userIden = "0";
+                //}
                 UserComment userComment = new UserComment
                 {
                     Id = userIden,
@@ -477,14 +477,14 @@ namespace Comp1640_Final.Controllers
                     var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
                     cloudUserImage = defaultImageFileName;
                 }
-                if (comment.IsAnonymous == true)
-                {
-                    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
-                    cloudUserImage = defaultImageFileName;
-                    firstName = "Anonymous";
-                    lastName = "";
-                    userIden = "";
-                }
+                //if (comment.IsAnonymous == true)
+                //{
+                //    var defaultImageFileName = "http://res.cloudinary.com/dizeyf6y0/image/upload/v1712075739/pxfrfocprhnsriutmg3r.jpg";
+                //    cloudUserImage = defaultImageFileName;
+                //    firstName = "Anonymous";
+                //    lastName = "";
+                //    userIden = "0";
+                //}
                 UserComment userComment = new UserComment
                 {
                     Id = userIden,

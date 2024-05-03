@@ -53,7 +53,6 @@ export default function Modal({
                                 <span className="postDate">{formatDate(post.uploadDate)}</span>
                             </div>
                             <div className="postTopRight">
-                                <MoreVert/>
                             </div>
                         </div>
                         <div className="modalCenter">

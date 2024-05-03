@@ -28,7 +28,7 @@ export default function Submissions ({userId}) {
         };
         fetchCurrentUser();
     }, []);
-    const fetchSubmissions = async () => {
+    const fetchSubmissions = async (facultyId,currentUser) => {
         if (facultyId && currentUser) {
             setLoading(true)
             try {
@@ -42,48 +42,48 @@ export default function Submissions ({userId}) {
                 setSubmissions([])
                 setFilteredSubmissions([])
                 setError(error.response.data)
-                console.error(error.response.data);
                 setLoading(false)
             }
         }
     }
     useEffect(()=>{
-        fetchSubmissions();
+        fetchSubmissions(facultyId,currentUser );
     },[facultyId,currentUser])
 
-
-    useEffect(()=>{
-        const fetchPosts = async () => {
-            if (userId && currentUser) {
-                setLoading(true)
-                try {
-                    setError(null)
-                    let url;
-                    url = apis.article + "profile/submission"
-                    const response = await authHeader().get(url, {params: {userId: userId}});
-                    setSubmissions(response.data)
-                    setFilteredSubmissions(response.data)
-                    setLoading(false)
-                }catch (error) {
-                    // setError(error.response.data)
-                    setSubmissions([])
-                    setFilteredSubmissions([])
-                    console.error("Error fetching post data:", error);
-                    setLoading(false)
-                }
+    const fetchPosts = async () => {
+        setSelectedFilter("all")
+        if (userId && currentUser) {
+            setLoading(true)
+            try {
+                setError(null)
+                let url;
+                url = apis.article + "profile/submission"
+                const response = await authHeader().get(url, {params: {userId: userId}});
+                setSubmissions(response.data)
+                setFilteredSubmissions(response.data)
+                setLoading(false)
+            }catch (error) {
+                // setError(error.response.data)
+                setSubmissions([])
+                setFilteredSubmissions([])
+                console.error("Error fetching post data:", error);
+                setLoading(false)
             }
         }
-        fetchPosts();
+
+    }
+    useEffect(()=>{
+        
+            fetchPosts(userId);
     },[userId, currentUser])
     const handleFilterChange = (event) => {
         setSelectedFilter(event.target.value);
         // Call function to sort posts based on selected filter
         filterSubmissions(event.target.value);
-        console.log()
     };
     const filterSubmissions = (filter) => {
-        console.log(filter)
         let filteredSubmissions = [...submissions];
+        console.log(filteredSubmissions)
         switch (filter) {
             case "all":
                 filteredSubmissions = submissions;
@@ -108,8 +108,12 @@ export default function Submissions ({userId}) {
                 break;
         }
         setFilteredSubmissions(filteredSubmissions);
-    };
+        console.log(filteredSubmissions)
 
+    };
+    useEffect(() => {
+        filterSubmissions(selectedFilter);
+    }, [submissions,selectedFilter]);
     const handleCheckboxChange = (submissionId, checked) => {
         if (checked) {
             setSelectedSubmissions(prevState => [...prevState, submissionId]);
@@ -130,9 +134,8 @@ export default function Submissions ({userId}) {
 
             const res = await authHeader().put(url, formData);
             if (res.status === 200) {
+                await fetchSubmissions(facultyId,currentUser)
                 setSelectedFilter("approved"); 
-                await fetchSubmissions()
-                filterSubmissions("approved")
                 setIsSubmitting(false)
             } else {
                 // setIsSubmitting(false);
@@ -140,11 +143,12 @@ export default function Submissions ({userId}) {
                 setIsSubmitting(false)
             }
         } catch (error) {
+            console.log(error);
             // setIsSubmitting(false);
             // setMessage(error.response.data);
             setIsSubmitting(false)
         }
-        console.log("Guest approved submissions:", selectedSubmissions);
+        
     };
     const handleGuestApprove = async() => {
         try {
@@ -159,9 +163,8 @@ export default function Submissions ({userId}) {
 
             const res = await authHeader().put(url, formData);
             if (res.status === 200) {
+                await fetchSubmissions(facultyId,currentUser);
                 setSelectedFilter("guest approved"); 
-                await fetchSubmissions();
-                filterSubmissions("guest approved")
                 setIsSubmitting(false)
             } else {
                 // setIsSubmitting(false);
@@ -169,6 +172,7 @@ export default function Submissions ({userId}) {
                 setIsSubmitting(false)
             }
         } catch (error) {
+            console.log(error);
             // setIsSubmitting(false);
             // setMessage(error.response.data);
             setIsSubmitting(false)
@@ -228,7 +232,7 @@ export default function Submissions ({userId}) {
                                         {submission.title}
                                     </label>
                                 )} */}
-                                <Submission submission={submission} currentUser={currentUser}/>
+                                <Submission submission={submission} currentUser={currentUser} reFetch={fetchSubmissions}/>
                             </div>
                         ))}
                     </>
