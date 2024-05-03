@@ -18,6 +18,7 @@ class AuthService {
             // Set cookie
             const decodedToken = jwtDecode(response.data.jwt_token);
             this.cookies.set("CMU-user", response.data, {
+                path: '/',
                 expires: new Date(decodedToken.exp * 1000)
             });
             return response.data;

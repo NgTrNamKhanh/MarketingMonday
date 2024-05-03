@@ -29,10 +29,8 @@ export default function Home() {
     const [currentUser, setCurrentUser] = useState(null);
     useEffect(() => {
         const fetchCurrentUser = async () => {
-            console.log("hi")
             setIsLoading(true)
             const user = authService.getCurrentUser();
-            console.log(user)
             if (user) {
                 setCurrentUser(user);
             }

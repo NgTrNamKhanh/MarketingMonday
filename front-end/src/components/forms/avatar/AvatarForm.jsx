@@ -43,6 +43,7 @@ export default function AvatarForm({userId, handleClose}) {
                         cookies.remove('CMU-user'); 
                         const decodedToken = jwtDecode(user.jwt_token);
                         cookies.set("CMU-user", JSON.stringify(user), {
+                            path: "/",
                             expires: new Date(decodedToken.exp * 1000)
                         });
                         window.location.reload();
