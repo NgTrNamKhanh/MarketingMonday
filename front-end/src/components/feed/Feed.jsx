@@ -68,7 +68,7 @@ export default function Feed({userId}) {
                 try {
                     setError(null)
                     let url;
-                    if (currentUser.roles.includes('guest')) {
+                    if (currentUser.roles.includes('Guest')) {
                         url = `${apis.article}guest/faculty`;
                     } else {
                         url = `${apis.article}approved/faculty`;
